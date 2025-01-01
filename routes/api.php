@@ -23,5 +23,11 @@ Route::middleware(['userAuth'])->group(function () {
 
 
     //produce
-    // Route::get('/produce', '');
+    Route::get('/produce', 'Produce\ProduceController@index');
+
+    //produce farmer only access
+    Route::middleware(['farmerAuth'])->group(function () {
+        Route::post('/produce', 'Produce\ProduceController@create');
+        Route::delete('/produce/{id}', 'Produce\ProduceController@delete');
+    });
 });

@@ -29,6 +29,10 @@ class FarmerAuth
         $farmer = Farmer::where('user_id', $user->id)->first();
 
         if ($farmer !== null) {
+            $request->merge([
+                'user' => $user
+            ]);
+
             return $next($request);
         } else {
             return response()->json([

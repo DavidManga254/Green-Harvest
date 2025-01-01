@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Produce extends Model
 {
-    //
+    protected $fillable = ['farmer_id', 'name', 'description', 'price_per_unit', 'quantity', 'available_from', 'available_to'];
 
     public function farmer(): BelongsTo
     {
