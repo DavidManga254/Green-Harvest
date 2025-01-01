@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'userAuth' => \App\Http\Middleware\User\ConfirmAuthorised::class,
+            'farmerAuth' => \App\Http\Middleware\Farmer\FarmerAuth::class
+
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

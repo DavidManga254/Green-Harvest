@@ -16,6 +16,12 @@ Route::post('/login', 'User\UserController@login');
 
 
 Route::middleware(['userAuth'])->group(function () {
+    //farmer
     Route::get('/farmers', 'Farmer\FarmerController@index');
+    Route::post('/farmers', 'Farmer\FarmerController@create');
     Route::get('/farmers/{id}', 'Farmer\FarmerController@show');
+
+
+    //produce
+    // Route::get('/produce', '');
 });
