@@ -15,4 +15,7 @@ Route::post('/register/confirmEmail', 'User\UserController@confirmEmail');
 Route::post('/login', 'User\UserController@login');
 
 
-Route::middleware(['userAuth'])->group(function () {});
+Route::middleware(['userAuth'])->group(function () {
+    Route::get('/farmers', 'Farmer\FarmerController@index');
+    Route::get('/farmers/{id}', 'Farmer\FarmerController@show');
+});
