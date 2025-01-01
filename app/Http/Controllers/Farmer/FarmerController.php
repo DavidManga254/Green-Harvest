@@ -8,4 +8,5 @@ use Illuminate\Http\Request;
 class FarmerController extends Controller
 {
     //
+    public function index(Request $request) {}
 }
