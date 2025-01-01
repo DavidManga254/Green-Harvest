@@ -14,7 +14,7 @@ class User extends Model implements MustVerifyEmail
     use SoftDeletes;
     use Notifiable;
 
-    protected $fillable = ['name', 'email', 'password', 'phone', 'role', 'address'];
+    protected $fillable = ['name', 'email', 'password', 'phone', 'role', 'address', 'token'];
 
     public function subscriptions()
     {

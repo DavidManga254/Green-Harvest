@@ -11,3 +11,5 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('/register', 'User\UserController@register');
+Route::post('/register/confirmEmail', 'User\UserController@confirmEmail');
+Route::post('/login', 'User\UserController@login');
