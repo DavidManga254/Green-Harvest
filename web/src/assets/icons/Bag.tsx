@@ -1,4 +1,12 @@
-const Bag = ({ width, height }: { width?: string; height?: string }) => (
+const Bag = ({
+    width,
+    height,
+    color,
+}: {
+    width?: string;
+    height?: string;
+    color?: string;
+}) => (
     <svg
         width={width ?? "34"}
         height={height ?? "35"}
@@ -8,7 +16,7 @@ const Bag = ({ width, height }: { width?: string; height?: string }) => (
     >
         <path
             d="M11.3333 14.6667H7.08333L4.25 30.25H29.75L26.9167 14.6667H22.6667M11.3333 14.6667V10.4167C11.3333 7.28705 13.8704 4.75 17 4.75V4.75C20.1296 4.75 22.6667 7.28705 22.6667 10.4167V14.6667M11.3333 14.6667H22.6667M11.3333 14.6667V18.9167M22.6667 14.6667V18.9167"
-            stroke="#1A1A1A"
+            stroke={color ?? "#1A1A1A"}
             stroke-width="1.5"
             stroke-linecap="round"
             stroke-linejoin="round"

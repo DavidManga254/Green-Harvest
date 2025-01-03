@@ -3,10 +3,12 @@
 :root {
     --soft-green: #84d187;
     --green: #00b207;
-    --light-green:#20B526;
+    --light-green: #20b526;
     --hard-green: #2c742f;
+    --lighter-green: #20b533;
     --orange: #ff8a00;
     --red: #ea4b48;
+    --lighter-red: #ea4b33;
     --white: #ffffff;
     --gray-100: #e6e6e6;
     --gray-500: #808080;
@@ -15,9 +17,14 @@
     --gray-200: #cccccc;
     --gray-600: #666666;
     --gray-800: #333333;
-    --gray-50:#EDF2EE;
+    --gray-50: #edf2ee;
+    --gray-300: #b3b3b3;
 }
 
 button:hover {
     cursor: pointer;
+}
+
+* {
+    font-family: "Poppins";
 }
