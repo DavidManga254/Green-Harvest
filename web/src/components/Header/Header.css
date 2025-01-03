@@ -1,0 +1,32 @@
+.main-header {
+    max-width: 1320px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.main-header .prompt-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.prompt-wrapper .location-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.location-wrap .location,
+.sign-prompt {
+    font-family: "Poppins";
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15.6px;
+    color: var(--gray-600);
+}
+
+.logo-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: cen;
+}

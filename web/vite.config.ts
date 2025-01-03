@@ -9,4 +9,9 @@ export default defineConfig({
         viteReact(),
         // ...,
     ],
+    server: {
+        watch: {
+            usePolling: true,
+        },
+    },
 });
