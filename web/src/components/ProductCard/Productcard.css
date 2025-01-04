@@ -1,0 +1,117 @@
+.product-card {
+    max-width: 215px;
+    min-width: 200px;
+    background-color: var(--white);
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.product-card-name p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 10px;
+    color: var(--gray-700);
+}
+
+.product-card img {
+    width: 100%;
+    object-fit: cover;
+    /* aspect-ratio: ; */
+}
+
+.product-card-name {
+    padding: 8px;
+}
+
+.product-card-name .add-cart {
+    width: 35px;
+    height: 35px;
+    background-color: var(--gray-50);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-card .add-fav {
+    width: 40px;
+    height: 40px;
+    background-color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.product-card .fav-module {
+    display: none;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+}
+
+.product-card:hover .fav-module {
+    display: block;
+}
+
+.product-card-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-card-price div {
+    display: flex;
+    gap: 4px;
+    font-weight: 500;
+    font-size: 16px;
+    align-items: center;
+}
+
+.product-card-price .current-price {
+    color: var(--gray-900);
+}
+
+.product-card-price .discounted-price {
+    color: var(--gray-400);
+    text-decoration: line-through;
+}
+
+.card-label {
+    padding: 3px 8px;
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--white);
+    border-radius: 4px;
+}
+
+.card-label.best-sale {
+    background-color: var(--blue);
+}
+
+.card-label.discount-sale {
+    background-color: var(--red);
+}
+
+.card-label.new-sale {
+    background-color: var(--orange);
+}
+
+.card-label.out-of-stock-sale {
+    background-color: var(--gray-900);
+}
+
+.product-card:hover .add-cart {
+    background-color: var(--green);
+}
