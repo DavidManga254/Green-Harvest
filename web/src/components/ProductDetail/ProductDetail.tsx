@@ -7,11 +7,25 @@ import Minus from "../../assets/icons/Minus";
 import Plus from "../../assets/icons/plus";
 import Bag from "../../assets/icons/Bag";
 import Heart from "../../assets/icons/Heart";
+import ImagePreview from "../ImagePreview/ImagePreview";
 
 const ProductDetail: React.FC = () => {
     return (
         <div className="product-detail-header">
-            <div className="product-preview"></div>
+            <div className="product-preview">
+                <ImagePreview
+                    imagesUrl={[
+                        "src/assets/images/cabbage1.jpg",
+                        "src/assets/images/cabbage2.jpg",
+                        "src/assets/images/cabbage3.jpg",
+                        "src/assets/images/cabbage4.jpg",
+                        "src/assets/images/cabbage1.jpg",
+                        "src/assets/images/cabbage2.jpg",
+                        "src/assets/images/cabbage3.jpg",
+                        "src/assets/images/cabbage4.jpg",
+                    ]}
+                />
+            </div>
             <div className="product-detail-info">
                 <div className="detail-header">
                     <div className="product-title">
@@ -60,9 +74,27 @@ const ProductDetail: React.FC = () => {
                             <Bag color="white" width="15" height="15" />
                         </div>
                     </button>
-                    <span className="add-fav">
+                    <span className="add-fav hover">
                         <Heart color="#2C742F" width="20" height="20" />
                     </span>
+                </div>
+                <div className="product-categories">
+                    <div className="category">
+                        <span className="name">Category:</span>
+                        <div>
+                            <span className="category-name">Vegetables</span>
+                        </div>
+                    </div>
+                    <div className="tag">
+                        <span className="name">Tag:</span>
+                        <div>
+                            <span className="tag-name">Vegetables</span>
+                            <span className="tag-name">Healthy</span>
+                            <span className="tag-name">Chinese</span>
+                            <span className="tag-name">Cabbage</span>
+                            <span className="tag-name">Green Cabbage</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

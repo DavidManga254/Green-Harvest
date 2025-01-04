@@ -28,3 +28,29 @@ button:hover {
 * {
     font-family: "Poppins";
 }
+
+.hover:hover {
+    cursor: pointer;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    border-radius: 30px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--green);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    cursor: pointer;
+}

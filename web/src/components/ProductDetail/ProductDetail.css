@@ -1,3 +1,19 @@
+.product-detail-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+@media only screen and (max-width: 906px) {
+    .product-detail-header {
+        display: block;
+    }
+}
+
+.product-preview {
+    max-width: 418px;
+}
+
 .detail-header {
     display: flex;
     flex-direction: column;
@@ -5,7 +21,7 @@
 }
 /* product details */
 .product-detail-info {
-    max-width: 568px;
+    max-width: 418px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -22,7 +38,7 @@
     margin: 0;
     padding: 0;
     font-size: 26px;
-    line-height: 43px;
+    line-height: 33px;
     font-weight: 600;
     font-family: "Poppins";
 }
@@ -120,12 +136,13 @@
 
 /* add minus button */
 .add-minus-button {
-    width: 124px;
+    max-width: 124px;
+    width: 30%;
     height: 50px;
     border-radius: 170px;
     display: flex;
     align-items: center;
-    padding: 5px;
+    padding: 3px;
     border-style: solid;
     border-width: 1.5px;
     border-color: var(--gray-100);
@@ -156,9 +173,14 @@
 .product-prompt {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 12px;
     padding-top: 18px;
     padding-bottom: 18px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-width: 1px;
+    border-color: var(--gray-200);
 }
 
 .product-prompt .add-to-cart {
