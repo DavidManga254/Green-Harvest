@@ -12,7 +12,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Produce extends Model
 {
-    protected $fillable = ['farmer_id', 'name', 'description', 'price_per_unit', 'quantity', 'available_from', 'available_to'];
+    protected $fillable = [
+        'farmer_id',
+        'name',
+        'description',
+        'price_per_unit',
+        'quantity',
+        'is_on_sale',
+        'discount',
+        'out_of_stock',
+        'available_from',
+        'available_to',
+        'category_id',
+        'rating',
+        'tags',
+    ];
 
     public function farmer(): BelongsTo
     {

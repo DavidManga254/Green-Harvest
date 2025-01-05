@@ -6,6 +6,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use Database\Seeders\Farmer\FarmerSeeder;
+use Database\Seeders\Produce\ProduceSeeder;
 use Database\Seeders\User\UserSeeder;
 use Illuminate\Database\Seeder;
 
@@ -18,7 +19,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // UserSeeder::class,
-            FarmerSeeder::class
+            // FarmerSeeder::class
+            ProduceSeeder::class
         ]);
     }
 }
