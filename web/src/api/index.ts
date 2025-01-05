@@ -1,9 +1,15 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const AxiosApi = axios.create({
-    baseURL: process.env.BACKEND_URL,
-    timeout: 10000,
-    headers: { Accept: "application/json" },
+    baseURL: import.meta.env.VITE_BACKEND_URL,
+    withCredentials: true,
+    timeout: 0,
+    headers: {
+        Authorization: `Bearer ${Cookies.get(import.meta.env.VITE_API_KEY_NAME)}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+    },
 });
 
 AxiosApi.interceptors.request.use(

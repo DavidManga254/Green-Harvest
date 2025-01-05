@@ -12,14 +12,16 @@ const TextInput: React.FC<TextInputProps> = ({
     ...props
 }) => {
     function addClass(element, className) {
-        if (element && !element.classList.contains(className)) {
-            element.classList.add(className);
+        const parentDiv = element.parentElement;
+        if (parentDiv && !parentDiv.classList.contains(className)) {
+            parentDiv.classList.add(className);
         }
     }
 
     function removeClass(element, className) {
-        if (element && element.classList.contains(className)) {
-            element.classList.remove(className);
+        const parentDiv = element.parentElement;
+        if (parentDiv && parentDiv.classList.contains(className)) {
+            parentDiv.classList.remove(className);
         }
     }
 
@@ -30,18 +32,8 @@ const TextInput: React.FC<TextInputProps> = ({
                 id="form-text-input"
             >
                 <input
-                    onFocus={() =>
-                        addClass(
-                            document.getElementById("form-text-input"),
-                            "focus",
-                        )
-                    }
-                    onBlur={() =>
-                        removeClass(
-                            document.getElementById("form-text-input"),
-                            "focus",
-                        )
-                    }
+                    onFocus={(e) => addClass(e.target, "focus")}
+                    onBlur={(e) => removeClass(e.target, "focus")}
                     {...props}
                 />
                 {validationState === "error" && (

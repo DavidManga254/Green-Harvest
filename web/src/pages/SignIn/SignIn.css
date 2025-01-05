@@ -1,0 +1,73 @@
+.sign-in-form {
+    max-width: 420px;
+    min-width: 350px;
+    background-color: var(--white);
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+    padding: 20px 10px 32px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+.sign-in-form h1 {
+    font-weight: 600;
+    font-size: 32px;
+    text-align: center;
+}
+
+.sign-in-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.remember-me {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+.remember-me div {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.sign-in-form button {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-radius: 43px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 15px;
+    outline: none;
+    border-style: none;
+    background-color: var(--green);
+    color: var(--white);
+}
+
+.sign-in-form .register p {
+    text-align: center;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+.sign-in-form .register p span {
+    font-weight: 500;
+    color: var(--gray-900);
+}
+
+.sign-in-form .register p span:hover {
+    color: var(--green);
+}
+
+.sign-in-form .styled-checkbox {
+    accent-color: var(--green);
+    color: white;
+}
