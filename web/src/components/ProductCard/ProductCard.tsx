@@ -9,6 +9,8 @@ interface ProductCardInterface {
     salePercent?: number;
     productImage: string;
     productName: string;
+    price: string | number;
+    rating: number;
 }
 
 const Productcard: React.FC<ProductCardInterface> = ({
@@ -16,6 +18,8 @@ const Productcard: React.FC<ProductCardInterface> = ({
     productImage,
     productName,
     salePercent,
+    price,
+    rating,
 }) => {
     const [bagcolor, setBagColor] = useState<string>("#2C742F");
 
@@ -46,7 +50,7 @@ const Productcard: React.FC<ProductCardInterface> = ({
                     <p>{productName}</p>
                     <div className="product-card-price">
                         <div>
-                            <span className="current-price">$14.99</span>
+                            <span className="current-price">{price}</span>
                             {onSale && onSale === "sale" && (
                                 <span className="discounted-price">$20.99</span>
                             )}
@@ -55,7 +59,7 @@ const Productcard: React.FC<ProductCardInterface> = ({
                             <Bag color={bagcolor} width="20" height="20" />
                         </span>
                     </div>
-                    <StarRating rating={4} />
+                    <StarRating rating={rating} />
                 </div>
             </div>
         </div>

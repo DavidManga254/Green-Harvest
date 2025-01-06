@@ -27,16 +27,19 @@ class ConfirmAuthorised
             $token = $_COOKIE[env('APP_COOKIE_NAME')];
         } catch (ErrorException $e) {
             return response()->json([
-                'message' => 'unauthorised',
+                'message' => 'token name not found',
             ], 401);
         }
+
 
 
         if ($token === null) {
             return response()->json([
-                'message' => 'unauthorised',
+                'message' => 'unauthorised, no token',
             ], 401);
         }
+
+
 
         try {
             $decodedToken = (array) JWT::decode($token, new Key(env('JWT_KEY'), 'HS256'));
@@ -44,17 +47,23 @@ class ConfirmAuthorised
 
             $user = User::where('email', $decodedToken['email'])->first();
 
+
+
             if ($user === null) {
                 return response()->json([
-                    'message' => 'unauthorised',
+                    'message' => 'unauthorised user',
                 ], 401);
             }
 
+
+
             if ($user->email === $decodedToken['email'] && $user->name === $decodedToken['name']) {
+
                 return $next($request);
             } else {
+
                 return response()->json([
-                    'message' => 'unauthorised',
+                    'message' => 'unauthorised invalid user',
                 ], 401);
             }
         } catch (\Firebase\JWT\ExpiredException $e) {

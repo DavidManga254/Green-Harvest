@@ -15,7 +15,8 @@ class ProduceController extends Controller
         $perPage = $request->input('data_per_page', 20);
         $page = $request->input('page', 1);
 
-        $produce = Produce::paginate($perPage, ['*'], $page);
+
+        $produce = Produce::with('images')->paginate($perPage, ['*'], 'page', $page);
 
 
         return response()->json([

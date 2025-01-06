@@ -36,7 +36,7 @@ class FarmerAuth
             return $next($request);
         } else {
             return response()->json([
-                'message' => 'unauthorised',
+                'message' => 'unauthorised,not farmer',
             ], 401);
         }
     }
