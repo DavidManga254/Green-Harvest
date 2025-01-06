@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Produce;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Produce\ProduceCreate;
+use App\Http\Resources\Produce\ProduceDetailResource;
 use App\Http\Resources\Produce\ProduceResource;
 use App\Models\Produce\Produce;
 use Illuminate\Http\Request;
@@ -33,6 +34,23 @@ class ProduceController extends Controller
     }
 
     public function create(ProduceCreate $request) {}
+
+    public function show($id)
+    {
+        $produce = Produce::where('id', $id)->with('images')->with('tags')->with('reviews.user')->with('category')->first();
+
+        if (!$produce) {
+            return response()->json([
+                'message' => 'Product not found',
+            ], 404);
+        }
+
+
+
+        return response()->json([
+            'data' => new ProduceDetailResource($produce),
+        ], 200);
+    }
 
     public function delete(Request $request, $id)
     {

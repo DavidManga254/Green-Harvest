@@ -9,37 +9,51 @@ import Bag from "../../assets/icons/Bag";
 import Heart from "../../assets/icons/Heart";
 import ImagePreview from "../ImagePreview/ImagePreview";
 
-const ProductDetail: React.FC = () => {
+interface ProductDetailHeaderinterface {
+    name: string;
+    rating: number;
+    price_per_unit: number | string;
+    is_on_sale: number;
+    description: string;
+    category: {
+        id: number;
+        name: string;
+    };
+    images: {
+        image_path: string;
+    }[];
+}
+
+const ProductDetailHeader: React.FC<ProductDetailHeaderinterface> = ({
+    name,
+    rating,
+    price_per_unit,
+    is_on_sale,
+    description,
+    category,
+    images,
+}) => {
+    const productImages = images.map((image) => image.image_path);
+
     return (
         <div className="product-detail-header">
             <div className="product-preview">
-                <ImagePreview
-                    imagesUrl={[
-                        "src/assets/images/cabbage1.jpg",
-                        "src/assets/images/cabbage2.jpg",
-                        "src/assets/images/cabbage3.jpg",
-                        "src/assets/images/cabbage4.jpg",
-                        "src/assets/images/cabbage1.jpg",
-                        "src/assets/images/cabbage2.jpg",
-                        "src/assets/images/cabbage3.jpg",
-                        "src/assets/images/cabbage4.jpg",
-                    ]}
-                />
+                <ImagePreview imagesUrl={productImages} />
             </div>
             <div className="product-detail-info">
                 <div className="detail-header">
                     <div className="product-title">
-                        <h1>Chinese Cabbage</h1>
+                        <h1>{name}</h1>
                         <StockStatus inStock />
                     </div>
                     <div className="review-section-start">
                         <div className="review">
-                            <StarRating rating={4.2} />
+                            <StarRating rating={rating} />
                             <span>4 Reviews</span>
                         </div>
                     </div>
                     <div className="product-price">
-                        <span className="old-price">$48.00</span>
+                        <span className="old-price">${price_per_unit}</span>
                         <span className="discounted-price">$17.28</span>
                         <PercentageOff percent={64} />
                     </div>
@@ -59,12 +73,7 @@ const ProductDetail: React.FC = () => {
                 </div>
                 {/* product description */}
                 <div className="product-description">
-                    <p>
-                        Class aptent taciti sociosqu ad litora torquent per
-                        conubia nostra, per inceptos himenaeos. Nulla nibh diam,
-                        blandit vel consequat nec, ultrices et ipsum. Nulla
-                        varius magna a consequat pulvinar.
-                    </p>
+                    <p>{description}</p>
                 </div>
                 <div className="product-prompt">
                     <Counter onCountChange={() => {}} />
@@ -81,9 +90,15 @@ const ProductDetail: React.FC = () => {
                 <div className="product-categories">
                     <div className="category">
                         <span className="name">Category:</span>
-                        <div>
-                            <span className="category-name">Vegetables</span>
-                        </div>
+                        <span className="category-name">{category.name}</span>
+                        {/* TODO  make category backend own table and map*/}
+                        {/* <div>
+                            {category.map((category, index) => (
+                                <span key={index} className="category-name">
+                                    {category.name}
+                                </span>
+                            ))}
+                        </div> */}
                     </div>
                     <div className="tag">
                         <span className="name">Tag:</span>
@@ -101,7 +116,7 @@ const ProductDetail: React.FC = () => {
     );
 };
 
-export default ProductDetail;
+export default ProductDetailHeader;
 
 interface StockStatusInterface {
     inStock: boolean;

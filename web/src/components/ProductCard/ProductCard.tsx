@@ -4,7 +4,7 @@ import StarRating from "../StarRating/StarRating";
 import "./Productcard.css";
 import Heart from "../../assets/icons/Heart";
 
-interface ProductCardInterface {
+interface ProductCardInterface extends React.HTMLAttributes<HTMLElement> {
     onSale?: "new" | "sale" | "best" | "outOfStock";
     salePercent?: number;
     productImage: string;
@@ -20,6 +20,7 @@ const Productcard: React.FC<ProductCardInterface> = ({
     salePercent,
     price,
     rating,
+    ...props
 }) => {
     const [bagcolor, setBagColor] = useState<string>("#2C742F");
 
@@ -37,6 +38,7 @@ const Productcard: React.FC<ProductCardInterface> = ({
             onMouseEnter={changeBagColor}
             onMouseLeave={changeBagColor}
             className="product-card hover"
+            {...props}
         >
             <img src={productImage} />
             {onSale && <SaleType salePercent={salePercent} saleType={onSale} />}

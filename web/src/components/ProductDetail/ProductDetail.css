@@ -2,6 +2,9 @@
     display: flex;
     justify-content: space-between;
     gap: 10px;
+    max-width: 13000px;
+    background-color: yellow;
+
 }
 
 @media only screen and (max-width: 906px) {
@@ -11,7 +14,7 @@
 }
 
 .product-preview {
-    max-width: 418px;
+    /* max-width: 418px; */
 }
 
 .detail-header {
@@ -21,7 +24,7 @@
 }
 /* product details */
 .product-detail-info {
-    max-width: 418px;
+    /* max-width: 418px; */
     display: flex;
     flex-direction: column;
     gap: 10px;

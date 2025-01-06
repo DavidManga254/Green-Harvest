@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as SignInIndexImport } from './routes/sign-in/index'
 import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as HomeIndexImport } from './routes/home/index'
+import { Route as ProductProductIdImport } from './routes/product/$productId'
 
 // Create Virtual Routes
 
@@ -54,6 +55,12 @@ const HomeIndexRoute = HomeIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ProductProductIdRoute = ProductProductIdImport.update({
+  id: '/product/$productId',
+  path: '/product/$productId',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -70,6 +77,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/product/$productId': {
+      id: '/product/$productId'
+      path: '/product/$productId'
+      fullPath: '/product/$productId'
+      preLoaderRoute: typeof ProductProductIdImport
       parentRoute: typeof rootRoute
     }
     '/home/': {
@@ -101,6 +115,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
+  '/product/$productId': typeof ProductProductIdRoute
   '/home': typeof HomeIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
@@ -109,6 +124,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
+  '/product/$productId': typeof ProductProductIdRoute
   '/home': typeof HomeIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
@@ -118,6 +134,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
+  '/product/$productId': typeof ProductProductIdRoute
   '/home/': typeof HomeIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/sign-in/': typeof SignInIndexRoute
@@ -125,16 +142,30 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/home' | '/shop' | '/sign-in'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/product/$productId'
+    | '/home'
+    | '/shop'
+    | '/sign-in'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/home' | '/shop' | '/sign-in'
-  id: '__root__' | '/' | '/about' | '/home/' | '/shop/' | '/sign-in/'
+  to: '/' | '/about' | '/product/$productId' | '/home' | '/shop' | '/sign-in'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/product/$productId'
+    | '/home/'
+    | '/shop/'
+    | '/sign-in/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AboutLazyRoute: typeof AboutLazyRoute
+  ProductProductIdRoute: typeof ProductProductIdRoute
   HomeIndexRoute: typeof HomeIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
   SignInIndexRoute: typeof SignInIndexRoute
@@ -143,6 +174,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AboutLazyRoute: AboutLazyRoute,
+  ProductProductIdRoute: ProductProductIdRoute,
   HomeIndexRoute: HomeIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
   SignInIndexRoute: SignInIndexRoute,
@@ -160,6 +192,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/product/$productId",
         "/home/",
         "/shop/",
         "/sign-in/"
@@ -170,6 +203,9 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.lazy.tsx"
+    },
+    "/product/$productId": {
+      "filePath": "product/$productId.tsx"
     },
     "/home/": {
       "filePath": "home/index.tsx"

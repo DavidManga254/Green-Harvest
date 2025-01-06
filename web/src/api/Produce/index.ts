@@ -13,6 +13,17 @@ class ProduceApi {
             throw e;
         }
     }
+
+    async getProductDetails(productId: number | string) {
+        try {
+            const response = await AxiosApi.get(`/produce/${productId}`);
+
+            return response.data;
+        } catch (e) {
+            console.log("error fetching produce details", e);
+            throw e;
+        }
+    }
 }
 
 export default new ProduceApi();

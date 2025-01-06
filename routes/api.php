@@ -24,6 +24,7 @@ Route::middleware(['userAuth'])->group(function () {
 
     //produce
     Route::get('/produce', 'Produce\ProduceController@index');
+    Route::get('/produce/{id}', 'Produce\ProduceController@show');
 
     //produce farmer only access
     Route::middleware(['farmerAuth'])->group(function () {
