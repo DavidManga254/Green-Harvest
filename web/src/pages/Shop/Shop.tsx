@@ -7,6 +7,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { PaginationItem } from "@mui/material";
 import { useNavigate } from "@tanstack/react-router";
+import ShopSidebar from "../../components/ShopSidebar/ShopSidebar";
 
 interface ShopPageInterface {
     page?: number;
@@ -51,43 +52,52 @@ const ShopPage: React.FC<ShopPageInterface> = ({ page }) => {
 
     return (
         <div className="shop-page">
-            <div className="product-wrapper">
-                <div className="product-shop-list">
-                    {produceData.map((produce, index: number) => (
-                        <Productcard
-                            onClick={() => handleProductNavigation(produce.id)}
-                            productImage={
-                                produce.images ? produce.images.image_path : ""
-                            }
-                            productName={produce.name}
-                            onSale={produce.is_on_sale}
-                            price={produce.price_per_unit}
-                            rating={produce.rating}
-                            key={index}
-                        />
-                    ))}
+            <div className="content-section">
+                <div className="Side-bar">
+                    <ShopSidebar />
                 </div>
-                <div className="pagination">
-                    <Pagination
-                        count={Math.ceil(
-                            paginationData.total / paginationData.per_page,
-                        )}
-                        page={paginationData.current_page}
-                        color="standard"
-                        size="large"
-                        showFirstButton
-                        showLastButton
-                        onChange={handlePageNav}
-                        renderItem={(item) => (
-                            <PaginationItem
-                                slots={{
-                                    previous: ArrowBackIcon,
-                                    next: ArrowForwardIcon,
-                                }}
-                                {...item}
+                <div className="product-wrapper">
+                    <div className="product-shop-list">
+                        {produceData.map((produce, index: number) => (
+                            <Productcard
+                                onClick={() =>
+                                    handleProductNavigation(produce.id)
+                                }
+                                productImage={
+                                    produce.images
+                                        ? produce.images.image_path
+                                        : ""
+                                }
+                                productName={produce.name}
+                                onSale={produce.is_on_sale}
+                                price={produce.price_per_unit}
+                                rating={produce.rating}
+                                key={index}
                             />
-                        )}
-                    />
+                        ))}
+                    </div>
+                    <div className="pagination">
+                        <Pagination
+                            count={Math.ceil(
+                                paginationData.total / paginationData.per_page,
+                            )}
+                            page={paginationData.current_page}
+                            color="standard"
+                            size="large"
+                            showFirstButton
+                            showLastButton
+                            onChange={handlePageNav}
+                            renderItem={(item) => (
+                                <PaginationItem
+                                    slots={{
+                                        previous: ArrowBackIcon,
+                                        next: ArrowForwardIcon,
+                                    }}
+                                    {...item}
+                                />
+                            )}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

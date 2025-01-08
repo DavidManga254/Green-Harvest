@@ -1,0 +1,103 @@
+.shop-side-bar {
+    max-width: 312px;
+}
+
+.shop-side-bar .title {
+    margin-bottom: 10px;
+}
+.shop-side-bar .title h1 {
+    font-weight: 500;
+    font-size: 20px;
+    font-family: "Noto Sans JP";
+    color: var(--gray-900);
+}
+
+.categories .option-section,
+.rating .option-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.option-section input {
+    accent-color: var(--green);
+}
+
+.categories .option-section label,
+.rating .option-section label {
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--gray-900);
+}
+
+.categories .option-section label span {
+    color: var(--gray-500);
+}
+
+.shop-side-bar .options {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tags .popular-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tags .popular-tag-list span {
+    padding: 6px 16px;
+    border-radius: 30px;
+    background-color: var(--gray-50);
+    color: var(--gray-900);
+    font-family: "Noto Sans JP";
+    font-size: 14px;
+}
+
+.discount-offer {
+    margin-top: 25px;
+    height: 135px;
+    padding-bottom: 180px;
+    padding-top: 10px;
+    background-image: url("images/sale.png");
+    background-size: cover;
+    background-position: bottom;
+    background-size: 600px;
+    background-repeat: no-repeat;
+    background-color: #f2f2f2;
+}
+
+.discount-offer p {
+    font-weight: 400;
+    font-size: 24px;
+    text-align: center;
+    color: var(--gray-900);
+}
+
+.discount-offer p span {
+    font-weight: 600;
+    font-size: 32px;
+    color: var(--orange);
+}
+
+.discount-offer .small {
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    color: var(--gray-700);
+}
+
+.discount-offer .prompt-shop {
+    font-weight: 600;
+    text-align: center;
+    font-size: 16px;
+    color: var(--green);
+    margin-top: 15px;
+}

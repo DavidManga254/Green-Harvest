@@ -1,0 +1,34 @@
+const PropmtArrow = ({
+    width,
+    height,
+    color,
+}: {
+    width?: string;
+    height?: string;
+    color?: string;
+}) => (
+    <svg
+        width={width ?? "17"}
+        height={height ?? "15"}
+        viewBox="0 0 17 15"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            d="M16 7.50049H1"
+            stroke={color ?? "#00B307"}
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+        <path
+            d="M9.9502 1.47546L16.0002 7.49946L9.9502 13.5245"
+            stroke={color ?? "#00B307"}
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+    </svg>
+);
+
+export default PropmtArrow;
