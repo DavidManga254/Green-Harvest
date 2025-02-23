@@ -133,7 +133,8 @@ class UserController extends Controller
             config('constants.cookie_lifetime'),
             null,
             env('APP_DEV_ENVIRONMENT') ? "" : env('SESSION_DOMAIN'),
-            env('APP_ENV') === 'production',
+            // env('APP_ENV') === 'production',
+            true,
             true,
             false,
             env('APP_DEV_ENVIRONMENT') ? "none" : 'strict'
