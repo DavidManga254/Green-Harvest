@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as SignInIndexImport } from './routes/sign-in/index'
 import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as HomeIndexImport } from './routes/home/index'
+import { Route as CheckoutIndexImport } from './routes/checkout/index'
 import { Route as ProductProductIdImport } from './routes/product/$productId'
 
 // Create Virtual Routes
@@ -55,6 +56,12 @@ const HomeIndexRoute = HomeIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CheckoutIndexRoute = CheckoutIndexImport.update({
+  id: '/checkout/',
+  path: '/checkout/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ProductProductIdRoute = ProductProductIdImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
@@ -84,6 +91,13 @@ declare module '@tanstack/react-router' {
       path: '/product/$productId'
       fullPath: '/product/$productId'
       preLoaderRoute: typeof ProductProductIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/checkout/': {
+      id: '/checkout/'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutIndexImport
       parentRoute: typeof rootRoute
     }
     '/home/': {
@@ -116,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/checkout': typeof CheckoutIndexRoute
   '/home': typeof HomeIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
@@ -125,6 +140,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/checkout': typeof CheckoutIndexRoute
   '/home': typeof HomeIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
@@ -135,6 +151,7 @@ export interface FileRoutesById {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/checkout/': typeof CheckoutIndexRoute
   '/home/': typeof HomeIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/sign-in/': typeof SignInIndexRoute
@@ -146,16 +163,25 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/product/$productId'
+    | '/checkout'
     | '/home'
     | '/shop'
     | '/sign-in'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/product/$productId' | '/home' | '/shop' | '/sign-in'
+  to:
+    | '/'
+    | '/about'
+    | '/product/$productId'
+    | '/checkout'
+    | '/home'
+    | '/shop'
+    | '/sign-in'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/product/$productId'
+    | '/checkout/'
     | '/home/'
     | '/shop/'
     | '/sign-in/'
@@ -166,6 +192,7 @@ export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AboutLazyRoute: typeof AboutLazyRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
+  CheckoutIndexRoute: typeof CheckoutIndexRoute
   HomeIndexRoute: typeof HomeIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
   SignInIndexRoute: typeof SignInIndexRoute
@@ -175,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AboutLazyRoute: AboutLazyRoute,
   ProductProductIdRoute: ProductProductIdRoute,
+  CheckoutIndexRoute: CheckoutIndexRoute,
   HomeIndexRoute: HomeIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
   SignInIndexRoute: SignInIndexRoute,
@@ -193,6 +221,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/product/$productId",
+        "/checkout/",
         "/home/",
         "/shop/",
         "/sign-in/"
@@ -206,6 +235,9 @@ export const routeTree = rootRoute
     },
     "/product/$productId": {
       "filePath": "product/$productId.tsx"
+    },
+    "/checkout/": {
+      "filePath": "checkout/index.tsx"
     },
     "/home/": {
       "filePath": "home/index.tsx"
