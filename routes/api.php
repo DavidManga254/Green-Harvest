@@ -31,4 +31,10 @@ Route::middleware(['userAuth'])->group(function () {
         Route::post('/produce', 'Produce\ProduceController@create');
         Route::delete('/produce/{id}', 'Produce\ProduceController@delete');
     });
+
+    Route::get('/cart', 'Cart\CartController@viewCart');
+    Route::post('/cart/add', 'Cart\CartController@addToCart');
+    // Route::put('/cart/update/{cartItemId}', [CartController::class, 'updateCartItem']);
+    Route::delete('/cart/remove/{cartItemId}', 'Cart\CartController@removeCartItem');
+    Route::delete('/cart/clear', 'Cart\CartController@clearCart');
 });

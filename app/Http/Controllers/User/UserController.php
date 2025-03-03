@@ -8,6 +8,7 @@ use App\Http\Requests\User\login;
 use Illuminate\Http\Request;
 use App\Http\Requests\User\Register;
 use App\Mail\Register\Register as SignUpRegister;
+use App\Models\cart\Cart;
 use App\Models\User\User;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
@@ -109,6 +110,15 @@ class UserController extends Controller
                 $jwt = JWT::encode($userPayload, env('JWT_KEY'), 'HS256');
 
                 $cookie = $this->createCookie($jwt);
+
+                //create user cart if it does not exist
+                $cart = Cart::where('user_id', $user->id)->first();
+
+                if (!$cart) {
+                    Cart::create([
+                        'user_id' => $user->id
+                    ]);
+                }
 
                 return response()->json([
                     'message' => 'Logged In',

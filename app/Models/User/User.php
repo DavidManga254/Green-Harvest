@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Models\cart\Cart;
 use App\Models\Subscription\Subscription;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,5 +25,10 @@ class User extends Model
     public function hasVerifiedEmail(): bool
     {
         return !is_null($this->email_verified_at);
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
     }
 }

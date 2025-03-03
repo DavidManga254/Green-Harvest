@@ -59,6 +59,8 @@ class ConfirmAuthorised
 
             if ($user->email === $decodedToken['email'] && $user->name === $decodedToken['name']) {
 
+                $request->merge(['authenticated_user' => $user]);
+
                 return $next($request);
             } else {
 
