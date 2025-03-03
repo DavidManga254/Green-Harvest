@@ -3,6 +3,10 @@ import Bag from "../../assets/icons/Bag";
 import StarRating from "../StarRating/StarRating";
 import "./Productcard.css";
 import Heart from "../../assets/icons/Heart";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Cart from "../../api/Cart";
+import displayNotification from "../../lib/displayNotification";
+import { toast } from "react-toastify";
 
 interface ProductCardInterface extends React.HTMLAttributes<HTMLElement> {
     onSale?: "new" | "sale" | "best" | "outOfStock";
@@ -11,6 +15,8 @@ interface ProductCardInterface extends React.HTMLAttributes<HTMLElement> {
     productName: string;
     price: string | number;
     rating: number;
+    id: number;
+    onUserClick: () => void;
 }
 
 const Productcard: React.FC<ProductCardInterface> = ({
@@ -20,8 +26,11 @@ const Productcard: React.FC<ProductCardInterface> = ({
     salePercent,
     price,
     rating,
-    ...props
+    id,
+    onUserClick,
 }) => {
+    const queryClient = useQueryClient();
+
     const [bagcolor, setBagColor] = useState<string>("#2C742F");
 
     const changeBagColor = () => {
@@ -33,14 +42,31 @@ const Productcard: React.FC<ProductCardInterface> = ({
         }
     };
 
+    const cartMutation = useMutation({
+        mutationFn: Cart.addToCart,
+        onSuccess: () => {
+            queryClient.refetchQueries({ queryKey: ["cart summary"] });
+            displayNotification("Added to cart", "success");
+        },
+        onError: () => {
+            displayNotification("Failed to add to cart", "error");
+        },
+    });
+
+    const handleAddtoCart = () => {
+        cartMutation.mutate({
+            produceId: id,
+            quantity: 1,
+        });
+    };
+
     return (
         <div
             onMouseEnter={changeBagColor}
             onMouseLeave={changeBagColor}
             className="product-card hover"
-            {...props}
         >
-            <img src={productImage} />
+            <img onClick={onUserClick} src={productImage} />
             {onSale && <SaleType salePercent={salePercent} saleType={onSale} />}
             <div className="fav-module">
                 <span className="add-fav hover">
@@ -49,16 +75,21 @@ const Productcard: React.FC<ProductCardInterface> = ({
             </div>
             <div className="product-card-details">
                 <div className="product-card-name">
-                    <p>{productName}</p>
+                    <p onClick={onUserClick}>{productName}</p>
                     <div className="product-card-price">
-                        <div>
+                        <div onClick={onUserClick}>
                             <span className="current-price">{price}</span>
                             {onSale && onSale === "sale" && (
                                 <span className="discounted-price">$20.99</span>
                             )}
                         </div>
                         <span className="add-cart hover">
-                            <Bag color={bagcolor} width="20" height="20" />
+                            <Bag
+                                onClick={handleAddtoCart}
+                                color={bagcolor}
+                                width="20"
+                                height="20"
+                            />
                         </span>
                     </div>
                     <StarRating rating={rating} />

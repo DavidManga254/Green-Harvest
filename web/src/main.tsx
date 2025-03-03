@@ -5,11 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import { ToastContainer } from "react-toastify";
 
 const router = createRouter({ routeTree });
 
@@ -40,6 +40,7 @@ createRoot(document.getElementById("root")!).render(
             <Suspense fallback={null}>
                 <TanStackRouterDevtools router={router} />
             </Suspense>
+            <ToastContainer />
         </QueryClientProvider>
     </StrictMode>,
 );

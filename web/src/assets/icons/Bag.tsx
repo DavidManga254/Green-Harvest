@@ -2,12 +2,14 @@ const Bag = ({
     width,
     height,
     color,
+    ...props
 }: {
     width?: string;
     height?: string;
     color?: string;
-}) => (
+} & React.SVGProps<SVGSVGElement>) => (
     <svg
+        {...props}
         width={width ?? "34"}
         height={height ?? "35"}
         viewBox="0 0 34 35"

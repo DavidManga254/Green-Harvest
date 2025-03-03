@@ -60,7 +60,7 @@ const ShopPage: React.FC<ShopPageInterface> = ({ page }) => {
                     <div className="product-shop-list">
                         {produceData.map((produce, index: number) => (
                             <Productcard
-                                onClick={() =>
+                                onUserClick={() =>
                                     handleProductNavigation(produce.id)
                                 }
                                 productImage={
@@ -72,6 +72,7 @@ const ShopPage: React.FC<ShopPageInterface> = ({ page }) => {
                                 onSale={produce.is_on_sale}
                                 price={produce.price_per_unit}
                                 rating={produce.rating}
+                                id={produce.id}
                                 key={index}
                             />
                         ))}
