@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +32,7 @@ Route::middleware(['userAuth'])->group(function () {
     });
 
     Route::get('/cart', 'Cart\CartController@viewCart');
+    Route::get('/cart/items', 'Cart\CartController@index');
     Route::post('/cart/add', 'Cart\CartController@addToCart');
     // Route::put('/cart/update/{cartItemId}', [CartController::class, 'updateCartItem']);
     Route::delete('/cart/remove/{cartItemId}', 'Cart\CartController@removeCartItem');

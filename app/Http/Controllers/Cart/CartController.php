@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cart;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cart\CartRequest;
+use App\Http\Resources\Cart\CartResource;
 use App\Models\cart\Cart;
 use App\Models\cart\CartItem;
 use App\Models\Produce\Produce;
@@ -12,6 +13,20 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    public function index(Request $request)
+    {
+        $authenticatedUser = $request->get('authenticated_user');
+
+        $userCart = Cart::where('user_id', $authenticatedUser->id)->with('cartItems.produce.images')->first();
+
+        $cartItems = $userCart->cartItems;
+
+        return response()->json([
+            'cart_items' => CartResource::collection($cartItems)
+        ], 200);
+    }
+
+
     public function viewCart(Request $request)
     {
         $authenticatedUser = $request->get('authenticated_user');
