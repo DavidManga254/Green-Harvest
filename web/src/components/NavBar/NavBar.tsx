@@ -1,7 +1,12 @@
 import "./NavBar.css";
 import ChevronDown from "../../assets/icons/ChevronDown";
+import { useNavigate } from "@tanstack/react-router";
 
 const NavBar: React.FC = () => {
+    const navigate = useNavigate();
+
+    const navigateToRoute = (routeName: string) => navigate({ to: routeName });
+
     return (
         <div className="navbar-wrapper">
             <div className="navigation">
@@ -10,7 +15,7 @@ const NavBar: React.FC = () => {
                     <ChevronDown height="16" width="16" />
                 </div>
                 <div className="nav-item inactive">
-                    <span>Shop</span>
+                    <span onClick={() => navigateToRoute("/shop")}>Shop</span>
                     <ChevronDown height="16" width="16" />
                 </div>
                 <div className="nav-item inactive">

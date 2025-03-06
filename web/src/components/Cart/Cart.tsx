@@ -3,6 +3,7 @@ import Bag from "../../assets/icons/Bag";
 import Heart from "../../assets/icons/Heart";
 import "./Cart.css";
 import Cart from "../../api/Cart";
+import { useNavigate } from "@tanstack/react-router";
 
 const CartHeader: React.FC = () => {
     const { data, isLoading } = useQuery({
@@ -10,13 +11,22 @@ const CartHeader: React.FC = () => {
         queryFn: Cart.viewCart,
     });
 
+    const navigate = useNavigate();
+
+    const handleNavigateToCheckout = () => navigate({ to: "/checkout" });
+
     return (
         <div className="cart-header">
             <Heart width="32" height="32" />
             <div className="vl"></div>
             <div className="shopping-cart">
                 <div className="bag-wrapper">
-                    <Bag width="34" height="34" />
+                    <Bag
+                        onClick={handleNavigateToCheckout}
+                        className="hover"
+                        width="34"
+                        height="34"
+                    />
                     <>
                         {!isLoading && data.total_items > 0 && (
                             <div className="sup">{data.total_items}</div>

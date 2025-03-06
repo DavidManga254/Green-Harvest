@@ -1,14 +1,16 @@
 import "./index.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Cart from "../../api/Cart";
+import { useNavigate } from "@tanstack/react-router";
 
 const CheckoutPage: React.FC = () => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
     const { data, isLoadding, error } = useQuery<CartResponse>({
         queryKey: ["cart content"],
         queryFn: Cart.getCartContent,
     });
-
-    const queryClient = useQueryClient();
 
     const updateCartMutation = useMutation({
         mutationFn: Cart.updateCartItem,
@@ -70,6 +72,8 @@ const CheckoutPage: React.FC = () => {
     const handleRemove = (id: number) => {
         deleteItemMutation.mutate({ id: id });
     };
+
+    const handleNavigate = (routename: string) => navigate({ to: routename });
 
     return (
         <div className="checkout-page">
@@ -142,7 +146,9 @@ const CheckoutPage: React.FC = () => {
                         })}
 
                         <div className="extra-buttons">
-                            <button>Return to shop</button>
+                            <button onClick={() => handleNavigate("/shop")}>
+                                Return to shop
+                            </button>
                             <button className="clear-button">Clear cart</button>
                         </div>
                     </div>
