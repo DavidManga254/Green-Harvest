@@ -1,3 +1,132 @@
 .product-detail-section {
     margin: 0 auto;
+    max-width: 1100px;
+}
+
+.more-detail-section{
+    min-height: 350px;
+}
+
+.more-detail-section .title-section{
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    height: 56px;
+}
+
+.more-detail-section .title-section h1{
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--gray-500);
+}
+
+.title-section h1.active{
+    color: var(--gray-900);
+    text-decoration: underline;
+    text-decoration-color: var(--light-green);
+    text-underline-offset: 10px;
+}
+
+.more-detail-section .description{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-500);
+}
+
+.additional-info{
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.additional-info .table-label{
+    color: var(--gray-900);
+    width: 112px;
+
+}
+.top-section{
+    margin-bottom: 8px;
+}
+.additional-info .table-info{
+    color: var(--gray-600);
+}
+
+.user-review .top-section{
+    display: flex;
+    justify-content: space-between;
+}
+
+.top-section .user-detail{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.user-detail h2{
+    padding: 0;
+    margin: 0;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--gray-900);
+}
+
+.user-detail img{
+    width: 41px;
+    height: 41px;
+    border-radius: 50%;
+}
+
+.user-review p, .user-review .date-time{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-500);
+}
+
+.review-list hr{
+    border: solid 1px var(--gray-100);
+    width: 100%;
+}
+
+.review-list{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.product-detail-section{
+    display: flex;
+    flex-direction: column;
+    gap: 45px;
+}
+
+.related-section-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+}
+
+.related-section h1{
+    text-align: center;
+    font-weight: 600;
+    font-size: 22px;
+    margin-bottom: 25px;
+}
+
+.product-reviews{
+    max-width: 700px;
+}
+
+.load-more button{
+    width: 138px;
+    height: 45px;
+    background-color: #56AC591A;
+    color: var(--light-green);
+    font-weight: 600;
+    font-size: 14px;
+    border-style: none;
+    outline: none;
+    border-radius: 43px;
+}
+
+.load-more{
+    margin-top:25px;
 }

@@ -1,0 +1,82 @@
+.footer-section{
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.footer-section .nav-section{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 60px;
+}
+
+
+
+.footer-section .nav-section div{
+    max-width: 336px;
+}
+
+.footer-section .brand-section h1{
+    font-weight: 500;
+    font-size: 25px;
+    color: var(--white);
+}
+
+
+.footer-section .brand-section p{
+    color: var(--gray-500);
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+p span{
+    color: var(--white);
+}
+
+.footer-account-section{
+    max-width: 95px;
+}
+
+.footer-account-section h1{
+    color: var(--white);
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+
+
+.footer-account-section ul{
+    list-style: none;
+    padding: 0;
+}
+
+.footer-account-section li{
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--gray-400);
+    margin-bottom: 10px;
+}
+
+.footer-wrapper{
+    background-color: var(--gray-900);
+    padding-top: 60px;
+    margin-top: 80px;
+}
+
+.bottom-footer{
+    color: var(--gray-400);
+    font-weight: 400;
+    font-size: 14px;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: solid 1px var(--gray-400);
+    margin-top: 50px;
+}
+
+.bottom-footer .support-payments{
+    display: flex;
+    gap: 8px;
+}

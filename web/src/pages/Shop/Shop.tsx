@@ -50,6 +50,8 @@ const ShopPage: React.FC<ShopPageInterface> = ({ page }) => {
     const produceData: [] = data.data;
     const paginationData = data.pagination;
 
+    console.log(produceData);
+
     return (
         <div className="shop-page">
             <div className="content-section">
