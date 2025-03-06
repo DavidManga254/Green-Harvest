@@ -29,9 +29,9 @@ class Register extends FormRequest
             'name' => 'required|max:300|string',
             'email' => ['email:rfc,dns', 'required', 'string', Rule::unique('users', 'email'),],
             'password' => 'required|string',
-            'phone' => 'required|string|numeric',
+            'phone' => '|string|numeric',
             'role' => ['required', Rule::in(UserRole::cases())],
-            'address' => 'string|required'
+            'address' => 'string'
         ];
     }
 

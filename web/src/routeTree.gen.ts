@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignInIndexImport } from './routes/sign-in/index'
 import { Route as ShopIndexImport } from './routes/shop/index'
+import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as HomeIndexImport } from './routes/home/index'
 import { Route as CheckoutIndexImport } from './routes/checkout/index'
 import { Route as ProductProductIdImport } from './routes/product/$productId'
@@ -47,6 +48,12 @@ const SignInIndexRoute = SignInIndexImport.update({
 const ShopIndexRoute = ShopIndexImport.update({
   id: '/shop/',
   path: '/shop/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const RegisterIndexRoute = RegisterIndexImport.update({
+  id: '/register/',
+  path: '/register/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -107,6 +114,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeIndexImport
       parentRoute: typeof rootRoute
     }
+    '/register/': {
+      id: '/register/'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/shop/': {
       id: '/shop/'
       path: '/shop'
@@ -132,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout': typeof CheckoutIndexRoute
   '/home': typeof HomeIndexRoute
+  '/register': typeof RegisterIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
 }
@@ -142,6 +157,7 @@ export interface FileRoutesByTo {
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout': typeof CheckoutIndexRoute
   '/home': typeof HomeIndexRoute
+  '/register': typeof RegisterIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
 }
@@ -153,6 +169,7 @@ export interface FileRoutesById {
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout/': typeof CheckoutIndexRoute
   '/home/': typeof HomeIndexRoute
+  '/register/': typeof RegisterIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/sign-in/': typeof SignInIndexRoute
 }
@@ -165,6 +182,7 @@ export interface FileRouteTypes {
     | '/product/$productId'
     | '/checkout'
     | '/home'
+    | '/register'
     | '/shop'
     | '/sign-in'
   fileRoutesByTo: FileRoutesByTo
@@ -174,6 +192,7 @@ export interface FileRouteTypes {
     | '/product/$productId'
     | '/checkout'
     | '/home'
+    | '/register'
     | '/shop'
     | '/sign-in'
   id:
@@ -183,6 +202,7 @@ export interface FileRouteTypes {
     | '/product/$productId'
     | '/checkout/'
     | '/home/'
+    | '/register/'
     | '/shop/'
     | '/sign-in/'
   fileRoutesById: FileRoutesById
@@ -194,6 +214,7 @@ export interface RootRouteChildren {
   ProductProductIdRoute: typeof ProductProductIdRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
   HomeIndexRoute: typeof HomeIndexRoute
+  RegisterIndexRoute: typeof RegisterIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
   SignInIndexRoute: typeof SignInIndexRoute
 }
@@ -204,6 +225,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductProductIdRoute: ProductProductIdRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
   HomeIndexRoute: HomeIndexRoute,
+  RegisterIndexRoute: RegisterIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
   SignInIndexRoute: SignInIndexRoute,
 }
@@ -223,6 +245,7 @@ export const routeTree = rootRoute
         "/product/$productId",
         "/checkout/",
         "/home/",
+        "/register/",
         "/shop/",
         "/sign-in/"
       ]
@@ -241,6 +264,9 @@ export const routeTree = rootRoute
     },
     "/home/": {
       "filePath": "home/index.tsx"
+    },
+    "/register/": {
+      "filePath": "register/index.tsx"
     },
     "/shop/": {
       "filePath": "shop/index.tsx"

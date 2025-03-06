@@ -35,6 +35,8 @@ const SignInPage = () => {
         mutation.mutate(userLoginInfo);
     };
 
+    const handleNavigation = (routeName: string) => navigate({ to: routeName });
+
     return (
         <div className="sign-in wrapper">
             <div className="sign-in-form">
@@ -78,7 +80,12 @@ const SignInPage = () => {
                     <div className="register">
                         <p>
                             Don't have an account?{" "}
-                            <span className="hover">Register</span>
+                            <span
+                                onClick={() => handleNavigation("/register")}
+                                className="hover"
+                            >
+                                Register
+                            </span>
                         </p>
                     </div>
                 </form>
