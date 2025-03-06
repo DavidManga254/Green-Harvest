@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cart;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cart\CartRequest;
+use App\Http\Requests\Cart\CartUpdate;
 use App\Http\Resources\Cart\CartResource;
 use App\Models\cart\Cart;
 use App\Models\cart\CartItem;
@@ -97,5 +98,24 @@ class CartController extends Controller
         $cart->cartItems()->delete();
 
         return response()->json(['message' => 'Cart cleared successfully'], 200);
+    }
+
+    public function updateCartItem(CartUpdate $request, $id)
+    {
+        $authenticatedUser = $request->get('authenticated_user');
+
+        $cart =  Cart::where('user_id', $authenticatedUser->id)->first();
+
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('id', $id)->first();
+
+        if ($request->get('quantity') == 0) {
+            $cartItem->delete();
+            return response()->json(['message' => 'Item removed from cart']);
+        }
+
+        $cartItem->quantity = $request->quantity;
+        $cartItem->save();
+
+        return response()->json(['message' => 'Cart updated successfully', 'cart_item' => $cartItem]);
     }
 }

@@ -1,46 +1,74 @@
-import { useState } from "react";
 import "./index.css";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Cart from "../../api/Cart";
 
 const CheckoutPage: React.FC = () => {
-    const [cart, setCart] = useState([
-        {
-            id: 1,
-            name: "Green Capsicum",
-            price: 14.0,
-            quantity: 5,
-            image: "https://via.placeholder.com/60",
-        },
-        {
-            id: 2,
-            name: "Red Capsicum",
-            price: 14.0,
-            quantity: 1,
-            image: "https://via.placeholder.com/60",
-        },
-    ]);
+    const { data, isLoadding, error } = useQuery<CartResponse>({
+        queryKey: ["cart content"],
+        queryFn: Cart.getCartContent,
+    });
 
-    const handleIncrease = (id) => {
-        setCart(
-            cart.map((item) =>
-                item.id === id
-                    ? { ...item, quantity: item.quantity + 1 }
-                    : item,
-            ),
-        );
+    const queryClient = useQueryClient();
+
+    const updateCartMutation = useMutation({
+        mutationFn: Cart.updateCartItem,
+        onMutate: async ({ id, quantity }) => {
+            await queryClient.cancelQueries({ queryKey: ["cart content"] });
+
+            // ✅ Optimistically update the UI
+            const previousCart = queryClient.getQueryData<CartResponse>([
+                "cart content",
+            ]);
+            queryClient.setQueryData<CartResponse>(["cart content"], (old) => ({
+                ...old!,
+                cart_items:
+                    old?.cart_items.map((item) =>
+                        item.id === id ? { ...item, quantity } : item,
+                    ) || [],
+            }));
+
+            return { previousCart };
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["cart content"] });
+            queryClient.refetchQueries({ queryKey: ["cart summary"] });
+        },
+        onError: (context) => {
+            queryClient.setQueryData(["cart content"], context?.previousCart);
+        },
+    });
+
+    const deleteItemMutation = useMutation({
+        mutationFn: Cart.removeCartItem,
+        onSuccess: () => {
+            queryClient.refetchQueries({ queryKey: ["cart summary"] });
+        },
+        onError: () => {},
+    });
+
+    // ✅ Increase quantity
+    const handleIncrease = (id: number) => {
+        const updatedItem = data?.cart_items.find((item) => item.id === id);
+        if (updatedItem) {
+            updateCartMutation.mutate({
+                id,
+                quantity: updatedItem.quantity + 1,
+            });
+        }
     };
 
-    const handleDecrease = (id) => {
-        setCart(
-            cart.map((item) =>
-                item.id === id && item.quantity > 1
-                    ? { ...item, quantity: item.quantity - 1 }
-                    : item,
-            ),
-        );
+    // ✅ Decrease quantity (remove item if 0)
+    const handleDecrease = (id: number) => {
+        const updatedItem = data?.cart_items.find((item) => item.id === id);
+        updateCartMutation.mutate({
+            id,
+            quantity: updatedItem.quantity - 1,
+        });
     };
 
-    const handleRemove = (id) => {
-        setCart(cart.filter((item) => item.id !== id));
+    // ✅ Remove item from cart
+    const handleRemove = (id: number) => {
+        deleteItemMutation.mutate({ id: id });
     };
 
     return (
@@ -58,50 +86,82 @@ const CheckoutPage: React.FC = () => {
                             <span>Subtotal</span>
                             <span></span>
                         </div>
-                        {cart.map((item) => (
-                            <div className="cart-item" key={item.id}>
-                                <img src={item.image} alt={item.name} />
-                                <div className="cart-item-details">
-                                    <div className="cart-item-title">
-                                        {item.name}
+                        {data?.cart_items.map((item) => {
+                            if (item.quantity <= 0) return null;
+
+                            return (
+                                <div className="cart-item" key={item.id}>
+                                    <img
+                                        src={item.produce.image}
+                                        alt={item.produce.name}
+                                    />
+                                    <div className="cart-item-details">
+                                        <div className="cart-item-title">
+                                            {item.produce.name}
+                                        </div>
+                                        <div className="cart-item-price">
+                                            ${parseFloat(item.price).toFixed(2)}
+                                        </div>
                                     </div>
-                                    <div className="cart-item-price">
-                                        ${item.price.toFixed(2)}
+                                    <div className="cart-quantity">
+                                        <button
+                                            disabled={
+                                                updateCartMutation.isLoading
+                                            }
+                                            onClick={() =>
+                                                handleDecrease(item.id)
+                                            }
+                                        >
+                                            -
+                                        </button>
+                                        <span>{item.quantity}</span>
+                                        <button
+                                            disabled={
+                                                updateCartMutation.isLoading
+                                            }
+                                            onClick={() =>
+                                                handleIncrease(item.id)
+                                            }
+                                        >
+                                            +
+                                        </button>
                                     </div>
-                                </div>
-                                <div className="cart-quantity">
+                                    <div className="cart-subtotal">
+                                        $
+                                        {parseFloat(item.price) * item.quantity}
+                                    </div>
                                     <button
-                                        onClick={() => handleDecrease(item.id)}
+                                        className="cart-remove"
+                                        disabled={deleteItemMutation.isLoading}
+                                        onClick={() => handleRemove(item.id)}
                                     >
-                                        -
-                                    </button>
-                                    <span>{item.quantity}</span>
-                                    <button
-                                        onClick={() => handleIncrease(item.id)}
-                                    >
-                                        +
+                                        ×
                                     </button>
                                 </div>
-                                <div className="cart-subtotal">
-                                    ${(item.price * item.quantity).toFixed(2)}
-                                </div>
-                                <button
-                                    className="cart-remove"
-                                    onClick={() => handleRemove(item.id)}
-                                >
-                                    ×
-                                </button>
-                            </div>
-                        ))}
+                            );
+                        })}
+
                         <div className="extra-buttons">
                             <button>Return to shop</button>
+                            <button className="clear-button">Clear cart</button>
                         </div>
                     </div>
                     <div className="checkout-total">
                         <h2>Cart Total</h2>
                         <div className="checkout-section">
                             <label>Subtotal:</label>
-                            <span>Ksh84.00</span>
+                            <span>
+                                Ksh
+                                {data?.cart_items
+                                    .reduce(
+                                        (acc, item) =>
+                                            acc +
+                                            item.quantity *
+                                                parseFloat(item.price),
+                                        0,
+                                    )
+                                    .toFixed(2)}
+                            </span>
                         </div>
                         <div className="checkout-section">
                             <label>Shipping:</label>
@@ -121,3 +181,17 @@ const CheckoutPage: React.FC = () => {
 };
 
 export default CheckoutPage;
+
+interface CartResponse {
+    cart_items: {
+        id: number;
+        produce_id: number;
+        quantity: number;
+        price: string;
+        produce: {
+            name: string;
+            out_of_stock: number;
+            image: string;
+        };
+    }[];
+}

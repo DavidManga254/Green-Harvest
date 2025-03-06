@@ -28,6 +28,8 @@
 
   .extra-buttons{
     margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
   }
 
   .extra-buttons button{
@@ -40,6 +42,11 @@
     border-style: none;
     outline: none;
     border-radius: 30px;
+  }
+
+  .extra-buttons button.clear-button:hover{
+    background-color: red;
+    color: var(--white);
   }
 
   .extra-buttons button:hover{
