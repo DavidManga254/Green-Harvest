@@ -1,0 +1,96 @@
+.dashboard-page .top{
+    display: flex;
+    gap: 16px;
+}
+
+.top .user, .top .user-address{
+    flex: 1;
+}
+
+.top .user{
+    max-width: 536px;
+}
+.user .user-profile{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    border: solid 1px var(--gray-100);
+    border-radius: 8px;
+    padding: 30px;
+}
+
+
+.user-profile h2{
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--gray-900);
+}
+
+.user-profile h4{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-500);
+}
+
+
+.user-profile span{
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--green);
+    margin-top: 10px;
+}
+
+.user-profile img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+
+.top .user-address{
+    max-width: 424px;
+}
+
+.user-address{
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+    border: solid 1px var(--gray-100);
+    border-radius: 8px;
+    padding: 30px;
+}
+
+.user-address h1{
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--gray-400);
+}
+
+.user-address h2{
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--gray-900);
+}
+
+.user-address p{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-900);
+}
+
+.user-address .address{
+    color: var(--gray-600);
+}
+
+.user-address div{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.user-address span{
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--green);
+}

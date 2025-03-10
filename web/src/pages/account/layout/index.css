@@ -1,0 +1,8 @@
+.account{
+    display: flex;
+    gap: 20px;
+}
+
+.account-children{
+    flex: 1;
+}

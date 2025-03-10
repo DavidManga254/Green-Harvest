@@ -13,12 +13,14 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AccountLayoutImport } from './routes/account/layout'
 import { Route as SignInIndexImport } from './routes/sign-in/index'
 import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as HomeIndexImport } from './routes/home/index'
 import { Route as CheckoutIndexImport } from './routes/checkout/index'
 import { Route as ProductProductIdImport } from './routes/product/$productId'
+import { Route as AccountDashboardIndexImport } from './routes/account/dashboard/index'
 
 // Create Virtual Routes
 
@@ -32,6 +34,12 @@ const AboutLazyRoute = AboutLazyImport.update({
   path: '/about',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
+
+const AccountLayoutRoute = AccountLayoutImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   id: '/',
@@ -75,6 +83,12 @@ const ProductProductIdRoute = ProductProductIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AccountDashboardIndexRoute = AccountDashboardIndexImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => AccountLayoutRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -84,6 +98,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountLayoutImport
       parentRoute: typeof rootRoute
     }
     '/about': {
@@ -135,13 +156,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignInIndexImport
       parentRoute: typeof rootRoute
     }
+    '/account/dashboard/': {
+      id: '/account/dashboard/'
+      path: '/dashboard'
+      fullPath: '/account/dashboard'
+      preLoaderRoute: typeof AccountDashboardIndexImport
+      parentRoute: typeof AccountLayoutImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface AccountLayoutRouteChildren {
+  AccountDashboardIndexRoute: typeof AccountDashboardIndexRoute
+}
+
+const AccountLayoutRouteChildren: AccountLayoutRouteChildren = {
+  AccountDashboardIndexRoute: AccountDashboardIndexRoute,
+}
+
+const AccountLayoutRouteWithChildren = AccountLayoutRoute._addFileChildren(
+  AccountLayoutRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/account': typeof AccountLayoutRouteWithChildren
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout': typeof CheckoutIndexRoute
@@ -149,10 +190,12 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
+  '/account/dashboard': typeof AccountDashboardIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/account': typeof AccountLayoutRouteWithChildren
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout': typeof CheckoutIndexRoute
@@ -160,11 +203,13 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
+  '/account/dashboard': typeof AccountDashboardIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/account': typeof AccountLayoutRouteWithChildren
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout/': typeof CheckoutIndexRoute
@@ -172,12 +217,14 @@ export interface FileRoutesById {
   '/register/': typeof RegisterIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/sign-in/': typeof SignInIndexRoute
+  '/account/dashboard/': typeof AccountDashboardIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/about'
     | '/product/$productId'
     | '/checkout'
@@ -185,9 +232,11 @@ export interface FileRouteTypes {
     | '/register'
     | '/shop'
     | '/sign-in'
+    | '/account/dashboard'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
     | '/about'
     | '/product/$productId'
     | '/checkout'
@@ -195,9 +244,11 @@ export interface FileRouteTypes {
     | '/register'
     | '/shop'
     | '/sign-in'
+    | '/account/dashboard'
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/about'
     | '/product/$productId'
     | '/checkout/'
@@ -205,11 +256,13 @@ export interface FileRouteTypes {
     | '/register/'
     | '/shop/'
     | '/sign-in/'
+    | '/account/dashboard/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  AccountLayoutRoute: typeof AccountLayoutRouteWithChildren
   AboutLazyRoute: typeof AboutLazyRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
@@ -221,6 +274,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  AccountLayoutRoute: AccountLayoutRouteWithChildren,
   AboutLazyRoute: AboutLazyRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
@@ -241,6 +295,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/account",
         "/about",
         "/product/$productId",
         "/checkout/",
@@ -252,6 +307,12 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/account": {
+      "filePath": "account/layout.tsx",
+      "children": [
+        "/account/dashboard/"
+      ]
     },
     "/about": {
       "filePath": "about.lazy.tsx"
@@ -273,6 +334,10 @@ export const routeTree = rootRoute
     },
     "/sign-in/": {
       "filePath": "sign-in/index.tsx"
+    },
+    "/account/dashboard/": {
+      "filePath": "account/dashboard/index.tsx",
+      "parent": "/account"
     }
   }
 }
