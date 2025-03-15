@@ -1,3 +1,4 @@
+import OrderHistory from "../../../components/OrderHistory";
 import "./index.css";
 
 const DashboardPage: React.FC = () => {
@@ -25,6 +26,7 @@ const DashboardPage: React.FC = () => {
                     <span>Edit Address</span>
                 </div>
             </div>
+            <OrderHistory />
         </div>
     );
 };

@@ -3,6 +3,12 @@
     gap: 16px;
 }
 
+.dashboard-page{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
 .top .user, .top .user-address{
     flex: 1;
 }
