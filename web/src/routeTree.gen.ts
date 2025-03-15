@@ -20,6 +20,7 @@ import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as HomeIndexImport } from './routes/home/index'
 import { Route as CheckoutIndexImport } from './routes/checkout/index'
 import { Route as ProductProductIdImport } from './routes/product/$productId'
+import { Route as AccountOrderHistoryIndexImport } from './routes/account/order-history/index'
 import { Route as AccountDashboardIndexImport } from './routes/account/dashboard/index'
 
 // Create Virtual Routes
@@ -81,6 +82,12 @@ const ProductProductIdRoute = ProductProductIdImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AccountOrderHistoryIndexRoute = AccountOrderHistoryIndexImport.update({
+  id: '/order-history/',
+  path: '/order-history/',
+  getParentRoute: () => AccountLayoutRoute,
 } as any)
 
 const AccountDashboardIndexRoute = AccountDashboardIndexImport.update({
@@ -163,6 +170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountDashboardIndexImport
       parentRoute: typeof AccountLayoutImport
     }
+    '/account/order-history/': {
+      id: '/account/order-history/'
+      path: '/order-history'
+      fullPath: '/account/order-history'
+      preLoaderRoute: typeof AccountOrderHistoryIndexImport
+      parentRoute: typeof AccountLayoutImport
+    }
   }
 }
 
@@ -170,10 +184,12 @@ declare module '@tanstack/react-router' {
 
 interface AccountLayoutRouteChildren {
   AccountDashboardIndexRoute: typeof AccountDashboardIndexRoute
+  AccountOrderHistoryIndexRoute: typeof AccountOrderHistoryIndexRoute
 }
 
 const AccountLayoutRouteChildren: AccountLayoutRouteChildren = {
   AccountDashboardIndexRoute: AccountDashboardIndexRoute,
+  AccountOrderHistoryIndexRoute: AccountOrderHistoryIndexRoute,
 }
 
 const AccountLayoutRouteWithChildren = AccountLayoutRoute._addFileChildren(
@@ -191,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
   '/account/dashboard': typeof AccountDashboardIndexRoute
+  '/account/order-history': typeof AccountOrderHistoryIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -204,6 +221,7 @@ export interface FileRoutesByTo {
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
   '/account/dashboard': typeof AccountDashboardIndexRoute
+  '/account/order-history': typeof AccountOrderHistoryIndexRoute
 }
 
 export interface FileRoutesById {
@@ -218,6 +236,7 @@ export interface FileRoutesById {
   '/shop/': typeof ShopIndexRoute
   '/sign-in/': typeof SignInIndexRoute
   '/account/dashboard/': typeof AccountDashboardIndexRoute
+  '/account/order-history/': typeof AccountOrderHistoryIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -233,6 +252,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sign-in'
     | '/account/dashboard'
+    | '/account/order-history'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -245,6 +265,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sign-in'
     | '/account/dashboard'
+    | '/account/order-history'
   id:
     | '__root__'
     | '/'
@@ -257,6 +278,7 @@ export interface FileRouteTypes {
     | '/shop/'
     | '/sign-in/'
     | '/account/dashboard/'
+    | '/account/order-history/'
   fileRoutesById: FileRoutesById
 }
 
@@ -311,7 +333,8 @@ export const routeTree = rootRoute
     "/account": {
       "filePath": "account/layout.tsx",
       "children": [
-        "/account/dashboard/"
+        "/account/dashboard/",
+        "/account/order-history/"
       ]
     },
     "/about": {
@@ -337,6 +360,10 @@ export const routeTree = rootRoute
     },
     "/account/dashboard/": {
       "filePath": "account/dashboard/index.tsx",
+      "parent": "/account"
+    },
+    "/account/order-history/": {
+      "filePath": "account/order-history/index.tsx",
       "parent": "/account"
     }
   }
