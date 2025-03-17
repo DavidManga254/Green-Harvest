@@ -20,6 +20,7 @@ import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as HomeIndexImport } from './routes/home/index'
 import { Route as CheckoutIndexImport } from './routes/checkout/index'
 import { Route as ProductProductIdImport } from './routes/product/$productId'
+import { Route as AccountWishlistIndexImport } from './routes/account/wishlist/index'
 import { Route as AccountOrderHistoryIndexImport } from './routes/account/order-history/index'
 import { Route as AccountDashboardIndexImport } from './routes/account/dashboard/index'
 
@@ -82,6 +83,12 @@ const ProductProductIdRoute = ProductProductIdImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AccountWishlistIndexRoute = AccountWishlistIndexImport.update({
+  id: '/wishlist/',
+  path: '/wishlist/',
+  getParentRoute: () => AccountLayoutRoute,
 } as any)
 
 const AccountOrderHistoryIndexRoute = AccountOrderHistoryIndexImport.update({
@@ -177,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountOrderHistoryIndexImport
       parentRoute: typeof AccountLayoutImport
     }
+    '/account/wishlist/': {
+      id: '/account/wishlist/'
+      path: '/wishlist'
+      fullPath: '/account/wishlist'
+      preLoaderRoute: typeof AccountWishlistIndexImport
+      parentRoute: typeof AccountLayoutImport
+    }
   }
 }
 
@@ -185,11 +199,13 @@ declare module '@tanstack/react-router' {
 interface AccountLayoutRouteChildren {
   AccountDashboardIndexRoute: typeof AccountDashboardIndexRoute
   AccountOrderHistoryIndexRoute: typeof AccountOrderHistoryIndexRoute
+  AccountWishlistIndexRoute: typeof AccountWishlistIndexRoute
 }
 
 const AccountLayoutRouteChildren: AccountLayoutRouteChildren = {
   AccountDashboardIndexRoute: AccountDashboardIndexRoute,
   AccountOrderHistoryIndexRoute: AccountOrderHistoryIndexRoute,
+  AccountWishlistIndexRoute: AccountWishlistIndexRoute,
 }
 
 const AccountLayoutRouteWithChildren = AccountLayoutRoute._addFileChildren(
@@ -208,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInIndexRoute
   '/account/dashboard': typeof AccountDashboardIndexRoute
   '/account/order-history': typeof AccountOrderHistoryIndexRoute
+  '/account/wishlist': typeof AccountWishlistIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -222,6 +239,7 @@ export interface FileRoutesByTo {
   '/sign-in': typeof SignInIndexRoute
   '/account/dashboard': typeof AccountDashboardIndexRoute
   '/account/order-history': typeof AccountOrderHistoryIndexRoute
+  '/account/wishlist': typeof AccountWishlistIndexRoute
 }
 
 export interface FileRoutesById {
@@ -237,6 +255,7 @@ export interface FileRoutesById {
   '/sign-in/': typeof SignInIndexRoute
   '/account/dashboard/': typeof AccountDashboardIndexRoute
   '/account/order-history/': typeof AccountOrderHistoryIndexRoute
+  '/account/wishlist/': typeof AccountWishlistIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -253,6 +272,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/account/dashboard'
     | '/account/order-history'
+    | '/account/wishlist'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -266,6 +286,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/account/dashboard'
     | '/account/order-history'
+    | '/account/wishlist'
   id:
     | '__root__'
     | '/'
@@ -279,6 +300,7 @@ export interface FileRouteTypes {
     | '/sign-in/'
     | '/account/dashboard/'
     | '/account/order-history/'
+    | '/account/wishlist/'
   fileRoutesById: FileRoutesById
 }
 
@@ -334,7 +356,8 @@ export const routeTree = rootRoute
       "filePath": "account/layout.tsx",
       "children": [
         "/account/dashboard/",
-        "/account/order-history/"
+        "/account/order-history/",
+        "/account/wishlist/"
       ]
     },
     "/about": {
@@ -364,6 +387,10 @@ export const routeTree = rootRoute
     },
     "/account/order-history/": {
       "filePath": "account/order-history/index.tsx",
+      "parent": "/account"
+    },
+    "/account/wishlist/": {
+      "filePath": "account/wishlist/index.tsx",
       "parent": "/account"
     }
   }

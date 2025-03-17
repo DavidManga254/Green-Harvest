@@ -37,4 +37,9 @@ Route::middleware(['userAuth'])->group(function () {
     Route::put('/cart/update/{cartItemId}', 'Cart\CartController@updateCartItem');
     Route::delete('/cart/remove/{cartItemId}', 'Cart\CartController@removeCartItem');
     Route::delete('/cart/clear', 'Cart\CartController@clearCart');
+
+    Route::post('/orders', 'Order\OrderController@placeOrder');
+    Route::get('/orders', 'Order\OrderController@orderHistory');
+    Route::get('/orders/{id}', 'Order\OrderController@getOrder');
+    Route::patch('/orders/{id}/status', 'Order\OrderController@updateOrderStatus');
 });
