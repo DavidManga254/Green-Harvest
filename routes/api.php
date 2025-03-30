@@ -42,4 +42,6 @@ Route::middleware(['userAuth'])->group(function () {
     Route::get('/orders', 'Order\OrderController@orderHistory');
     Route::get('/orders/{id}', 'Order\OrderController@getOrder');
     Route::patch('/orders/{id}/status', 'Order\OrderController@updateOrderStatus');
+
+    Route::get('/users/farmers/nearby', 'User\UserController@findNearbyFarmers');
 });

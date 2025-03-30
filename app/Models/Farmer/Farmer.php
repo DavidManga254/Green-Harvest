@@ -28,6 +28,8 @@ class Farmer extends Model
         'profile_image',
         'social_links',
         'notes',
+        'latitude',
+        'longitude'
     ];
 
     public function practices(): BelongsToMany

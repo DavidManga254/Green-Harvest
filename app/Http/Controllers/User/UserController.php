@@ -4,11 +4,13 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ConfirmEmail;
+use App\Http\Requests\User\FindFarmerRequest;
 use App\Http\Requests\User\login;
 use Illuminate\Http\Request;
 use App\Http\Requests\User\Register;
 use App\Mail\Register\Register as SignUpRegister;
 use App\Models\cart\Cart;
+use App\Models\Farmer\Farmer;
 use App\Models\User\User;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
@@ -134,6 +136,33 @@ class UserController extends Controller
             ], 404);
         }
     }
+
+    public function findNearbyFarmers(FindFarmerRequest $request)
+    {
+
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $radius = $request->input('radius', 10);
+
+        // Retrieve only farmers within the given radius using the Haversine formula
+        $farmers = Farmer::selectRaw("
+            id, name, location, latitude, longitude,
+            (6371 * acos(cos(radians(?)) * cos(radians(latitude)) *
+            cos(radians(longitude) - radians(?)) +
+            sin(radians(?)) * sin(radians(latitude)))) AS distance
+        ", [$latitude, $longitude, $latitude])
+            ->having('distance', '<=', $radius)
+            ->orderBy('distance')
+            ->get();
+
+        // Check if no farmers are found
+        if ($farmers->isEmpty()) {
+            return response()->json(['message' => 'No farmers found nearby'], 404);
+        }
+
+        return response()->json(['farmers' => $farmers], 200);
+    }
+
 
     private function createCookie($jwt)
     {
