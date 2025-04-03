@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import "./index.css";
 
 const OrderHistory: React.FC = () => {
@@ -54,13 +55,27 @@ const OrderHistory: React.FC = () => {
                     <th>Status</th>
                     <th></th>
                 </tr>
-                {orders.map((order) => (
+                {orders.map((order, index) => (
                     <tr className="orders">
                         <td>{order.orderId}</td>
                         <td>{order.date}</td>
                         <td>{order.total}</td>
                         <td>{order.status}</td>
-                        <td className="details">view Details</td>
+                        <td className="details">
+                            <Link
+                                key={index}
+                                to={`/account/order-history/$orderId`}
+                                params={{
+                                    orderId: `${index}`,
+                                }}
+                                style={{
+                                    textDecoration: "none",
+                                    color: "inherit",
+                                }}
+                            >
+                                view Details
+                            </Link>
+                        </td>
                     </tr>
                 ))}
             </table>
