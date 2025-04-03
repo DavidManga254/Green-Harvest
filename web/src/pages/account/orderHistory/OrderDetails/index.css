@@ -1,0 +1,211 @@
+.order-details-page .order-title{
+    height: 62px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 24px;
+    border-bottom: solid 1px var(--border-gray);
+}
+
+.order-adress{
+    padding: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.order-title h1{
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--gray-900);
+}
+
+.order-title span{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-700);
+}
+
+.addresses{
+    display: flex;
+    border: solid 1.5px var(--border-gray);
+    border-radius: 16px;
+    flex: 1;
+}
+
+.billing-address{
+    border-right: solid 1.5px var(--border-gray);
+}
+
+.billing-address h1, .shipping-address h1{
+    height: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-400);
+    padding-left: 20px;
+    border-bottom: solid 1px var(--border-gray);
+    display: flex;
+    align-items: center;
+}
+
+.billing-detail{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.billing-detail div{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.billing-detail div h3{
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-400);
+}
+
+
+.billing-detail .name-section h2{
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--gray-900);
+}
+
+.billing-detail .name-section p{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+.order-summary{
+    max-width: 288px;
+    width: 100%;
+    border: solid 1.5px var(--border-gray);
+    border-radius: 16px;
+
+}
+
+.order-summary .order-summary-title{
+    display: flex;
+    border-bottom: solid 1.5px var(--border-gray);
+    padding: 18px;
+    justify-content: space-between;
+
+}
+
+.order-summary-title div{
+    flex: 1;
+}
+
+.order-summary-title div h3{
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-bottom: 4px;
+}
+
+.order-summary-title div p{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-900);
+}
+
+.order-summary .order-calculation{
+    padding: 18px;
+}
+
+
+
+.order-calculation div{
+    height: 33px;
+    border-bottom: solid 1.5px var(--border-gray);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-calculation div.total{
+    border-bottom: none;
+}
+
+.order-calculation div h4{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+.order-calculation div span{
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--gray-900);
+}
+
+.order-calculation div.total span{
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--hard-green);
+}
+
+.order-calculation div.total h4{
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--gray-900);
+}
+
+.product-list{
+    margin-top: 40px;
+}
+
+.product-list table{
+    width: 100%;
+}
+
+thead tr{
+    height: 35px;
+    background-color: var(--gray-50);
+}
+
+thead th{
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--gray-700);
+    text-align: left;
+}
+
+tbody tr td{
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--gray-900);
+}
+
+tr td img{
+    width: 70px;
+    height: 70px;
+}
+
+td.img-section{
+    display: flex;
+    align-items: center;
+    gap:6px;
+    vertical-align: middle;
+}
+
+td.img-section p{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    max-width: 250px;
+}
+
+
+th.product{
+    max-width: 250px;
+    width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

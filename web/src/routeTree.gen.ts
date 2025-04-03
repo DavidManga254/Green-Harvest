@@ -24,6 +24,7 @@ import { Route as ProductProductIdImport } from './routes/product/$productId'
 import { Route as AccountWishlistIndexImport } from './routes/account/wishlist/index'
 import { Route as AccountOrderHistoryIndexImport } from './routes/account/order-history/index'
 import { Route as AccountDashboardIndexImport } from './routes/account/dashboard/index'
+import { Route as AccountOrderHistoryOrderIdImport } from './routes/account/order-history/$orderId'
 
 // Create Virtual Routes
 
@@ -110,6 +111,14 @@ const AccountDashboardIndexRoute = AccountDashboardIndexImport.update({
   getParentRoute: () => AccountLayoutRoute,
 } as any)
 
+const AccountOrderHistoryOrderIdRoute = AccountOrderHistoryOrderIdImport.update(
+  {
+    id: '/order-history/$orderId',
+    path: '/order-history/$orderId',
+    getParentRoute: () => AccountLayoutRoute,
+  } as any,
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -184,6 +193,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignInIndexImport
       parentRoute: typeof rootRoute
     }
+    '/account/order-history/$orderId': {
+      id: '/account/order-history/$orderId'
+      path: '/order-history/$orderId'
+      fullPath: '/account/order-history/$orderId'
+      preLoaderRoute: typeof AccountOrderHistoryOrderIdImport
+      parentRoute: typeof AccountLayoutImport
+    }
     '/account/dashboard/': {
       id: '/account/dashboard/'
       path: '/dashboard'
@@ -211,12 +227,14 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AccountLayoutRouteChildren {
+  AccountOrderHistoryOrderIdRoute: typeof AccountOrderHistoryOrderIdRoute
   AccountDashboardIndexRoute: typeof AccountDashboardIndexRoute
   AccountOrderHistoryIndexRoute: typeof AccountOrderHistoryIndexRoute
   AccountWishlistIndexRoute: typeof AccountWishlistIndexRoute
 }
 
 const AccountLayoutRouteChildren: AccountLayoutRouteChildren = {
+  AccountOrderHistoryOrderIdRoute: AccountOrderHistoryOrderIdRoute,
   AccountDashboardIndexRoute: AccountDashboardIndexRoute,
   AccountOrderHistoryIndexRoute: AccountOrderHistoryIndexRoute,
   AccountWishlistIndexRoute: AccountWishlistIndexRoute,
@@ -237,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
+  '/account/order-history/$orderId': typeof AccountOrderHistoryOrderIdRoute
   '/account/dashboard': typeof AccountDashboardIndexRoute
   '/account/order-history': typeof AccountOrderHistoryIndexRoute
   '/account/wishlist': typeof AccountWishlistIndexRoute
@@ -253,6 +272,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterIndexRoute
   '/shop': typeof ShopIndexRoute
   '/sign-in': typeof SignInIndexRoute
+  '/account/order-history/$orderId': typeof AccountOrderHistoryOrderIdRoute
   '/account/dashboard': typeof AccountDashboardIndexRoute
   '/account/order-history': typeof AccountOrderHistoryIndexRoute
   '/account/wishlist': typeof AccountWishlistIndexRoute
@@ -270,6 +290,7 @@ export interface FileRoutesById {
   '/register/': typeof RegisterIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/sign-in/': typeof SignInIndexRoute
+  '/account/order-history/$orderId': typeof AccountOrderHistoryOrderIdRoute
   '/account/dashboard/': typeof AccountDashboardIndexRoute
   '/account/order-history/': typeof AccountOrderHistoryIndexRoute
   '/account/wishlist/': typeof AccountWishlistIndexRoute
@@ -288,6 +309,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/shop'
     | '/sign-in'
+    | '/account/order-history/$orderId'
     | '/account/dashboard'
     | '/account/order-history'
     | '/account/wishlist'
@@ -303,6 +325,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/shop'
     | '/sign-in'
+    | '/account/order-history/$orderId'
     | '/account/dashboard'
     | '/account/order-history'
     | '/account/wishlist'
@@ -318,6 +341,7 @@ export interface FileRouteTypes {
     | '/register/'
     | '/shop/'
     | '/sign-in/'
+    | '/account/order-history/$orderId'
     | '/account/dashboard/'
     | '/account/order-history/'
     | '/account/wishlist/'
@@ -378,6 +402,7 @@ export const routeTree = rootRoute
     "/account": {
       "filePath": "account/layout.tsx",
       "children": [
+        "/account/order-history/$orderId",
         "/account/dashboard/",
         "/account/order-history/",
         "/account/wishlist/"
@@ -406,6 +431,10 @@ export const routeTree = rootRoute
     },
     "/sign-in/": {
       "filePath": "sign-in/index.tsx"
+    },
+    "/account/order-history/$orderId": {
+      "filePath": "account/order-history/$orderId.tsx",
+      "parent": "/account"
     },
     "/account/dashboard/": {
       "filePath": "account/dashboard/index.tsx",
