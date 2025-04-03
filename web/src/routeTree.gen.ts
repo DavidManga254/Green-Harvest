@@ -18,6 +18,7 @@ import { Route as SignInIndexImport } from './routes/sign-in/index'
 import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as HomeIndexImport } from './routes/home/index'
+import { Route as ExploreIndexImport } from './routes/explore/index'
 import { Route as CheckoutIndexImport } from './routes/checkout/index'
 import { Route as ProductProductIdImport } from './routes/product/$productId'
 import { Route as AccountWishlistIndexImport } from './routes/account/wishlist/index'
@@ -70,6 +71,12 @@ const RegisterIndexRoute = RegisterIndexImport.update({
 const HomeIndexRoute = HomeIndexImport.update({
   id: '/home/',
   path: '/home/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ExploreIndexRoute = ExploreIndexImport.update({
+  id: '/explore/',
+  path: '/explore/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -140,6 +147,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/explore/': {
+      id: '/explore/'
+      path: '/explore'
+      fullPath: '/explore'
+      preLoaderRoute: typeof ExploreIndexImport
       parentRoute: typeof rootRoute
     }
     '/home/': {
@@ -218,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout': typeof CheckoutIndexRoute
+  '/explore': typeof ExploreIndexRoute
   '/home': typeof HomeIndexRoute
   '/register': typeof RegisterIndexRoute
   '/shop': typeof ShopIndexRoute
@@ -233,6 +248,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout': typeof CheckoutIndexRoute
+  '/explore': typeof ExploreIndexRoute
   '/home': typeof HomeIndexRoute
   '/register': typeof RegisterIndexRoute
   '/shop': typeof ShopIndexRoute
@@ -249,6 +265,7 @@ export interface FileRoutesById {
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/explore/': typeof ExploreIndexRoute
   '/home/': typeof HomeIndexRoute
   '/register/': typeof RegisterIndexRoute
   '/shop/': typeof ShopIndexRoute
@@ -266,6 +283,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/product/$productId'
     | '/checkout'
+    | '/explore'
     | '/home'
     | '/register'
     | '/shop'
@@ -280,6 +298,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/product/$productId'
     | '/checkout'
+    | '/explore'
     | '/home'
     | '/register'
     | '/shop'
@@ -294,6 +313,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/product/$productId'
     | '/checkout/'
+    | '/explore/'
     | '/home/'
     | '/register/'
     | '/shop/'
@@ -310,6 +330,7 @@ export interface RootRouteChildren {
   AboutLazyRoute: typeof AboutLazyRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
+  ExploreIndexRoute: typeof ExploreIndexRoute
   HomeIndexRoute: typeof HomeIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
@@ -322,6 +343,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutLazyRoute: AboutLazyRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
+  ExploreIndexRoute: ExploreIndexRoute,
   HomeIndexRoute: HomeIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
@@ -343,6 +365,7 @@ export const routeTree = rootRoute
         "/about",
         "/product/$productId",
         "/checkout/",
+        "/explore/",
         "/home/",
         "/register/",
         "/shop/",
@@ -368,6 +391,9 @@ export const routeTree = rootRoute
     },
     "/checkout/": {
       "filePath": "checkout/index.tsx"
+    },
+    "/explore/": {
+      "filePath": "explore/index.tsx"
     },
     "/home/": {
       "filePath": "home/index.tsx"

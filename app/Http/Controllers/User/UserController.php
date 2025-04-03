@@ -157,7 +157,7 @@ class UserController extends Controller
 
         // Check if no farmers are found
         if ($farmers->isEmpty()) {
-            return response()->json(['message' => 'No farmers found nearby'], 404);
+            return response()->json(['message' => 'No farmers found nearby'], 200);
         }
 
         return response()->json(['farmers' => $farmers], 200);
