@@ -105,4 +105,18 @@ class FarmerController extends Controller
             'data' => new FarmerResource($farmer)
         ]);
     }
+
+    public function myProfile(Request $request)
+    {
+        $user = $request->get('authenticated_user');
+        $farmer = Farmer::where('user_id', $user->id)->first();
+
+        if (!$farmer) {
+            return response()->json(['error' => 'Farmer profile not found'], 404);
+        }
+
+        return response()->json([
+            'data' => new FarmerResource($farmer),
+        ], 200);
+    }
 }
