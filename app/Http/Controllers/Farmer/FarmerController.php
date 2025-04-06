@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Farmer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Farmer\RegisterFarmer;
 use App\Http\Requests\Farmer\UpdateFarmerRequest;
+use App\Http\Resources\Farmer\FarmerPublicResource;
 use App\Http\Resources\Farmer\FarmerResource;
 use App\Models\Farmer\Farmer;
 use App\Models\User\User;
@@ -36,10 +37,18 @@ class FarmerController extends Controller
 
     public function show(Request $request, $id)
     {
-        $farmer = Farmer::where('id', $id)->first();
+        $farmer = Farmer::with(['produce.images']) // eager-load relationships
+            ->withCount('produce')
+            ->find($id);
+
+        if (!$farmer) {
+            return response()->json([
+                'error' => 'Farmer not found',
+            ], 404);
+        }
 
         return response()->json([
-            'data' => new FarmerResource($farmer),
+            'data' => new FarmerPublicResource($farmer),
         ], 200);
     }
 
@@ -118,5 +127,43 @@ class FarmerController extends Controller
         return response()->json([
             'data' => new FarmerResource($farmer),
         ], 200);
+    }
+
+    public function search(Request $request)
+    {
+        $query = Farmer::query();
+
+        if ($request->filled('location')) {
+            $query->where('location', 'LIKE', '%' . $request->input('location') . '%');
+        }
+
+        if ($request->filled('product')) {
+            $query->where('primary_products', 'LIKE', '%' . $request->input('product') . '%');
+        }
+
+        if ($request->filled('certification')) {
+            $query->whereJsonContains('certifications', $request->input('certification'));
+        }
+
+        if ($request->filled('available_in')) {
+            $month = strtolower($request->input('available_in'));
+            $query->where('seasonal_availability', 'LIKE', '%' . $month . '%');
+        }
+
+        // Optional pagination
+        $perPage = $request->input('per_page', 20);
+        $farmers = $query->with('produce.images')->paginate($perPage);
+
+        return response()->json([
+            'data' => FarmerPublicResource::collection($farmers->items()),
+            'pagination' => [
+                'total' => $farmers->total(),
+                'per_page' => $farmers->perPage(),
+                'current_page' => $farmers->currentPage(),
+                'last_page' => $farmers->lastPage(),
+                'next_page_url' => $farmers->nextPageUrl(),
+                'prev_page_url' => $farmers->previousPageUrl(),
+            ],
+        ]);
     }
 }
