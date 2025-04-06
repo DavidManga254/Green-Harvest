@@ -29,8 +29,13 @@ Route::middleware(['userAuth'])->group(function () {
     Route::middleware(['farmerAuth'])->group(function () {
         Route::post('/produce', 'Produce\ProduceController@create');
         Route::delete('/produce/{id}', 'Produce\ProduceController@delete');
+
         Route::put('/farmers/{id}', 'Farmer\FarmerController@update');
         Route::get('/farmers/me', 'Farmer\FarmerController@myProfile');
+
+        Route::get('/farmers/orders', 'Farmer\DashboardController@orders');
+        Route::get('/farmers/earnings', 'Farmer\DashboardController@earnings');
+        Route::get('/farmers/inventory', 'Farmer\DashboardController@inventory');
     });
 
     Route::get('/cart', 'Cart\CartController@viewCart');
