@@ -33,7 +33,48 @@ class ProduceController extends Controller
         ], 200);
     }
 
-    public function create(ProduceCreate $request) {}
+    public function create(ProduceCreate $request)
+    {
+        $farmer = $request->get('farmer');
+
+        $validated = $request->validated();
+
+        $produce = Produce::create([
+            'farmer_id' => $farmer->id,
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'price_per_unit' => $validated['price_per_unit'],
+            'quantity' => $validated['quantity'],
+            'is_on_sale' => $validated['is_on_sale'] ?? false,
+            'discount' => $validated['discount'] ?? 0,
+            'out_of_stock' => $validated['out_of_stock'] ?? false,
+            'available_from' => $validated['available_from'],
+            'available_to' => $validated['available_to'],
+            'category_id' => $validated['category_id'],
+            'tags' => $validated['tags'] ?? [],
+        ]);
+
+        if (!empty($validated['tags'])) {
+            $produce->tags()->sync([]); // If you're saving tags in a pivot
+            // Otherwise, it's already stored as JSON
+        }
+
+        // if ($request->hasFile('images')) {
+        //     foreach ($request->file('images') as $image) {
+        //         $path = $image->store('produce_images', 'public');
+
+        //         $produce->images()->create([
+        //             'image_path' => $path,
+        //         ]);
+        //     }
+        // }
+
+        return response()->json([
+            'message' => 'Produce created successfully!',
+            'data' => new ProduceDetailResource($produce->load(['images', 'tags', 'category']))
+        ], 201);
+    }
+
 
     public function show($id)
     {
@@ -73,3 +114,53 @@ class ProduceController extends Controller
         ], 200);
     }
 }
+
+
+// Core Farmer Module Features
+// Farmer Registration & Profile
+
+// Create and update farmer profile
+
+// Upload/display profile picture
+
+// Store farm location (latitude/longitude)
+
+// Produce Management
+
+// Add/edit/delete listed produce
+
+// Stock levels and availability
+
+// Images and categories
+
+// Farmer Dashboard
+
+// View orders received
+
+// Earnings summary
+
+// Active products and inventory alerts
+
+// Order Fulfillment
+
+// View orders placed by consumers
+
+// Change status: "received", "processing", "on the way", "delivered"
+
+// Map Integration (optional but powerful)
+
+// Show farmer's location to consumers
+
+// Show nearby delivery areas
+
+// Public Profile
+
+// Viewable by consumers, showing:
+
+// Farmer name
+
+// Profile image
+
+// Listed produce
+
+// Reviews or ratings (if applicable)

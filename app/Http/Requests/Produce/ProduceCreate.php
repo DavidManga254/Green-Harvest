@@ -11,7 +11,7 @@ class ProduceCreate extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,14 +21,21 @@ class ProduceCreate extends FormRequest
      */
     public function rules(): array
     {
-        return  [
-            'farmer_id' => ['required', 'exists:farmers,id'],
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'price_per_unit' => ['required', 'numeric', 'min:0'],
-            'quantity' => ['required', 'integer', 'min:1'],
-            'available_from' => ['required', 'date', 'after_or_equal:today'],
-            'available_to' => ['required', 'date', 'after:available_from'],
+        return [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price_per_unit' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:1',
+            'is_on_sale' => 'boolean',
+            'discount' => 'nullable|numeric|min:0|max:100',
+            'out_of_stock' => 'boolean',
+            'available_from' => 'required|date',
+            'available_to' => 'required|date|after_or_equal:available_from',
+            'category_id' => 'required|exists:categories,id',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ];
     }
 }

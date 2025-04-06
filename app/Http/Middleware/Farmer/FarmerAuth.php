@@ -30,7 +30,8 @@ class FarmerAuth
 
         if ($farmer !== null) {
             $request->merge([
-                'user' => $user
+                'user' => $user,
+                'farmer' => $user
             ]);
 
             return $next($request);
