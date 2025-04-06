@@ -30,7 +30,7 @@ class FarmerPublicResource extends JsonResource
                 'name' => $p->name,
                 'price' => $p->price_per_unit,
                 'image' => $p->images->first()?->image_path,
-            ])
+            ]),
         ];
     }
 }

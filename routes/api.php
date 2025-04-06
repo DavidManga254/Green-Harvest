@@ -23,8 +23,6 @@ Route::middleware(['userAuth'])->group(function () {
     // GET /api/farmers/search?location=Nairobi&product=Tomatoes&certification=Organic&available_in=July
 
 
-
-
     //produce
     Route::get('/produce', 'Produce\ProduceController@index');
     Route::get('/produce/{id}', 'Produce\ProduceController@show');

@@ -2,6 +2,7 @@
 
 namespace App\Models\Farmer;
 
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
 
 class FarmerReview extends Model
@@ -15,11 +16,11 @@ class FarmerReview extends Model
 
     public function farmer()
     {
-        return $this->belongsTo(\App\Models\Farmer\Farmer::class);
+        return $this->belongsTo(Farmer::class);
     }
 
     public function user()
     {
-        return $this->belongsTo(\App\Models\User\User::class);
+        return $this->belongsTo(User::class);
     }
 }

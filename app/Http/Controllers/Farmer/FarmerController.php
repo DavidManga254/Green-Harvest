@@ -7,6 +7,7 @@ use App\Http\Requests\Farmer\RegisterFarmer;
 use App\Http\Requests\Farmer\UpdateFarmerRequest;
 use App\Http\Resources\Farmer\FarmerPublicResource;
 use App\Http\Resources\Farmer\FarmerResource;
+use App\Http\Resources\Farmer\FarmerReviewResource;
 use App\Models\Farmer\Farmer;
 use App\Models\User\User;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class FarmerController extends Controller
     public function show(Request $request, $id)
     {
         $farmer = Farmer::with(['produce.images']) // eager-load relationships
-            ->withCount('produce')
+            ->withCount('produce')->with(['reviews.user'])
             ->find($id);
 
         if (!$farmer) {
@@ -47,9 +48,25 @@ class FarmerController extends Controller
             ], 404);
         }
 
+        $perPage = $request->input('data_per_page', 10);
+        $page = $request->input('page', 1);
+
+        $reviews = $farmer->reviews()->with('user')->latest()->paginate($perPage, ['*'], 'page', $page);
+
         return response()->json([
             'data' => new FarmerPublicResource($farmer),
-        ], 200);
+            'reviews' => [
+                'data' => FarmerReviewResource::collection($reviews->items()),
+                'pagination' => [
+                    'total' => $reviews->total(),
+                    'per_page' => $reviews->perPage(),
+                    'current_page' => $reviews->currentPage(),
+                    'last_page' => $reviews->lastPage(),
+                    'next_page_url' => $reviews->nextPageUrl(),
+                    'prev_page_url' => $reviews->previousPageUrl(),
+                ]
+            ]
+        ]);
     }
 
     public function create(RegisterFarmer $request)
