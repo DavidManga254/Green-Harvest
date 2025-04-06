@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Farmer\SubmitFarmerReview;
 use App\Http\Requests\User\ConfirmEmail;
 use App\Http\Requests\User\FindFarmerRequest;
 use App\Http\Requests\User\login;
 use Illuminate\Http\Request;
 use App\Http\Requests\User\Register;
+use App\Http\Resources\Farmer\FarmerReviewResource;
 use App\Mail\Register\Register as SignUpRegister;
 use App\Models\cart\Cart;
 use App\Models\Farmer\Farmer;
+use App\Models\Farmer\FarmerReview;
 use App\Models\User\User;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
@@ -178,5 +181,26 @@ class UserController extends Controller
             false,
             env('APP_DEV_ENVIRONMENT') ? "none" : 'strict'
         );
+    }
+
+    public function submitFarmerReview(SubmitFarmerReview $request)
+    {
+        $user = $request->get('authenticated_user');
+
+        $review = FarmerReview::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'farmer_id' => $request->farmer_id,
+            ],
+            [
+                'rating' => $request->rating,
+                'comment' => $request->comment,
+            ]
+        );
+
+        return response()->json([
+            'message' => 'Review submitted successfully!',
+            'data' => new FarmerReviewResource($review)
+        ], 201);
     }
 }

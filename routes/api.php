@@ -20,6 +20,8 @@ Route::middleware(['userAuth'])->group(function () {
     Route::post('/farmers', 'Farmer\FarmerController@create');
     Route::get('/farmers/{id}', 'Farmer\FarmerController@show');
     Route::get('/farmers/search', 'Farmer\FarmerController@search');
+    // GET /api/farmers/search?location=Nairobi&product=Tomatoes&certification=Organic&available_in=July
+
 
 
 
@@ -53,4 +55,5 @@ Route::middleware(['userAuth'])->group(function () {
     Route::patch('/orders/{id}/status', 'Order\OrderController@updateOrderStatus');
 
     Route::get('/users/farmers/nearby', 'User\UserController@findNearbyFarmers');
+    Route::post('/users/farmers/review', 'User\UserController@submitFarmerReview');
 });

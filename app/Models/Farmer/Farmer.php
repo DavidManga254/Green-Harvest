@@ -41,4 +41,9 @@ class Farmer extends Model
     {
         return $this->hasMany(Subscription::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(FarmerReview::class);
+    }
 }
