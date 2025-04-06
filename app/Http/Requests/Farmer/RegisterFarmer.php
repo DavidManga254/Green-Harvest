@@ -34,7 +34,9 @@ class RegisterFarmer extends FormRequest
             'delivery_locations' => 'required|array',
             'delivery_locations.*' => 'string',
             'social_links' => 'array',
-            'notes' => ''
+            'notes' => '',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ];
     }
 }

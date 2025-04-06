@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Farmer;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Farmer\RegisterFarmer;
+use App\Http\Requests\Farmer\UpdateFarmerRequest;
 use App\Http\Resources\Farmer\FarmerResource;
 use App\Models\Farmer\Farmer;
 use App\Models\User\User;
@@ -48,6 +49,12 @@ class FarmerController extends Controller
 
         $profileImagePath = $request->file('profile_image')->store('profile_images', 'public');
 
+        if (!$user) {
+            return response()->json([
+                'error' => 'User not found.'
+            ], 404);
+        }
+
         $farmer = Farmer::create([
             'user_id' => $user->id,
             'name' => $request->input('farm_name'),
@@ -68,5 +75,34 @@ class FarmerController extends Controller
             'message' => 'Farmer created successfully!',
             'data' => new FarmerResource($farmer)
         ], 201);
+    }
+
+    public function update(UpdateFarmerRequest $request, $id)
+    {
+        $farmer = Farmer::findOrFail($id);
+
+        if ($request->hasFile('profile_image')) {
+            $profileImagePath = $request->file('profile_image')->store('profile_images', 'public');
+            $farmer->profile_image = $profileImagePath;
+        }
+
+        $farmer->update([
+            'name' => $request->input('farm_name', $farmer->name),
+            'location' => $request->input('farm_location', $farmer->location),
+            'description' => $request->input('farm_description', $farmer->description),
+            'practices' => $request->input('growing_practices', $farmer->practices),
+            'certifications' => json_encode($request->input('certifications', json_decode($farmer->certifications, true))),
+            'primary_products' => $request->input('primary_products', $farmer->primary_products),
+            'seasonal_availability' => $request->input('seasonal_availability', $farmer->seasonal_availability),
+            'delivery_options' => $request->input('delivery_options', $farmer->delivery_options),
+            'delivery_locations' => json_encode($request->input('delivery_locations', json_decode($farmer->delivery_locations, true))),
+            'social_links' => json_encode($request->input('social_links', json_decode($farmer->social_links, true))),
+            'notes' => $request->input('notes', $farmer->notes),
+        ]);
+
+        return response()->json([
+            'message' => 'Farmer profile updated successfully.',
+            'data' => new FarmerResource($farmer)
+        ]);
     }
 }
