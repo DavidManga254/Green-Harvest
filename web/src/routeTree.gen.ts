@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as FarmerLayoutImport } from './routes/farmer/layout'
 import { Route as AccountLayoutImport } from './routes/account/layout'
 import { Route as SignInIndexImport } from './routes/sign-in/index'
 import { Route as ShopIndexImport } from './routes/shop/index'
@@ -38,6 +39,12 @@ const AboutLazyRoute = AboutLazyImport.update({
   path: '/about',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
+
+const FarmerLayoutRoute = FarmerLayoutImport.update({
+  id: '/farmer',
+  path: '/farmer',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AccountLayoutRoute = AccountLayoutImport.update({
   id: '/account',
@@ -135,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountLayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/farmer': {
+      id: '/farmer'
+      path: '/farmer'
+      fullPath: '/farmer'
+      preLoaderRoute: typeof FarmerLayoutImport
       parentRoute: typeof rootRoute
     }
     '/about': {
@@ -247,6 +261,7 @@ const AccountLayoutRouteWithChildren = AccountLayoutRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/account': typeof AccountLayoutRouteWithChildren
+  '/farmer': typeof FarmerLayoutRoute
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout': typeof CheckoutIndexRoute
@@ -264,6 +279,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/account': typeof AccountLayoutRouteWithChildren
+  '/farmer': typeof FarmerLayoutRoute
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout': typeof CheckoutIndexRoute
@@ -282,6 +298,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/account': typeof AccountLayoutRouteWithChildren
+  '/farmer': typeof FarmerLayoutRoute
   '/about': typeof AboutLazyRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout/': typeof CheckoutIndexRoute
@@ -301,6 +318,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
+    | '/farmer'
     | '/about'
     | '/product/$productId'
     | '/checkout'
@@ -317,6 +335,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/account'
+    | '/farmer'
     | '/about'
     | '/product/$productId'
     | '/checkout'
@@ -333,6 +352,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/account'
+    | '/farmer'
     | '/about'
     | '/product/$productId'
     | '/checkout/'
@@ -351,6 +371,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AccountLayoutRoute: typeof AccountLayoutRouteWithChildren
+  FarmerLayoutRoute: typeof FarmerLayoutRoute
   AboutLazyRoute: typeof AboutLazyRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
@@ -364,6 +385,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AccountLayoutRoute: AccountLayoutRouteWithChildren,
+  FarmerLayoutRoute: FarmerLayoutRoute,
   AboutLazyRoute: AboutLazyRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
@@ -386,6 +408,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/account",
+        "/farmer",
         "/about",
         "/product/$productId",
         "/checkout/",
@@ -407,6 +430,9 @@ export const routeTree = rootRoute
         "/account/order-history/",
         "/account/wishlist/"
       ]
+    },
+    "/farmer": {
+      "filePath": "farmer/layout.tsx"
     },
     "/about": {
       "filePath": "about.lazy.tsx"
