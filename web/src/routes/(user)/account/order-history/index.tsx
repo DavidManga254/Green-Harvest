@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import OrderHistoryPage from "../../../pages/account/orderHistory";
+import OrderHistoryPage from "../../../../pages/account/orderHistory";
 
-export const Route = createFileRoute("/account/order-history/")({
+export const Route = createFileRoute("/(user)/account/order-history/")({
     component: RouteComponent,
 });
 

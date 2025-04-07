@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import ShopPage from "../../pages/Shop/Shop";
+import ShopPage from "../../../pages/Shop/Shop";
 
-export const Route = createFileRoute("/shop/")({
+export const Route = createFileRoute("/(user)/shop/")({
     component: RouteComponent,
     validateSearch: (search) => ({
         page: search.page ? Number(search.page) : undefined,

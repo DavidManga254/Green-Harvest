@@ -13,118 +13,110 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as FarmerLayoutImport } from './routes/farmer/layout'
-import { Route as AccountLayoutImport } from './routes/account/layout'
-import { Route as SignInIndexImport } from './routes/sign-in/index'
-import { Route as ShopIndexImport } from './routes/shop/index'
-import { Route as RegisterIndexImport } from './routes/register/index'
-import { Route as HomeIndexImport } from './routes/home/index'
-import { Route as ExploreIndexImport } from './routes/explore/index'
-import { Route as CheckoutIndexImport } from './routes/checkout/index'
-import { Route as ProductProductIdImport } from './routes/product/$productId'
-import { Route as AccountWishlistIndexImport } from './routes/account/wishlist/index'
-import { Route as AccountOrderHistoryIndexImport } from './routes/account/order-history/index'
-import { Route as AccountDashboardIndexImport } from './routes/account/dashboard/index'
-import { Route as AccountOrderHistoryOrderIdImport } from './routes/account/order-history/$orderId'
+import { Route as userLayoutImport } from './routes/(user)/layout'
+import { Route as userAccountLayoutImport } from './routes/(user)/account/layout'
+import { Route as userSignInIndexImport } from './routes/(user)/sign-in/index'
+import { Route as userShopIndexImport } from './routes/(user)/shop/index'
+import { Route as userRegisterIndexImport } from './routes/(user)/register/index'
+import { Route as userHomeIndexImport } from './routes/(user)/home/index'
+import { Route as userExploreIndexImport } from './routes/(user)/explore/index'
+import { Route as userCheckoutIndexImport } from './routes/(user)/checkout/index'
+import { Route as userProductProductIdImport } from './routes/(user)/product/$productId'
+import { Route as userAccountWishlistIndexImport } from './routes/(user)/account/wishlist/index'
+import { Route as userAccountOrderHistoryIndexImport } from './routes/(user)/account/order-history/index'
+import { Route as userAccountDashboardIndexImport } from './routes/(user)/account/dashboard/index'
+import { Route as userAccountOrderHistoryOrderIdImport } from './routes/(user)/account/order-history/$orderId'
 
 // Create Virtual Routes
 
-const AboutLazyImport = createFileRoute('/about')()
-const IndexLazyImport = createFileRoute('/')()
+const Import = createFileRoute('/')()
 
 // Create/Update Routes
 
-const AboutLazyRoute = AboutLazyImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
-
-const FarmerLayoutRoute = FarmerLayoutImport.update({
-  id: '/farmer',
-  path: '/farmer',
-  getParentRoute: () => rootRoute,
+const userLayoutRoute = userLayoutImport.update({
+  id: '/(user)',
+  getParentRoute: () => Route,
 } as any)
 
-const AccountLayoutRoute = AccountLayoutImport.update({
-  id: '/account',
-  path: '/account',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const IndexLazyRoute = IndexLazyImport.update({
+const Route = Import.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any)
 
-const SignInIndexRoute = SignInIndexImport.update({
+const userAccountLayoutRoute = userAccountLayoutImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => userLayoutRoute,
+} as any)
+
+const userSignInIndexRoute = userSignInIndexImport.update({
   id: '/sign-in/',
   path: '/sign-in/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => userLayoutRoute,
 } as any)
 
-const ShopIndexRoute = ShopIndexImport.update({
+const userShopIndexRoute = userShopIndexImport.update({
   id: '/shop/',
   path: '/shop/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => userLayoutRoute,
 } as any)
 
-const RegisterIndexRoute = RegisterIndexImport.update({
+const userRegisterIndexRoute = userRegisterIndexImport.update({
   id: '/register/',
   path: '/register/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => userLayoutRoute,
 } as any)
 
-const HomeIndexRoute = HomeIndexImport.update({
+const userHomeIndexRoute = userHomeIndexImport.update({
   id: '/home/',
   path: '/home/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => userLayoutRoute,
 } as any)
 
-const ExploreIndexRoute = ExploreIndexImport.update({
+const userExploreIndexRoute = userExploreIndexImport.update({
   id: '/explore/',
   path: '/explore/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => userLayoutRoute,
 } as any)
 
-const CheckoutIndexRoute = CheckoutIndexImport.update({
+const userCheckoutIndexRoute = userCheckoutIndexImport.update({
   id: '/checkout/',
   path: '/checkout/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => userLayoutRoute,
 } as any)
 
-const ProductProductIdRoute = ProductProductIdImport.update({
+const userProductProductIdRoute = userProductProductIdImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => userLayoutRoute,
 } as any)
 
-const AccountWishlistIndexRoute = AccountWishlistIndexImport.update({
+const userAccountWishlistIndexRoute = userAccountWishlistIndexImport.update({
   id: '/wishlist/',
   path: '/wishlist/',
-  getParentRoute: () => AccountLayoutRoute,
+  getParentRoute: () => userAccountLayoutRoute,
 } as any)
 
-const AccountOrderHistoryIndexRoute = AccountOrderHistoryIndexImport.update({
-  id: '/order-history/',
-  path: '/order-history/',
-  getParentRoute: () => AccountLayoutRoute,
-} as any)
+const userAccountOrderHistoryIndexRoute =
+  userAccountOrderHistoryIndexImport.update({
+    id: '/order-history/',
+    path: '/order-history/',
+    getParentRoute: () => userAccountLayoutRoute,
+  } as any)
 
-const AccountDashboardIndexRoute = AccountDashboardIndexImport.update({
+const userAccountDashboardIndexRoute = userAccountDashboardIndexImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
-  getParentRoute: () => AccountLayoutRoute,
+  getParentRoute: () => userAccountLayoutRoute,
 } as any)
 
-const AccountOrderHistoryOrderIdRoute = AccountOrderHistoryOrderIdImport.update(
-  {
+const userAccountOrderHistoryOrderIdRoute =
+  userAccountOrderHistoryOrderIdImport.update({
     id: '/order-history/$orderId',
     path: '/order-history/$orderId',
-    getParentRoute: () => AccountLayoutRoute,
-  } as any,
-)
+    getParentRoute: () => userAccountLayoutRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -134,183 +126,206 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
+      preLoaderRoute: typeof Import
       parentRoute: typeof rootRoute
     }
-    '/account': {
-      id: '/account'
+    '/(user)': {
+      id: '/(user)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof userLayoutImport
+      parentRoute: typeof Route
+    }
+    '/(user)/account': {
+      id: '/(user)/account'
       path: '/account'
       fullPath: '/account'
-      preLoaderRoute: typeof AccountLayoutImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof userAccountLayoutImport
+      parentRoute: typeof userLayoutImport
     }
-    '/farmer': {
-      id: '/farmer'
-      path: '/farmer'
-      fullPath: '/farmer'
-      preLoaderRoute: typeof FarmerLayoutImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/product/$productId': {
-      id: '/product/$productId'
+    '/(user)/product/$productId': {
+      id: '/(user)/product/$productId'
       path: '/product/$productId'
       fullPath: '/product/$productId'
-      preLoaderRoute: typeof ProductProductIdImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof userProductProductIdImport
+      parentRoute: typeof userLayoutImport
     }
-    '/checkout/': {
-      id: '/checkout/'
+    '/(user)/checkout/': {
+      id: '/(user)/checkout/'
       path: '/checkout'
       fullPath: '/checkout'
-      preLoaderRoute: typeof CheckoutIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof userCheckoutIndexImport
+      parentRoute: typeof userLayoutImport
     }
-    '/explore/': {
-      id: '/explore/'
+    '/(user)/explore/': {
+      id: '/(user)/explore/'
       path: '/explore'
       fullPath: '/explore'
-      preLoaderRoute: typeof ExploreIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof userExploreIndexImport
+      parentRoute: typeof userLayoutImport
     }
-    '/home/': {
-      id: '/home/'
+    '/(user)/home/': {
+      id: '/(user)/home/'
       path: '/home'
       fullPath: '/home'
-      preLoaderRoute: typeof HomeIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof userHomeIndexImport
+      parentRoute: typeof userLayoutImport
     }
-    '/register/': {
-      id: '/register/'
+    '/(user)/register/': {
+      id: '/(user)/register/'
       path: '/register'
       fullPath: '/register'
-      preLoaderRoute: typeof RegisterIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof userRegisterIndexImport
+      parentRoute: typeof userLayoutImport
     }
-    '/shop/': {
-      id: '/shop/'
+    '/(user)/shop/': {
+      id: '/(user)/shop/'
       path: '/shop'
       fullPath: '/shop'
-      preLoaderRoute: typeof ShopIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof userShopIndexImport
+      parentRoute: typeof userLayoutImport
     }
-    '/sign-in/': {
-      id: '/sign-in/'
+    '/(user)/sign-in/': {
+      id: '/(user)/sign-in/'
       path: '/sign-in'
       fullPath: '/sign-in'
-      preLoaderRoute: typeof SignInIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof userSignInIndexImport
+      parentRoute: typeof userLayoutImport
     }
-    '/account/order-history/$orderId': {
-      id: '/account/order-history/$orderId'
+    '/(user)/account/order-history/$orderId': {
+      id: '/(user)/account/order-history/$orderId'
       path: '/order-history/$orderId'
       fullPath: '/account/order-history/$orderId'
-      preLoaderRoute: typeof AccountOrderHistoryOrderIdImport
-      parentRoute: typeof AccountLayoutImport
+      preLoaderRoute: typeof userAccountOrderHistoryOrderIdImport
+      parentRoute: typeof userAccountLayoutImport
     }
-    '/account/dashboard/': {
-      id: '/account/dashboard/'
+    '/(user)/account/dashboard/': {
+      id: '/(user)/account/dashboard/'
       path: '/dashboard'
       fullPath: '/account/dashboard'
-      preLoaderRoute: typeof AccountDashboardIndexImport
-      parentRoute: typeof AccountLayoutImport
+      preLoaderRoute: typeof userAccountDashboardIndexImport
+      parentRoute: typeof userAccountLayoutImport
     }
-    '/account/order-history/': {
-      id: '/account/order-history/'
+    '/(user)/account/order-history/': {
+      id: '/(user)/account/order-history/'
       path: '/order-history'
       fullPath: '/account/order-history'
-      preLoaderRoute: typeof AccountOrderHistoryIndexImport
-      parentRoute: typeof AccountLayoutImport
+      preLoaderRoute: typeof userAccountOrderHistoryIndexImport
+      parentRoute: typeof userAccountLayoutImport
     }
-    '/account/wishlist/': {
-      id: '/account/wishlist/'
+    '/(user)/account/wishlist/': {
+      id: '/(user)/account/wishlist/'
       path: '/wishlist'
       fullPath: '/account/wishlist'
-      preLoaderRoute: typeof AccountWishlistIndexImport
-      parentRoute: typeof AccountLayoutImport
+      preLoaderRoute: typeof userAccountWishlistIndexImport
+      parentRoute: typeof userAccountLayoutImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface AccountLayoutRouteChildren {
-  AccountOrderHistoryOrderIdRoute: typeof AccountOrderHistoryOrderIdRoute
-  AccountDashboardIndexRoute: typeof AccountDashboardIndexRoute
-  AccountOrderHistoryIndexRoute: typeof AccountOrderHistoryIndexRoute
-  AccountWishlistIndexRoute: typeof AccountWishlistIndexRoute
+interface userAccountLayoutRouteChildren {
+  userAccountOrderHistoryOrderIdRoute: typeof userAccountOrderHistoryOrderIdRoute
+  userAccountDashboardIndexRoute: typeof userAccountDashboardIndexRoute
+  userAccountOrderHistoryIndexRoute: typeof userAccountOrderHistoryIndexRoute
+  userAccountWishlistIndexRoute: typeof userAccountWishlistIndexRoute
 }
 
-const AccountLayoutRouteChildren: AccountLayoutRouteChildren = {
-  AccountOrderHistoryOrderIdRoute: AccountOrderHistoryOrderIdRoute,
-  AccountDashboardIndexRoute: AccountDashboardIndexRoute,
-  AccountOrderHistoryIndexRoute: AccountOrderHistoryIndexRoute,
-  AccountWishlistIndexRoute: AccountWishlistIndexRoute,
+const userAccountLayoutRouteChildren: userAccountLayoutRouteChildren = {
+  userAccountOrderHistoryOrderIdRoute: userAccountOrderHistoryOrderIdRoute,
+  userAccountDashboardIndexRoute: userAccountDashboardIndexRoute,
+  userAccountOrderHistoryIndexRoute: userAccountOrderHistoryIndexRoute,
+  userAccountWishlistIndexRoute: userAccountWishlistIndexRoute,
 }
 
-const AccountLayoutRouteWithChildren = AccountLayoutRoute._addFileChildren(
-  AccountLayoutRouteChildren,
+const userAccountLayoutRouteWithChildren =
+  userAccountLayoutRoute._addFileChildren(userAccountLayoutRouteChildren)
+
+interface userLayoutRouteChildren {
+  userAccountLayoutRoute: typeof userAccountLayoutRouteWithChildren
+  userProductProductIdRoute: typeof userProductProductIdRoute
+  userCheckoutIndexRoute: typeof userCheckoutIndexRoute
+  userExploreIndexRoute: typeof userExploreIndexRoute
+  userHomeIndexRoute: typeof userHomeIndexRoute
+  userRegisterIndexRoute: typeof userRegisterIndexRoute
+  userShopIndexRoute: typeof userShopIndexRoute
+  userSignInIndexRoute: typeof userSignInIndexRoute
+}
+
+const userLayoutRouteChildren: userLayoutRouteChildren = {
+  userAccountLayoutRoute: userAccountLayoutRouteWithChildren,
+  userProductProductIdRoute: userProductProductIdRoute,
+  userCheckoutIndexRoute: userCheckoutIndexRoute,
+  userExploreIndexRoute: userExploreIndexRoute,
+  userHomeIndexRoute: userHomeIndexRoute,
+  userRegisterIndexRoute: userRegisterIndexRoute,
+  userShopIndexRoute: userShopIndexRoute,
+  userSignInIndexRoute: userSignInIndexRoute,
+}
+
+const userLayoutRouteWithChildren = userLayoutRoute._addFileChildren(
+  userLayoutRouteChildren,
 )
 
+interface RouteChildren {
+  userLayoutRoute: typeof userLayoutRouteWithChildren
+}
+
+const RouteChildren: RouteChildren = {
+  userLayoutRoute: userLayoutRouteWithChildren,
+}
+
+const RouteWithChildren = Route._addFileChildren(RouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
-  '/account': typeof AccountLayoutRouteWithChildren
-  '/farmer': typeof FarmerLayoutRoute
-  '/about': typeof AboutLazyRoute
-  '/product/$productId': typeof ProductProductIdRoute
-  '/checkout': typeof CheckoutIndexRoute
-  '/explore': typeof ExploreIndexRoute
-  '/home': typeof HomeIndexRoute
-  '/register': typeof RegisterIndexRoute
-  '/shop': typeof ShopIndexRoute
-  '/sign-in': typeof SignInIndexRoute
-  '/account/order-history/$orderId': typeof AccountOrderHistoryOrderIdRoute
-  '/account/dashboard': typeof AccountDashboardIndexRoute
-  '/account/order-history': typeof AccountOrderHistoryIndexRoute
-  '/account/wishlist': typeof AccountWishlistIndexRoute
+  '/': typeof userLayoutRouteWithChildren
+  '/account': typeof userAccountLayoutRouteWithChildren
+  '/product/$productId': typeof userProductProductIdRoute
+  '/checkout': typeof userCheckoutIndexRoute
+  '/explore': typeof userExploreIndexRoute
+  '/home': typeof userHomeIndexRoute
+  '/register': typeof userRegisterIndexRoute
+  '/shop': typeof userShopIndexRoute
+  '/sign-in': typeof userSignInIndexRoute
+  '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
+  '/account/dashboard': typeof userAccountDashboardIndexRoute
+  '/account/order-history': typeof userAccountOrderHistoryIndexRoute
+  '/account/wishlist': typeof userAccountWishlistIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
-  '/account': typeof AccountLayoutRouteWithChildren
-  '/farmer': typeof FarmerLayoutRoute
-  '/about': typeof AboutLazyRoute
-  '/product/$productId': typeof ProductProductIdRoute
-  '/checkout': typeof CheckoutIndexRoute
-  '/explore': typeof ExploreIndexRoute
-  '/home': typeof HomeIndexRoute
-  '/register': typeof RegisterIndexRoute
-  '/shop': typeof ShopIndexRoute
-  '/sign-in': typeof SignInIndexRoute
-  '/account/order-history/$orderId': typeof AccountOrderHistoryOrderIdRoute
-  '/account/dashboard': typeof AccountDashboardIndexRoute
-  '/account/order-history': typeof AccountOrderHistoryIndexRoute
-  '/account/wishlist': typeof AccountWishlistIndexRoute
+  '/': typeof userLayoutRouteWithChildren
+  '/account': typeof userAccountLayoutRouteWithChildren
+  '/product/$productId': typeof userProductProductIdRoute
+  '/checkout': typeof userCheckoutIndexRoute
+  '/explore': typeof userExploreIndexRoute
+  '/home': typeof userHomeIndexRoute
+  '/register': typeof userRegisterIndexRoute
+  '/shop': typeof userShopIndexRoute
+  '/sign-in': typeof userSignInIndexRoute
+  '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
+  '/account/dashboard': typeof userAccountDashboardIndexRoute
+  '/account/order-history': typeof userAccountOrderHistoryIndexRoute
+  '/account/wishlist': typeof userAccountWishlistIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
-  '/account': typeof AccountLayoutRouteWithChildren
-  '/farmer': typeof FarmerLayoutRoute
-  '/about': typeof AboutLazyRoute
-  '/product/$productId': typeof ProductProductIdRoute
-  '/checkout/': typeof CheckoutIndexRoute
-  '/explore/': typeof ExploreIndexRoute
-  '/home/': typeof HomeIndexRoute
-  '/register/': typeof RegisterIndexRoute
-  '/shop/': typeof ShopIndexRoute
-  '/sign-in/': typeof SignInIndexRoute
-  '/account/order-history/$orderId': typeof AccountOrderHistoryOrderIdRoute
-  '/account/dashboard/': typeof AccountDashboardIndexRoute
-  '/account/order-history/': typeof AccountOrderHistoryIndexRoute
-  '/account/wishlist/': typeof AccountWishlistIndexRoute
+  '/': typeof RouteWithChildren
+  '/(user)': typeof userLayoutRouteWithChildren
+  '/(user)/account': typeof userAccountLayoutRouteWithChildren
+  '/(user)/product/$productId': typeof userProductProductIdRoute
+  '/(user)/checkout/': typeof userCheckoutIndexRoute
+  '/(user)/explore/': typeof userExploreIndexRoute
+  '/(user)/home/': typeof userHomeIndexRoute
+  '/(user)/register/': typeof userRegisterIndexRoute
+  '/(user)/shop/': typeof userShopIndexRoute
+  '/(user)/sign-in/': typeof userSignInIndexRoute
+  '/(user)/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
+  '/(user)/account/dashboard/': typeof userAccountDashboardIndexRoute
+  '/(user)/account/order-history/': typeof userAccountOrderHistoryIndexRoute
+  '/(user)/account/wishlist/': typeof userAccountWishlistIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -318,8 +333,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
-    | '/farmer'
-    | '/about'
     | '/product/$productId'
     | '/checkout'
     | '/explore'
@@ -335,8 +348,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/account'
-    | '/farmer'
-    | '/about'
     | '/product/$productId'
     | '/checkout'
     | '/explore'
@@ -351,49 +362,28 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/account'
-    | '/farmer'
-    | '/about'
-    | '/product/$productId'
-    | '/checkout/'
-    | '/explore/'
-    | '/home/'
-    | '/register/'
-    | '/shop/'
-    | '/sign-in/'
-    | '/account/order-history/$orderId'
-    | '/account/dashboard/'
-    | '/account/order-history/'
-    | '/account/wishlist/'
+    | '/(user)'
+    | '/(user)/account'
+    | '/(user)/product/$productId'
+    | '/(user)/checkout/'
+    | '/(user)/explore/'
+    | '/(user)/home/'
+    | '/(user)/register/'
+    | '/(user)/shop/'
+    | '/(user)/sign-in/'
+    | '/(user)/account/order-history/$orderId'
+    | '/(user)/account/dashboard/'
+    | '/(user)/account/order-history/'
+    | '/(user)/account/wishlist/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
-  AccountLayoutRoute: typeof AccountLayoutRouteWithChildren
-  FarmerLayoutRoute: typeof FarmerLayoutRoute
-  AboutLazyRoute: typeof AboutLazyRoute
-  ProductProductIdRoute: typeof ProductProductIdRoute
-  CheckoutIndexRoute: typeof CheckoutIndexRoute
-  ExploreIndexRoute: typeof ExploreIndexRoute
-  HomeIndexRoute: typeof HomeIndexRoute
-  RegisterIndexRoute: typeof RegisterIndexRoute
-  ShopIndexRoute: typeof ShopIndexRoute
-  SignInIndexRoute: typeof SignInIndexRoute
+  Route: typeof RouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexLazyRoute: IndexLazyRoute,
-  AccountLayoutRoute: AccountLayoutRouteWithChildren,
-  FarmerLayoutRoute: FarmerLayoutRoute,
-  AboutLazyRoute: AboutLazyRoute,
-  ProductProductIdRoute: ProductProductIdRoute,
-  CheckoutIndexRoute: CheckoutIndexRoute,
-  ExploreIndexRoute: ExploreIndexRoute,
-  HomeIndexRoute: HomeIndexRoute,
-  RegisterIndexRoute: RegisterIndexRoute,
-  ShopIndexRoute: ShopIndexRoute,
-  SignInIndexRoute: SignInIndexRoute,
+  Route: RouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -406,73 +396,82 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/account",
-        "/farmer",
-        "/about",
-        "/product/$productId",
-        "/checkout/",
-        "/explore/",
-        "/home/",
-        "/register/",
-        "/shop/",
-        "/sign-in/"
+        "/"
       ]
     },
     "/": {
-      "filePath": "index.lazy.tsx"
-    },
-    "/account": {
-      "filePath": "account/layout.tsx",
+      "filePath": "(user)",
       "children": [
-        "/account/order-history/$orderId",
-        "/account/dashboard/",
-        "/account/order-history/",
-        "/account/wishlist/"
+        "/(user)"
       ]
     },
-    "/farmer": {
-      "filePath": "farmer/layout.tsx"
+    "/(user)": {
+      "filePath": "(user)/layout.tsx",
+      "parent": "/",
+      "children": [
+        "/(user)/account",
+        "/(user)/product/$productId",
+        "/(user)/checkout/",
+        "/(user)/explore/",
+        "/(user)/home/",
+        "/(user)/register/",
+        "/(user)/shop/",
+        "/(user)/sign-in/"
+      ]
     },
-    "/about": {
-      "filePath": "about.lazy.tsx"
+    "/(user)/account": {
+      "filePath": "(user)/account/layout.tsx",
+      "parent": "/(user)",
+      "children": [
+        "/(user)/account/order-history/$orderId",
+        "/(user)/account/dashboard/",
+        "/(user)/account/order-history/",
+        "/(user)/account/wishlist/"
+      ]
     },
-    "/product/$productId": {
-      "filePath": "product/$productId.tsx"
+    "/(user)/product/$productId": {
+      "filePath": "(user)/product/$productId.tsx",
+      "parent": "/(user)"
     },
-    "/checkout/": {
-      "filePath": "checkout/index.tsx"
+    "/(user)/checkout/": {
+      "filePath": "(user)/checkout/index.tsx",
+      "parent": "/(user)"
     },
-    "/explore/": {
-      "filePath": "explore/index.tsx"
+    "/(user)/explore/": {
+      "filePath": "(user)/explore/index.tsx",
+      "parent": "/(user)"
     },
-    "/home/": {
-      "filePath": "home/index.tsx"
+    "/(user)/home/": {
+      "filePath": "(user)/home/index.tsx",
+      "parent": "/(user)"
     },
-    "/register/": {
-      "filePath": "register/index.tsx"
+    "/(user)/register/": {
+      "filePath": "(user)/register/index.tsx",
+      "parent": "/(user)"
     },
-    "/shop/": {
-      "filePath": "shop/index.tsx"
+    "/(user)/shop/": {
+      "filePath": "(user)/shop/index.tsx",
+      "parent": "/(user)"
     },
-    "/sign-in/": {
-      "filePath": "sign-in/index.tsx"
+    "/(user)/sign-in/": {
+      "filePath": "(user)/sign-in/index.tsx",
+      "parent": "/(user)"
     },
-    "/account/order-history/$orderId": {
-      "filePath": "account/order-history/$orderId.tsx",
-      "parent": "/account"
+    "/(user)/account/order-history/$orderId": {
+      "filePath": "(user)/account/order-history/$orderId.tsx",
+      "parent": "/(user)/account"
     },
-    "/account/dashboard/": {
-      "filePath": "account/dashboard/index.tsx",
-      "parent": "/account"
+    "/(user)/account/dashboard/": {
+      "filePath": "(user)/account/dashboard/index.tsx",
+      "parent": "/(user)/account"
     },
-    "/account/order-history/": {
-      "filePath": "account/order-history/index.tsx",
-      "parent": "/account"
+    "/(user)/account/order-history/": {
+      "filePath": "(user)/account/order-history/index.tsx",
+      "parent": "/(user)/account"
     },
-    "/account/wishlist/": {
-      "filePath": "account/wishlist/index.tsx",
-      "parent": "/account"
+    "/(user)/account/wishlist/": {
+      "filePath": "(user)/account/wishlist/index.tsx",
+      "parent": "/(user)/account"
     }
   }
 }

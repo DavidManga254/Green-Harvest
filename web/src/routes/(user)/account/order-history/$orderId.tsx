@@ -1,7 +1,7 @@
 import { createFileRoute, useParams } from "@tanstack/react-router";
-import OrderDetailsPage from "../../../pages/account/orderHistory/OrderDetails";
+import OrderDetailsPage from "../../../../pages/account/orderHistory/OrderDetails";
 
-export const Route = createFileRoute("/account/order-history/$orderId")({
+export const Route = createFileRoute("/(user)/account/order-history/$orderId")({
     component: RouteComponent,
 });
 

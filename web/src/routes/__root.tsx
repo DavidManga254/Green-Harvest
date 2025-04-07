@@ -1,20 +1,14 @@
-import { createRootRoute, Outlet } from "@tanstack/react-router";
-import Header from "../components/Header/Header";
-import Footer from "../components/Footer";
+import * as React from "react";
+import { Outlet, createRootRoute } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
-    component: () => (
-        <div className="page-wrapper">
-            <Header />
-            <div
-                style={{ maxWidth: "1100px", margin: "0 auto" }}
-                className="content-wrapper"
-            >
-                <Outlet />
-            </div>
-            <div className="footer-wrapper">
-                <Footer />
-            </div>
-        </div>
-    ),
+    component: RootComponent,
 });
+
+function RootComponent() {
+    return (
+        <React.Fragment>
+            <Outlet />
+        </React.Fragment>
+    );
+}
