@@ -26,6 +26,7 @@ import { Route as userProductProductIdImport } from './routes/(user)/product/$pr
 import { Route as userAccountWishlistIndexImport } from './routes/(user)/account/wishlist/index'
 import { Route as userAccountOrderHistoryIndexImport } from './routes/(user)/account/order-history/index'
 import { Route as userAccountDashboardIndexImport } from './routes/(user)/account/dashboard/index'
+import { Route as farmerFarmerInventoryIndexImport } from './routes/(farmer)/farmer/inventory/index'
 import { Route as farmerFarmerDashboardIndexImport } from './routes/(farmer)/farmer/dashboard/index'
 import { Route as userAccountOrderHistoryOrderIdImport } from './routes/(user)/account/order-history/$orderId'
 
@@ -118,6 +119,14 @@ const userAccountDashboardIndexRoute = userAccountDashboardIndexImport.update({
   path: '/dashboard/',
   getParentRoute: () => userAccountLayoutRoute,
 } as any)
+
+const farmerFarmerInventoryIndexRoute = farmerFarmerInventoryIndexImport.update(
+  {
+    id: '/inventory/',
+    path: '/inventory/',
+    getParentRoute: () => farmerFarmerLayoutRoute,
+  } as any,
+)
 
 const farmerFarmerDashboardIndexRoute = farmerFarmerDashboardIndexImport.update(
   {
@@ -229,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof farmerFarmerDashboardIndexImport
       parentRoute: typeof farmerFarmerLayoutImport
     }
+    '/(farmer)/farmer/inventory/': {
+      id: '/(farmer)/farmer/inventory/'
+      path: '/inventory'
+      fullPath: '/farmer/inventory'
+      preLoaderRoute: typeof farmerFarmerInventoryIndexImport
+      parentRoute: typeof farmerFarmerLayoutImport
+    }
     '/(user)/account/dashboard/': {
       id: '/(user)/account/dashboard/'
       path: '/dashboard'
@@ -310,10 +326,12 @@ const RouteWithChildren = Route._addFileChildren(RouteChildren)
 
 interface farmerFarmerLayoutRouteChildren {
   farmerFarmerDashboardIndexRoute: typeof farmerFarmerDashboardIndexRoute
+  farmerFarmerInventoryIndexRoute: typeof farmerFarmerInventoryIndexRoute
 }
 
 const farmerFarmerLayoutRouteChildren: farmerFarmerLayoutRouteChildren = {
   farmerFarmerDashboardIndexRoute: farmerFarmerDashboardIndexRoute,
+  farmerFarmerInventoryIndexRoute: farmerFarmerInventoryIndexRoute,
 }
 
 const farmerFarmerLayoutRouteWithChildren =
@@ -332,6 +350,7 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof userSignInIndexRoute
   '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
   '/farmer/dashboard': typeof farmerFarmerDashboardIndexRoute
+  '/farmer/inventory': typeof farmerFarmerInventoryIndexRoute
   '/account/dashboard': typeof userAccountDashboardIndexRoute
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
@@ -350,6 +369,7 @@ export interface FileRoutesByTo {
   '/sign-in': typeof userSignInIndexRoute
   '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
   '/farmer/dashboard': typeof farmerFarmerDashboardIndexRoute
+  '/farmer/inventory': typeof farmerFarmerInventoryIndexRoute
   '/account/dashboard': typeof userAccountDashboardIndexRoute
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
@@ -370,6 +390,7 @@ export interface FileRoutesById {
   '/(user)/sign-in/': typeof userSignInIndexRoute
   '/(user)/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
   '/(farmer)/farmer/dashboard/': typeof farmerFarmerDashboardIndexRoute
+  '/(farmer)/farmer/inventory/': typeof farmerFarmerInventoryIndexRoute
   '/(user)/account/dashboard/': typeof userAccountDashboardIndexRoute
   '/(user)/account/order-history/': typeof userAccountOrderHistoryIndexRoute
   '/(user)/account/wishlist/': typeof userAccountWishlistIndexRoute
@@ -390,6 +411,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/account/order-history/$orderId'
     | '/farmer/dashboard'
+    | '/farmer/inventory'
     | '/account/dashboard'
     | '/account/order-history'
     | '/account/wishlist'
@@ -407,6 +429,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/account/order-history/$orderId'
     | '/farmer/dashboard'
+    | '/farmer/inventory'
     | '/account/dashboard'
     | '/account/order-history'
     | '/account/wishlist'
@@ -425,6 +448,7 @@ export interface FileRouteTypes {
     | '/(user)/sign-in/'
     | '/(user)/account/order-history/$orderId'
     | '/(farmer)/farmer/dashboard/'
+    | '/(farmer)/farmer/inventory/'
     | '/(user)/account/dashboard/'
     | '/(user)/account/order-history/'
     | '/(user)/account/wishlist/'
@@ -478,7 +502,8 @@ export const routeTree = rootRoute
     "/(farmer)/farmer": {
       "filePath": "(farmer)/farmer/layout.tsx",
       "children": [
-        "/(farmer)/farmer/dashboard/"
+        "/(farmer)/farmer/dashboard/",
+        "/(farmer)/farmer/inventory/"
       ]
     },
     "/(user)/account": {
@@ -525,6 +550,10 @@ export const routeTree = rootRoute
     },
     "/(farmer)/farmer/dashboard/": {
       "filePath": "(farmer)/farmer/dashboard/index.tsx",
+      "parent": "/(farmer)/farmer"
+    },
+    "/(farmer)/farmer/inventory/": {
+      "filePath": "(farmer)/farmer/inventory/index.tsx",
       "parent": "/(farmer)/farmer"
     },
     "/(user)/account/dashboard/": {

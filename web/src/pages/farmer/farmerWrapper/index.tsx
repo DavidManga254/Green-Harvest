@@ -23,10 +23,10 @@ const FarmerWrapper: React.FC<FarmerWrapperInterface> = ({ children }) => {
                             <p>Overview</p>
                         </div>
                     </Link>
-                    <Link>
+                    <Link to="/farmer/inventory">
                         <div className="side-item">
                             <CheckBoxOutlineBlankOutlinedIcon />
-                            <p>Product</p>
+                            <p>Inventory</p>
                         </div>
                     </Link>
                     <Link>

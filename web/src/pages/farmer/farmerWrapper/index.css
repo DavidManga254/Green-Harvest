@@ -10,7 +10,7 @@
 
 .side-bar{
     flex: 1;
-    max-width: 270px;
+    max-width: 200px;
     background-color: white;
     padding: 15px;
 }
