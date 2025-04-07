@@ -1,0 +1,322 @@
+.farmer-dashboard-page{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.top-section{
+    display: flex;
+    justify-content: right;
+    width: 100%;
+}
+
+.profile-image{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-image img{
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+}
+
+.profile-image div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.profile-image .name{
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--gray-900);
+}
+
+.profile-image .email{
+    font-weight: 300;
+    font-size: 10px;
+    color: var(--gray-900);
+}
+
+.dashboard-title h1{
+    font-size: 40px;
+    font-weight: 300;
+    color: var(--gray-900);
+    margin-bottom: 5px;
+}
+
+.dashboard-title h1 span{
+    font-weight: 500;
+}
+
+.dashboard-title .overview{
+    color: var(--gray-700);
+}
+
+.summary-cards{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+@media screen and (max-width:980px) {
+    .summary-cards{
+        display: block;
+    }
+
+    .order-value, .total-order, .lifetime-value{
+        padding: 20px 15px;
+        background-color: var(--white);
+        border-radius: 10px;
+        height: 102px;
+        margin: 0 auto;
+        margin-bottom: 20px;
+    }
+}
+
+.order-value, .total-order, .lifetime-value{
+    max-width: 436px;
+    flex: 1;
+    padding: 20px 15px;
+    background-color: var(--white);
+    border-radius: 10px;
+    height: 102px;
+}
+
+
+
+.order-value{
+    background-color: var(--green);
+}
+
+
+
+.card-info{
+    position: relative;
+    height: 100%;
+}
+
+
+.card-title{
+    font-weight: 500;
+    color: var(--gray-900);
+    font-size: 18px;
+}
+
+.order-value .card-title{
+    color: var(--white);
+}
+
+.card-info div{
+    position: absolute;
+    bottom: 0;
+}
+
+.card-info div h1{
+    font-weight: 500;
+    color: var(--gray-900);
+    font-size: 21px;
+    margin-bottom: 8px;
+}
+
+.order-value .card-info div h1{
+    color: var(--white);
+}
+
+.card-info div p{
+    font-weight: 500;
+    color: var(--gray-700);
+    font-size: 10px;
+}
+
+.order-value .card-info div p{
+    color: var(--white);
+}
+
+
+.card-info div p span{
+    color: var(--orange);
+}
+
+
+/* orders */
+
+.orders-container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .orders-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .orders-actions button {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .orders-actions button:hover {
+    text-decoration: underline;
+  }
+
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 12px 10px;
+    text-align: left;
+    border-top: 1px solid #eee;
+    font-size: 14px;
+  }
+
+  .order-status {
+    font-weight: bold;
+  }
+
+  .order-status.processing {
+    color: #4a60f5;
+  }
+
+  .order-status.completed {
+    color: #3ca65a;
+  }
+
+  .action-button {
+    border: none;
+    background: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+
+  /* sales section */
+
+.dashboard-section {
+    display: flex;
+    gap: 20px;
+  }
+
+  @media screen and (max-width:980px) {
+    .dashboard-section{
+        display: block;
+    }
+
+    .dashboard-section  > div:first-child{
+        margin-bottom: 25px;
+    }
+
+  }
+
+
+  .chart-box, .top-products-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    flex: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+
+  /* top selling */
+
+  .top-products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .see-all-button {
+    background: #f5f5f5;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .product-list {
+    margin-top: 15px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .product-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .product-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  .product-info {
+    flex: 1;
+    margin-left: 10px;
+  }
+
+  .product-name {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .product-sales {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .product-status {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: green;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+
+  .stock-count {
+    font-size: 13px;
+    color: #555;
+  }

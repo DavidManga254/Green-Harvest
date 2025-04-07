@@ -50,3 +50,11 @@
     color: white;
     background-color: var(--green);
 }
+
+.farmer-content{
+    flex: 1;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+
