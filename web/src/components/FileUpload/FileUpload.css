@@ -1,0 +1,80 @@
+.upload-container {
+    height: 53px;
+    border: 1px dashed var(--light-grey); 
+    border-radius: 4px;
+    background-color: var(--grey);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 4px 8px;
+    gap: 4px;
+  }
+  
+
+
+  .upload-container.drag-over {
+    background-color: #dceefb; 
+  }
+  
+ .upload-text, .upload-subtext{
+    text-align: center;
+    font-family: 'Noto Sans JP';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    color:var(--dark-grey);
+ }
+
+ .upload-text{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+ }
+
+ .upload-text img{
+    width: 16px;
+    height: 16px;
+ }
+
+ .uploaded-files{
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+ }
+
+ .uploaded-files div span{    
+    width: 60px ;
+    display: block;
+    font-family: 'Noto Sans JP';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+ }
+
+ .uploaded-files div:hover{
+    cursor: pointer;
+ }
+
+ .uploaded-files .file{
+    display: flex; 
+    position: relative;
+    padding: 4px;
+    gap: 4px;
+    width: 100px;
+    box-shadow: 0px 1px 4px rgba(0,0,0,.3);
+    border-radius: 4px;
+ }
+
+ .uploaded-files div .delete{
+    position: absolute;
+    right: 4px;
+    display: none;
+ }
+ 
+ .file:hover .delete{
+    display: block;
+ }

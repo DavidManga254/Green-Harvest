@@ -1,0 +1,20 @@
+.modal-wrapper{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,.2);
+    z-index: 8000;
+}
+
+.modal-children-wrapper{
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+    flex: 1;
+}
