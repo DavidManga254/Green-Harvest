@@ -1,0 +1,52 @@
+.farmer-wrapper{
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    background-color: #F7F7F7;
+    display: flex;
+}
+
+.side-bar{
+    flex: 1;
+    max-width: 270px;
+    background-color: white;
+    padding: 15px;
+}
+
+.side-bar .side-title{
+    height: 65px;
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    font-size: 20px;
+    color: var(--lighter-green);
+    margin-bottom: 50px;
+}
+
+.side-item{
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-left: 10px;
+    border-radius: 10px;
+}
+
+
+
+.side-item p{
+    color: var(--gray-900);
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.side-item.active p{
+    color: white;
+}
+
+.side-item.active{
+    color: white;
+    background-color: var(--green);
+}
