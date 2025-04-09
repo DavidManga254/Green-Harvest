@@ -11,6 +11,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router": "^7.0.2",
+    "js-cookie": "^3.0.5",
     "@refinedev/simple-rest": "^5.0.1",
     "@refinedev/antd": "^5.44.0",
     "antd": "^5.17.0",
@@ -27,6 +28,7 @@
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "@types/js-cookie": "^3.0.6",
     "typescript": "^5.4.2",
     "vite": "^4.3.1"
   },

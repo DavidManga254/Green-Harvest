@@ -183,4 +183,12 @@ class FarmerController extends Controller
             ],
         ]);
     }
+
+    public function checkFarmerAuth(Request $request)
+    {
+        return response()->json([
+            'authenticated' => true,
+            'role' => 'farmer',
+        ], 200);
+    }
 }

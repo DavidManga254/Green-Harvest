@@ -113,6 +113,53 @@ class ProduceController extends Controller
             'message' => 'Product deleted',
         ], 200);
     }
+
+    public function getFarmerProduce(Request $request)
+    {
+        $farmer = $request->get('farmer');
+
+        $query = Produce::where('farmer_id', $farmer->id)->with('images', 'category', 'tags');
+
+        // Filters
+        $filters = $request->input('filters', []);
+        foreach ($filters as $filter) {
+            if (isset($filter['field'], $filter['operator'], $filter['value'])) {
+                switch ($filter['operator']) {
+                    case 'eq':
+                        $query->where($filter['field'], $filter['value']);
+                        break;
+                    case 'ne':
+                        $query->where($filter['field'], '!=', $filter['value']);
+                        break;
+                    case 'contains':
+                        $query->where($filter['field'], 'like', '%' . $filter['value'] . '%');
+                        break;
+                    case 'gte':
+                        $query->where($filter['field'], '>=', $filter['value']);
+                        break;
+                    case 'lte':
+                        $query->where($filter['field'], '<=', $filter['value']);
+                        break;
+                }
+            }
+        }
+
+        // Sorting
+        $sorters = $request->input('sorters', []);
+        foreach ($sorters as $sort) {
+            $query->orderBy($sort['field'], $sort['order'] ?? 'asc');
+        }
+
+        // Pagination
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+        $paginator = $query->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'data' => $paginator->items(),
+            'total' => $paginator->total(),
+        ]);
+    }
 }
 
 

@@ -166,6 +166,10 @@ class UserController extends Controller
         return response()->json(['farmers' => $farmers], 200);
     }
 
+    public function checkFarmerAuth() {}
+
+
+
 
     private function createCookie($jwt)
     {
