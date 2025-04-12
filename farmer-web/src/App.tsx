@@ -1,9 +1,4 @@
-import {
-    Authenticated,
-    GitHubBanner,
-    Refine,
-    WelcomePage,
-} from "@refinedev/core";
+import { Authenticated, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
@@ -24,6 +19,7 @@ import authProvider from "./providers/authProvider";
 import DashboardPage from "./pages/dashboard";
 import resources from "./resources";
 import Layout from "./components/Layout";
+import ProducePage from "./pages/produce/list";
 
 function App() {
     return (
@@ -69,6 +65,10 @@ function App() {
                                     <Route
                                         path="/dashboard"
                                         element={<DashboardPage />}
+                                    />
+                                    <Route
+                                        path="/produce"
+                                        element={<ProducePage />}
                                     />
                                 </Route>
                             </Routes>
