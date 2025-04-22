@@ -6,6 +6,18 @@ import ProductDetail from "../../components/ProductDetail/ProductDetail";
 import { useState } from "react";
 import StarRating from "../../components/StarRating/StarRating";
 import Productcard from "../../components/ProductCard/ProductCard";
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    List,
+    ListItem,
+    ListItemText,
+    Pagination,
+    Typography,
+    Divider,
+    Box,
+} from "@mui/material";
 
 interface ProductDetailInterface {
     productId: number | string;
@@ -361,6 +373,15 @@ const ProductDetailPage: React.FC<ProductDetailInterface> = ({ productId }) => {
 export default ProductDetailPage;
 
 const ProductMoreDetail: React.FC = () => {
+    const [showReviewModal, setShowReviewModal] = useState<boolean>(false);
+    const [page, setPage] = useState<number>(1);
+
+    const perPage = 3;
+
+    const openReviewModal = () => setShowReviewModal(true);
+
+    const closeReviewModal = () => setShowReviewModal(false);
+
     const [activeTab, setActiveTab] = useState<
         "description" | "additional-info" | "reviews"
     >("description");
@@ -501,10 +522,52 @@ const ProductMoreDetail: React.FC = () => {
                         ))}
                     </div>
                     <div className="load-more">
-                        <button>Load More</button>
+                        <button onClick={openReviewModal}>Load More</button>
                     </div>
                 </div>
             )}
+
+            <Dialog
+                open={showReviewModal}
+                onClose={closeReviewModal}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>User Reviews</DialogTitle>
+                <DialogContent>
+                    <List>
+                        {userReviews.map((review, index) => (
+                            <>
+                                <ListItem
+                                    key={index}
+                                    sx={{ mb: 2.5 }}
+                                    disablePadding
+                                >
+                                    <UserReview
+                                        productReview={review.productReview}
+                                        rating={review.rating}
+                                        reviewDate={review.reviewDate}
+                                        userName={review.userName}
+                                        userProfileImage=""
+                                    />
+                                    {index !== userReviews.length - 1 && (
+                                        <Divider />
+                                    )}
+                                </ListItem>
+                            </>
+                        ))}
+                    </List>
+
+                    <Box display="flex" justifyContent="center" mt={2}>
+                        <Pagination
+                            count={Math.ceil(userReviews.length / perPage)}
+                            page={page}
+                            onChange={(_, value) => setPage(value)}
+                            color="primary"
+                        />
+                    </Box>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

@@ -50,6 +50,10 @@
     color: var(--gray-600);
 }
 
+.user-review{
+    width: 100%;
+}
+
 .user-review .top-section{
     display: flex;
     justify-content: space-between;

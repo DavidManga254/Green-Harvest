@@ -22,6 +22,7 @@ import { Route as userRegisterIndexImport } from './routes/(user)/register/index
 import { Route as userHomeIndexImport } from './routes/(user)/home/index'
 import { Route as userExploreIndexImport } from './routes/(user)/explore/index'
 import { Route as userCheckoutIndexImport } from './routes/(user)/checkout/index'
+import { Route as userVendorIdImport } from './routes/(user)/vendor/$id'
 import { Route as userProductProductIdImport } from './routes/(user)/product/$productId'
 import { Route as userAccountWishlistIndexImport } from './routes/(user)/account/wishlist/index'
 import { Route as userAccountOrderHistoryIndexImport } from './routes/(user)/account/order-history/index'
@@ -92,6 +93,12 @@ const userExploreIndexRoute = userExploreIndexImport.update({
 const userCheckoutIndexRoute = userCheckoutIndexImport.update({
   id: '/checkout/',
   path: '/checkout/',
+  getParentRoute: () => userLayoutRoute,
+} as any)
+
+const userVendorIdRoute = userVendorIdImport.update({
+  id: '/vendor/$id',
+  path: '/vendor/$id',
   getParentRoute: () => userLayoutRoute,
 } as any)
 
@@ -180,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/product/$productId'
       fullPath: '/product/$productId'
       preLoaderRoute: typeof userProductProductIdImport
+      parentRoute: typeof userLayoutImport
+    }
+    '/(user)/vendor/$id': {
+      id: '/(user)/vendor/$id'
+      path: '/vendor/$id'
+      fullPath: '/vendor/$id'
+      preLoaderRoute: typeof userVendorIdImport
       parentRoute: typeof userLayoutImport
     }
     '/(user)/checkout/': {
@@ -291,6 +305,7 @@ const userAccountLayoutRouteWithChildren =
 interface userLayoutRouteChildren {
   userAccountLayoutRoute: typeof userAccountLayoutRouteWithChildren
   userProductProductIdRoute: typeof userProductProductIdRoute
+  userVendorIdRoute: typeof userVendorIdRoute
   userCheckoutIndexRoute: typeof userCheckoutIndexRoute
   userExploreIndexRoute: typeof userExploreIndexRoute
   userHomeIndexRoute: typeof userHomeIndexRoute
@@ -302,6 +317,7 @@ interface userLayoutRouteChildren {
 const userLayoutRouteChildren: userLayoutRouteChildren = {
   userAccountLayoutRoute: userAccountLayoutRouteWithChildren,
   userProductProductIdRoute: userProductProductIdRoute,
+  userVendorIdRoute: userVendorIdRoute,
   userCheckoutIndexRoute: userCheckoutIndexRoute,
   userExploreIndexRoute: userExploreIndexRoute,
   userHomeIndexRoute: userHomeIndexRoute,
@@ -342,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/farmer': typeof farmerFarmerLayoutRouteWithChildren
   '/account': typeof userAccountLayoutRouteWithChildren
   '/product/$productId': typeof userProductProductIdRoute
+  '/vendor/$id': typeof userVendorIdRoute
   '/checkout': typeof userCheckoutIndexRoute
   '/explore': typeof userExploreIndexRoute
   '/home': typeof userHomeIndexRoute
@@ -361,6 +378,7 @@ export interface FileRoutesByTo {
   '/farmer': typeof farmerFarmerLayoutRouteWithChildren
   '/account': typeof userAccountLayoutRouteWithChildren
   '/product/$productId': typeof userProductProductIdRoute
+  '/vendor/$id': typeof userVendorIdRoute
   '/checkout': typeof userCheckoutIndexRoute
   '/explore': typeof userExploreIndexRoute
   '/home': typeof userHomeIndexRoute
@@ -382,6 +400,7 @@ export interface FileRoutesById {
   '/(farmer)/farmer': typeof farmerFarmerLayoutRouteWithChildren
   '/(user)/account': typeof userAccountLayoutRouteWithChildren
   '/(user)/product/$productId': typeof userProductProductIdRoute
+  '/(user)/vendor/$id': typeof userVendorIdRoute
   '/(user)/checkout/': typeof userCheckoutIndexRoute
   '/(user)/explore/': typeof userExploreIndexRoute
   '/(user)/home/': typeof userHomeIndexRoute
@@ -403,6 +422,7 @@ export interface FileRouteTypes {
     | '/farmer'
     | '/account'
     | '/product/$productId'
+    | '/vendor/$id'
     | '/checkout'
     | '/explore'
     | '/home'
@@ -421,6 +441,7 @@ export interface FileRouteTypes {
     | '/farmer'
     | '/account'
     | '/product/$productId'
+    | '/vendor/$id'
     | '/checkout'
     | '/explore'
     | '/home'
@@ -440,6 +461,7 @@ export interface FileRouteTypes {
     | '/(farmer)/farmer'
     | '/(user)/account'
     | '/(user)/product/$productId'
+    | '/(user)/vendor/$id'
     | '/(user)/checkout/'
     | '/(user)/explore/'
     | '/(user)/home/'
@@ -491,6 +513,7 @@ export const routeTree = rootRoute
       "children": [
         "/(user)/account",
         "/(user)/product/$productId",
+        "/(user)/vendor/$id",
         "/(user)/checkout/",
         "/(user)/explore/",
         "/(user)/home/",
@@ -518,6 +541,10 @@ export const routeTree = rootRoute
     },
     "/(user)/product/$productId": {
       "filePath": "(user)/product/$productId.tsx",
+      "parent": "/(user)"
+    },
+    "/(user)/vendor/$id": {
+      "filePath": "(user)/vendor/$id.tsx",
       "parent": "/(user)"
     },
     "/(user)/checkout/": {
