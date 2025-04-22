@@ -30,6 +30,8 @@ Route::middleware(['userAuth'])->group(function () {
     //produce farmer only access
     Route::middleware(['farmerAuth'])->group(function () {
         Route::post('/farmer/produce/create', 'Produce\ProduceController@create');
+        Route::get('/farmer/produce/show/{id}', 'Produce\ProduceController@show');
+        Route::put('/farmer/produce/update/{id}', 'Produce\ProduceController@update');
         Route::delete('/farmer/produce/delete/{id}', 'Produce\ProduceController@delete');
         Route::get('/farmer/produce', 'Produce\ProduceController@getFarmerProduce');
 

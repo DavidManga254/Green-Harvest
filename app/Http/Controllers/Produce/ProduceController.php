@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Produce;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Produce\ProduceCreate;
+use App\Http\Requests\Produce\ProduceUpdate;
 use App\Http\Resources\Produce\ProduceDetailResource;
 use App\Http\Resources\Produce\ProduceResource;
 use App\Models\Produce\Produce;
@@ -97,7 +98,7 @@ class ProduceController extends Controller
     {
         $user = $request->input('user');
 
-        $produce = Produce::where('user_id', $user->id)->where('id', $id)->first();
+        $produce = Produce::where('farmer_id', $user->id)->where('id', $id)->first();
 
         if (!$produce) {
             return response()->json([
@@ -112,6 +113,27 @@ class ProduceController extends Controller
         return response()->json([
             'message' => 'Product deleted',
         ], 200);
+    }
+
+    public function update(ProduceUpdate $request, $id)
+    {
+        $farmer = $request->get('farmer');
+        $produce = Produce::where('farmer_id', $farmer->id)->where('id', $id)->first();
+
+        if (!$produce) {
+            return response()->json([
+                'message' => 'Product not found or unauthorized',
+            ], 404);
+        }
+
+        $validated = $request->validated();
+
+        $produce->update($validated);
+
+        return response()->json([
+            'message' => 'Produce updated successfully!',
+            'data' => new ProduceDetailResource($produce->load(['images', 'tags', 'category']))
+        ]);
     }
 
     public function getFarmerProduce(Request $request)

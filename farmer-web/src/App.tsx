@@ -20,6 +20,8 @@ import DashboardPage from "./pages/dashboard";
 import resources from "./resources";
 import Layout from "./components/Layout";
 import ProducePage from "./pages/produce/list";
+import ProduceCreatePage from "./pages/produce/create";
+import EditProductPage from "./pages/produce/edit";
 
 function App() {
     return (
@@ -66,10 +68,20 @@ function App() {
                                         path="/dashboard"
                                         element={<DashboardPage />}
                                     />
-                                    <Route
-                                        path="/produce"
-                                        element={<ProducePage />}
-                                    />
+                                    <Route path="/produce">
+                                        <Route
+                                            index
+                                            element={<ProducePage />}
+                                        />
+                                        <Route
+                                            path="create"
+                                            element={<ProduceCreatePage />}
+                                        />
+                                        <Route
+                                            path="edit/:id"
+                                            element={<EditProductPage />}
+                                        />
+                                    </Route>
                                 </Route>
                             </Routes>
                             <RefineKbar />

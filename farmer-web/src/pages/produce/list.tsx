@@ -12,7 +12,11 @@ import { Input, Space, Table } from "antd";
 import { CustomAvatar } from "../../components/custom-avatar";
 import { Text } from "../../components/Text";
 
-const ProducePage: React.FC = () => {
+interface ProducePageInterface {
+    children: React.ReactNode;
+}
+
+const ProducePage: React.FC<ProducePageInterface> = ({ children }) => {
     const go = useGo();
 
     const { tableProps, filters } = useTable({
@@ -141,7 +145,7 @@ const ProducePage: React.FC = () => {
                         dataIndex={"id"}
                         title={"Actions"}
                         fixed={"right"}
-                        render={(value, record) => (
+                        render={(value) => (
                             <Space>
                                 <EditButton
                                     hideText
@@ -160,6 +164,7 @@ const ProducePage: React.FC = () => {
                     <Table.Column />
                 </Table>
             </List>
+            {children}
         </div>
     );
 };
