@@ -1,86 +1,98 @@
 import PropmtArrow from "../../assets/icons/PromptArrow";
 import StarRating from "../StarRating/StarRating";
 import "./ShopSidebar.css";
+import {
+    Box,
+    Typography,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormControl,
+    FormLabel,
+    Checkbox,
+    Stack,
+    Chip,
+    Paper,
+} from "@mui/material";
 
 const ShopSidebar: React.FC = () => {
     return (
         <div className="shop-side-bar">
             <form>
-                <div className="categories">
-                    <div className="title">
-                        <h1>All Categories</h1>
-                    </div>
-                    <div className="options">
-                        <div className="option-section">
-                            <input type="radio" name="category" />
-                            <label>
-                                Fresh Fruit <span>(134)</span>
-                            </label>
-                        </div>
-                        <div className="option-section">
-                            <input type="radio" name="category" />
-                            <label>
-                                Vegetable <span>(14)</span>
-                            </label>
-                        </div>
-                        <div className="option-section">
-                            <input type="radio" name="category" />
-                            <label>
-                                Cooking <span>(45)</span>
-                            </label>
-                        </div>
-                        <div className="option-section">
-                            <input type="radio" name="category" />
-                            <label>
-                                Snacks <span>(47)</span>
-                            </label>
-                        </div>
-                        <div className="option-section">
-                            <input type="radio" name="category" />
-                            <label>
-                                Beverages <span>(38)</span>
-                            </label>
-                        </div>
-                        <div className="option-section">
-                            <input type="radio" name="category" />
-                            <label>
-                                Bread & Bakery<span>(18)</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div className="rating">
-                    <div className="title">
-                        <h1>Rating</h1>
-                    </div>
-                    <div className="options">
-                        <div className="option-section">
-                            <input type="checkbox" name="rating" />
-                            <StarRating rating={5} />
-                            <label>5.0 & up</label>
-                        </div>
-                        <div className="option-section">
-                            <input type="checkbox" name="rating" />
-                            <StarRating rating={4} />
-                            <label>4.0 & up</label>
-                        </div>
-                        <div className="option-section">
-                            <input type="checkbox" name="rating" />
-                            <StarRating rating={3} />
-                            <label>3.0 & up</label>
-                        </div>
-                        <div className="option-section">
-                            <input type="checkbox" name="rating" />
-                            <StarRating rating={2} />
-                            <label>2.0 & up</label>
-                        </div>
-                        <div className="option-section">
-                            <input type="checkbox" name="rating" />
-                            <StarRating rating={1} />
-                            <label>1.0 & up</label>
-                        </div>
-                    </div>
-                </div>
+                {/* Categories */}
+                <FormControl component="fieldset" sx={{ mb: 1 }}>
+                    <FormLabel component="legend">
+                        <Typography variant="h6" fontWeight={600}>
+                            All Categories
+                        </Typography>
+                    </FormLabel>
+                    <RadioGroup name="category">
+                        {[
+                            { label: "Fresh Fruit", count: 134 },
+                            { label: "Vegetable", count: 14 },
+                            { label: "Cooking", count: 45 },
+                            { label: "Snacks", count: 47 },
+                            { label: "Beverages", count: 38 },
+                            { label: "Bread & Bakery", count: 18 },
+                        ].map(({ label, count }) => (
+                            <FormControlLabel
+                                key={label}
+                                value={label}
+                                control={
+                                    <Radio
+                                        sx={{
+                                            "&.Mui-checked": {
+                                                color: "#3BB77E",
+                                            },
+                                        }}
+                                    />
+                                }
+                                label={
+                                    <Typography>
+                                        {label}{" "}
+                                        <span style={{ color: "#999" }}>
+                                            ({count})
+                                        </span>
+                                    </Typography>
+                                }
+                            />
+                        ))}
+                    </RadioGroup>
+                </FormControl>
+
+                {/* Ratings */}
+                <FormControl component="fieldset" sx={{ mb: 1 }}>
+                    <FormLabel component="legend">
+                        <Typography variant="h6" fontWeight={600}>
+                            Rating
+                        </Typography>
+                    </FormLabel>
+                    <Stack spacing={1}>
+                        {[5, 4, 3, 2, 1].map((rate) => (
+                            <FormControlLabel
+                                key={rate}
+                                control={
+                                    <Checkbox
+                                        sx={{
+                                            "&.Mui-checked": {
+                                                color: "#3BB77E",
+                                            },
+                                        }}
+                                        name="rating"
+                                    />
+                                }
+                                label={
+                                    <>
+                                        <StarRating rating={rate} />
+                                        <Typography component="span">
+                                            {rate}.0 & up
+                                        </Typography>
+                                    </>
+                                }
+                            />
+                        ))}
+                    </Stack>
+                </FormControl>
                 <div className="tags">
                     <div className="title">
                         <h1>Popular Tag</h1>

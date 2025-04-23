@@ -8,12 +8,26 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { PaginationItem } from "@mui/material";
 import { useNavigate } from "@tanstack/react-router";
 import ShopSidebar from "../../components/ShopSidebar/ShopSidebar";
+import {
+    Drawer,
+    IconButton,
+    useMediaQuery,
+    useTheme,
+    Button,
+} from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import CloseIcon from "@mui/icons-material/Close";
+import { useState } from "react";
 
 interface ShopPageInterface {
     page?: number;
 }
 
 const ShopPage: React.FC<ShopPageInterface> = ({ page }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md")); // 'md' or 'sm'
+    const [filterOpen, setFilterOpen] = useState(false);
+
     const navigate = useNavigate();
 
     const { data, error, isLoading } = useQuery({
@@ -54,10 +68,42 @@ const ShopPage: React.FC<ShopPageInterface> = ({ page }) => {
 
     return (
         <div className="shop-page">
+            {isMobile && (
+                <>
+                    <div className="mobile-filter">
+                        <Button
+                            variant="outlined"
+                            startIcon={<FilterListIcon />}
+                            onClick={() => setFilterOpen(true)}
+                            sx={{
+                                marginBottom: 2,
+                                color: "#3BB77E",
+                                borderColor: "#3BB77E",
+                            }}
+                        >
+                            Filters
+                        </Button>
+                    </div>
+                    <Drawer
+                        anchor="left"
+                        open={filterOpen}
+                        onClose={() => setFilterOpen(false)}
+                    >
+                        <div style={{ padding: "20px", width: "300px" }}>
+                            <IconButton onClick={() => setFilterOpen(false)}>
+                                <CloseIcon />
+                            </IconButton>
+                            <ShopSidebar />
+                        </div>
+                    </Drawer>
+                </>
+            )}
             <div className="content-section">
-                <div className="Side-bar">
-                    <ShopSidebar />
-                </div>
+                {!isMobile && (
+                    <div className="Side-bar">
+                        <ShopSidebar />
+                    </div>
+                )}
                 <div className="product-wrapper">
                     <div className="product-shop-list">
                         {produceData.map((produce, index: number) => (

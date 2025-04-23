@@ -26,6 +26,14 @@ export default function VendorPage() {
     const [sort, setSort] = useState("latest");
     const itemsPerPage = 12;
 
+    const [bioOpen, setBioOpen] = useState(false);
+    const handleBioOpen = () => setBioOpen(true);
+    const handleBioClose = () => setBioOpen(false);
+
+    const fullBio = `Hi there! I'm Mama Achieng, a dedicated organic farmer with over 15 years of experience growing fresh vegetables, fruits, and herbs. My passion lies in sustainable agriculture and empowering local communities through healthy food and eco-friendly farming practices. From sunrise to sunset, I'm out in the fields tending to crops, caring for animals, and sharing knowledge with other small-scale farmers. Whether you're here for fresh produce or to learn more about farm life, you're most welcome!`;
+
+    const shortBio = fullBio.slice(0, 100) + "...";
+
     const handleTabChange = (event, newValue) => {
         setTabIndex(newValue);
     };
@@ -58,7 +66,7 @@ export default function VendorPage() {
             <Box
                 sx={{
                     backgroundImage:
-                        'url("https://yt3.googleusercontent.com/kLTVZePt0Qa8Z5QsP2OIJ0FLbBA30X353_LBegrP1b4Q--JOcHy5D3xQAVA37igve7qdagIrqA=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj")',
+                        'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpTy-9x6uHdkksqh0BADiaoOMUgRmMQBzi-A&s")',
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     height: 200,
@@ -71,46 +79,95 @@ export default function VendorPage() {
             <Grid container spacing={2} alignItems="center">
                 <Grid item>
                     <Avatar
-                        src="https://yt3.googleusercontent.com/Q8u1ClHhveXr--dGYAajclsRnclWbTPFZoYLMRyrrw1Nxurnp3oYQfgiB7HiRiKFKqRHw0T9TVM=s160-c-k-c0x00ffffff-no-rj"
+                        src="https://media.istockphoto.com/id/1049653176/photo/happy-thai-female-farmer-harvesting-rice-in-countryside-thailand.jpg?s=612x612&w=0&k=20&c=BD--rcVXQNb-2IE3gg-9BVm8HQ4QqfGjGB7WOFshdJw="
                         alt="K-Wiss"
                         sx={{ width: 100, height: 100 }}
                     />
                 </Grid>
                 <Grid item xs>
                     <Typography variant="h5" fontWeight="bold">
-                        K-Wiss
+                        Mama Achieng
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        @K-Wiss · 60.1K subscribers · 1.5K videos
+                        102 subscribers · 15 products
                     </Typography>
                     <Typography variant="body1" sx={{ mt: 1 }}>
-                        Hello! I'm K-Wiss, a professional fighting game
-                        competitor, commentator and content creator.
-                    </Typography>
-                    <Box sx={{ mt: 1 }}>
-                        <Link
-                            href="https://twitch.tv/k_wiss"
-                            target="_blank"
-                            rel="noopener"
+                        {shortBio}{" "}
+                        <Button
+                            style={{ color: "var(--green)" }}
+                            size="small"
+                            onClick={handleBioOpen}
                         >
-                            twitch.tv/k_wiss
-                        </Link>
-                        {` and 2 more links`}
-                    </Box>
+                            Read More
+                        </Button>
+                    </Typography>
+                    <Modal open={bioOpen} onClose={handleBioClose}>
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                bgcolor: "background.paper",
+                                boxShadow: 24,
+                                p: 4,
+                                borderRadius: 2,
+                                width: "90%",
+                                maxWidth: 500,
+                                maxHeight: "80vh",
+                                overflowY: "auto",
+                            }}
+                        >
+                            <Typography variant="h6" gutterBottom>
+                                About K-Wiss
+                            </Typography>
+                            <Typography variant="body2">{fullBio}</Typography>
+                            <Box
+                                mt={2}
+                                display="flex"
+                                justifyContent="flex-end"
+                            >
+                                <Button onClick={handleBioClose}>Close</Button>
+                            </Box>
+                        </Box>
+                    </Modal>
                 </Grid>
                 <Grid item>
-                    <Button variant="contained">Subscribed</Button>
-                    <Button variant="outlined" sx={{ ml: 1 }}>
-                        Join
+                    <Button
+                        variant="contained"
+                        style={{ backgroundColor: "var(--green)" }}
+                    >
+                        Subscribed
                     </Button>
                 </Grid>
             </Grid>
 
             {/* Navigation Tabs */}
-            <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mt: 4 }}>
-                <Tab label="Products" />
-                <Tab label="Vendor Reviews" />
-                <Tab label="Locate vendor" />
+            <Tabs
+                value={tabIndex}
+                onChange={handleTabChange}
+                sx={{ mt: 4 }}
+                slotProps={{
+                    indicator: {
+                        style: {
+                            backgroundColor: "var(--green)",
+                            color: "var(--green)",
+                        },
+                    },
+                }}
+            >
+                <Tab
+                    style={{ color: tabIndex === 0 ? "var(--green)" : "" }}
+                    label="Products"
+                />
+                <Tab
+                    style={{ color: tabIndex === 1 ? "var(--green)" : "" }}
+                    label="Vendor Reviews"
+                />
+                <Tab
+                    style={{ color: tabIndex === 2 ? "var(--green)" : "" }}
+                    label="Locate vendor"
+                />
             </Tabs>
 
             {/* Tab Content */}
@@ -122,10 +179,10 @@ export default function VendorPage() {
                                 <Card>
                                     <CardMedia
                                         component="img"
-                                        height="140"
+                                        height="160"
                                         image={product.image}
                                         alt={product.name}
-                                        sx={{ objectFit: "contain", p: 1 }}
+                                        sx={{ objectFit: "cover", p: 1 }}
                                     />
                                     <CardContent>
                                         <Typography
@@ -338,27 +395,27 @@ const reviews = [
 
 const products = [
     {
-        name: "Red Chili",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
+        name: "Apples",
+        price: "Ksh14.99",
+        image: "https://assets.clevelandclinic.org/transform/cd71f4bd-81d4-45d8-a450-74df78e4477a/Apples-184940975-770x533-1_jpg",
         rating: 4,
     },
     {
-        name: "Big Potatos",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
+        name: "Carrots",
+        price: "Ksh14.99",
+        image: "https://cdn.mos.cms.futurecdn.net/VmDx3obMsrncNiph4Lc5kW-1200-80.jpg",
         rating: 4,
     },
     {
         name: "Chanise Cabbage",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
+        price: "Ksh14.99",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWQtjRdJG1ZIfRnxksgGkzzCwX4g-ZAXSBLg&s",
         rating: 5,
     },
     {
         name: "Ladies Finger",
         price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC9_3yTshma4fS59NlcAdoi-mX29pPrEWiNg&s",
         rating: 4,
         outOfStock: true,
     },
