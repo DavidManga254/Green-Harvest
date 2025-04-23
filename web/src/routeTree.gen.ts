@@ -24,6 +24,7 @@ import { Route as userExploreIndexImport } from './routes/(user)/explore/index'
 import { Route as userCheckoutIndexImport } from './routes/(user)/checkout/index'
 import { Route as userVendorIdImport } from './routes/(user)/vendor/$id'
 import { Route as userProductProductIdImport } from './routes/(user)/product/$productId'
+import { Route as userCheckoutPayIndexImport } from './routes/(user)/checkout/pay/index'
 import { Route as userAccountWishlistIndexImport } from './routes/(user)/account/wishlist/index'
 import { Route as userAccountOrderHistoryIndexImport } from './routes/(user)/account/order-history/index'
 import { Route as userAccountDashboardIndexImport } from './routes/(user)/account/dashboard/index'
@@ -105,6 +106,12 @@ const userVendorIdRoute = userVendorIdImport.update({
 const userProductProductIdRoute = userProductProductIdImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
+  getParentRoute: () => userLayoutRoute,
+} as any)
+
+const userCheckoutPayIndexRoute = userCheckoutPayIndexImport.update({
+  id: '/checkout/pay/',
+  path: '/checkout/pay/',
   getParentRoute: () => userLayoutRoute,
 } as any)
 
@@ -280,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof userAccountWishlistIndexImport
       parentRoute: typeof userAccountLayoutImport
     }
+    '/(user)/checkout/pay/': {
+      id: '/(user)/checkout/pay/'
+      path: '/checkout/pay'
+      fullPath: '/checkout/pay'
+      preLoaderRoute: typeof userCheckoutPayIndexImport
+      parentRoute: typeof userLayoutImport
+    }
   }
 }
 
@@ -312,6 +326,7 @@ interface userLayoutRouteChildren {
   userRegisterIndexRoute: typeof userRegisterIndexRoute
   userShopIndexRoute: typeof userShopIndexRoute
   userSignInIndexRoute: typeof userSignInIndexRoute
+  userCheckoutPayIndexRoute: typeof userCheckoutPayIndexRoute
 }
 
 const userLayoutRouteChildren: userLayoutRouteChildren = {
@@ -324,6 +339,7 @@ const userLayoutRouteChildren: userLayoutRouteChildren = {
   userRegisterIndexRoute: userRegisterIndexRoute,
   userShopIndexRoute: userShopIndexRoute,
   userSignInIndexRoute: userSignInIndexRoute,
+  userCheckoutPayIndexRoute: userCheckoutPayIndexRoute,
 }
 
 const userLayoutRouteWithChildren = userLayoutRoute._addFileChildren(
@@ -371,6 +387,7 @@ export interface FileRoutesByFullPath {
   '/account/dashboard': typeof userAccountDashboardIndexRoute
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
+  '/checkout/pay': typeof userCheckoutPayIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -391,6 +408,7 @@ export interface FileRoutesByTo {
   '/account/dashboard': typeof userAccountDashboardIndexRoute
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
+  '/checkout/pay': typeof userCheckoutPayIndexRoute
 }
 
 export interface FileRoutesById {
@@ -413,6 +431,7 @@ export interface FileRoutesById {
   '/(user)/account/dashboard/': typeof userAccountDashboardIndexRoute
   '/(user)/account/order-history/': typeof userAccountOrderHistoryIndexRoute
   '/(user)/account/wishlist/': typeof userAccountWishlistIndexRoute
+  '/(user)/checkout/pay/': typeof userCheckoutPayIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -435,6 +454,7 @@ export interface FileRouteTypes {
     | '/account/dashboard'
     | '/account/order-history'
     | '/account/wishlist'
+    | '/checkout/pay'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -454,6 +474,7 @@ export interface FileRouteTypes {
     | '/account/dashboard'
     | '/account/order-history'
     | '/account/wishlist'
+    | '/checkout/pay'
   id:
     | '__root__'
     | '/'
@@ -474,6 +495,7 @@ export interface FileRouteTypes {
     | '/(user)/account/dashboard/'
     | '/(user)/account/order-history/'
     | '/(user)/account/wishlist/'
+    | '/(user)/checkout/pay/'
   fileRoutesById: FileRoutesById
 }
 
@@ -519,7 +541,8 @@ export const routeTree = rootRoute
         "/(user)/home/",
         "/(user)/register/",
         "/(user)/shop/",
-        "/(user)/sign-in/"
+        "/(user)/sign-in/",
+        "/(user)/checkout/pay/"
       ]
     },
     "/(farmer)/farmer": {
@@ -594,6 +617,10 @@ export const routeTree = rootRoute
     "/(user)/account/wishlist/": {
       "filePath": "(user)/account/wishlist/index.tsx",
       "parent": "/(user)/account"
+    },
+    "/(user)/checkout/pay/": {
+      "filePath": "(user)/checkout/pay/index.tsx",
+      "parent": "/(user)"
     }
   }
 }
