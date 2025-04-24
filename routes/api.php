@@ -61,4 +61,7 @@ Route::middleware(['userAuth'])->group(function () {
 
     Route::get('/payment/pay', 'Payment\PaymentController@redirectToGateway');
     Route::get('/payment/verify/{reference}', 'Payment\PaymentController@verifyPayment');
+
+    Route::get('/billing-addresses', 'Billing\BillingAddressController@index');
+    Route::post('/billing-addresses', 'Billing\BillingAddressController@store');
 });
