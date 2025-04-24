@@ -9,15 +9,63 @@ import {
     MenuItem,
     FormControlLabel,
     Checkbox,
-    RadioGroup,
-    Radio,
+    // RadioGroup,
+    // Radio,
     Button,
     Paper,
     Divider,
     Avatar,
+    CircularProgress,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import Payment from "../../../api/Payment";
+import { toast } from "react-toastify";
 
 const CheckOutPayPage: React.FC = () => {
+    const {
+        mutate: triggerPayment,
+        isPending,
+        isError,
+    } = useMutation({
+        mutationFn: Payment.createPayment,
+        onError: () => {
+            toast.error("Payment failed. Please try again.", {
+                position: "top-right",
+                autoClose: 5000,
+            });
+        },
+        onSuccess: (res) => {
+            if (res?.authorization_url) {
+                console.log("Payment URL:", res.authorization_url);
+                window.location.href = res.authorization_url.url;
+            } else {
+                toast.error("Invalid payment link received.", {
+                    position: "top-right",
+                    autoClose: 5000,
+                });
+            }
+        },
+        onMutate: () => {
+            toast("Processing payment… Please wait.", {
+                toastId: "processing-payment",
+                position: "top-right",
+                isLoading: true,
+                closeOnClick: false,
+                closeButton: false,
+                autoClose: false,
+                style: {
+                    borderLeft: "6px solid #00C853",
+                    backgroundColor: "#e8f5e9",
+                    color: "#1b5e20",
+                },
+            });
+        },
+    });
+
+    const handlePlaceOrder = () => {
+        triggerPayment();
+    };
+
     return (
         <Box sx={{ padding: 4, backgroundColor: "#fafafa" }}>
             <Grid container spacing={4}>
@@ -201,7 +249,7 @@ const CheckOutPayPage: React.FC = () => {
                             </Typography>
                         </Box>
 
-                        <Box mt={4}>
+                        {/* <Box mt={4}>
                             <Typography variant="subtitle1">
                                 Payment Method
                             </Typography>
@@ -222,7 +270,7 @@ const CheckOutPayPage: React.FC = () => {
                                     label="Amazon Pay"
                                 />
                             </RadioGroup>
-                        </Box>
+                        </Box> */}
 
                         <Button
                             fullWidth
@@ -232,6 +280,16 @@ const CheckOutPayPage: React.FC = () => {
                                 mt: 2,
                                 "&:hover": { backgroundColor: "#00B44B" },
                             }}
+                            onClick={handlePlaceOrder}
+                            disabled={isError || isPending}
+                            startIcon={
+                                isPending && (
+                                    <CircularProgress
+                                        size={20}
+                                        color="inherit"
+                                    />
+                                )
+                            }
                         >
                             Place Order
                         </Button>

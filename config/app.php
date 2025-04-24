@@ -123,4 +123,13 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    // 'providers' => [
+    //     Unicodeveloper\Paystack\PaystackServiceProvider::class,
+    // ],
+
+    // 'aliases' => [
+    //     'Paystack' => Unicodeveloper\Paystack\Facades\Paystack::class,
+    // ],
+
+
 ];

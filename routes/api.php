@@ -58,4 +58,7 @@ Route::middleware(['userAuth'])->group(function () {
 
     Route::get('/users/farmers/nearby', 'User\UserController@findNearbyFarmers');
     Route::post('/users/farmers/review', 'User\UserController@submitFarmerReview');
+
+    Route::get('/payment/pay', 'Payment\PaymentController@redirectToGateway');
+    Route::get('/payment/verify/{reference}', 'Payment\PaymentController@verifyPayment');
 });

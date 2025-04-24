@@ -31,6 +31,7 @@ import { Route as userAccountDashboardIndexImport } from './routes/(user)/accoun
 import { Route as farmerFarmerInventoryIndexImport } from './routes/(farmer)/farmer/inventory/index'
 import { Route as farmerFarmerDashboardIndexImport } from './routes/(farmer)/farmer/dashboard/index'
 import { Route as userAccountOrderHistoryOrderIdImport } from './routes/(user)/account/order-history/$orderId'
+import { Route as userCheckoutPayCallbackIndexImport } from './routes/(user)/checkout/pay/callback/index'
 
 // Create Virtual Routes
 
@@ -155,6 +156,13 @@ const userAccountOrderHistoryOrderIdRoute =
     id: '/order-history/$orderId',
     path: '/order-history/$orderId',
     getParentRoute: () => userAccountLayoutRoute,
+  } as any)
+
+const userCheckoutPayCallbackIndexRoute =
+  userCheckoutPayCallbackIndexImport.update({
+    id: '/checkout/pay/callback/',
+    path: '/checkout/pay/callback/',
+    getParentRoute: () => userLayoutRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -294,6 +302,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof userCheckoutPayIndexImport
       parentRoute: typeof userLayoutImport
     }
+    '/(user)/checkout/pay/callback/': {
+      id: '/(user)/checkout/pay/callback/'
+      path: '/checkout/pay/callback'
+      fullPath: '/checkout/pay/callback'
+      preLoaderRoute: typeof userCheckoutPayCallbackIndexImport
+      parentRoute: typeof userLayoutImport
+    }
   }
 }
 
@@ -327,6 +342,7 @@ interface userLayoutRouteChildren {
   userShopIndexRoute: typeof userShopIndexRoute
   userSignInIndexRoute: typeof userSignInIndexRoute
   userCheckoutPayIndexRoute: typeof userCheckoutPayIndexRoute
+  userCheckoutPayCallbackIndexRoute: typeof userCheckoutPayCallbackIndexRoute
 }
 
 const userLayoutRouteChildren: userLayoutRouteChildren = {
@@ -340,6 +356,7 @@ const userLayoutRouteChildren: userLayoutRouteChildren = {
   userShopIndexRoute: userShopIndexRoute,
   userSignInIndexRoute: userSignInIndexRoute,
   userCheckoutPayIndexRoute: userCheckoutPayIndexRoute,
+  userCheckoutPayCallbackIndexRoute: userCheckoutPayCallbackIndexRoute,
 }
 
 const userLayoutRouteWithChildren = userLayoutRoute._addFileChildren(
@@ -388,6 +405,7 @@ export interface FileRoutesByFullPath {
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
   '/checkout/pay': typeof userCheckoutPayIndexRoute
+  '/checkout/pay/callback': typeof userCheckoutPayCallbackIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -409,6 +427,7 @@ export interface FileRoutesByTo {
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
   '/checkout/pay': typeof userCheckoutPayIndexRoute
+  '/checkout/pay/callback': typeof userCheckoutPayCallbackIndexRoute
 }
 
 export interface FileRoutesById {
@@ -432,6 +451,7 @@ export interface FileRoutesById {
   '/(user)/account/order-history/': typeof userAccountOrderHistoryIndexRoute
   '/(user)/account/wishlist/': typeof userAccountWishlistIndexRoute
   '/(user)/checkout/pay/': typeof userCheckoutPayIndexRoute
+  '/(user)/checkout/pay/callback/': typeof userCheckoutPayCallbackIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -455,6 +475,7 @@ export interface FileRouteTypes {
     | '/account/order-history'
     | '/account/wishlist'
     | '/checkout/pay'
+    | '/checkout/pay/callback'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -475,6 +496,7 @@ export interface FileRouteTypes {
     | '/account/order-history'
     | '/account/wishlist'
     | '/checkout/pay'
+    | '/checkout/pay/callback'
   id:
     | '__root__'
     | '/'
@@ -496,6 +518,7 @@ export interface FileRouteTypes {
     | '/(user)/account/order-history/'
     | '/(user)/account/wishlist/'
     | '/(user)/checkout/pay/'
+    | '/(user)/checkout/pay/callback/'
   fileRoutesById: FileRoutesById
 }
 
@@ -542,7 +565,8 @@ export const routeTree = rootRoute
         "/(user)/register/",
         "/(user)/shop/",
         "/(user)/sign-in/",
-        "/(user)/checkout/pay/"
+        "/(user)/checkout/pay/",
+        "/(user)/checkout/pay/callback/"
       ]
     },
     "/(farmer)/farmer": {
@@ -620,6 +644,10 @@ export const routeTree = rootRoute
     },
     "/(user)/checkout/pay/": {
       "filePath": "(user)/checkout/pay/index.tsx",
+      "parent": "/(user)"
+    },
+    "/(user)/checkout/pay/callback/": {
+      "filePath": "(user)/checkout/pay/callback/index.tsx",
       "parent": "/(user)"
     }
   }
