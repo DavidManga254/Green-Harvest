@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('billing_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('full_name');
+
+            $table->string('full_name'); // Full name added
             $table->string('phone');
-            $table->string('email')->nullable();
             $table->string('address_line_1');
             $table->string('address_line_2')->nullable();
             $table->string('city');
-            $table->string('state')->nullable();
-            $table->string('postal_code')->nullable();
+            $table->string('county');
+            $table->string('postal_code');
             $table->string('country');
             $table->timestamps();
         });
