@@ -378,7 +378,7 @@ const CheckOutPayPage: React.FC = () => {
                 <Grid item xs={12} md={4}>
                     <Paper elevation={3} sx={{ padding: 2 }}>
                         <Typography variant="h6">Order Summary</Typography>
-                        {!cart_loading ? (
+                        {!cart_loading && cart_items?.cart_items?.length ? (
                             <>
                                 {cart_items.cart_items.map((item, index) => (
                                     <Box

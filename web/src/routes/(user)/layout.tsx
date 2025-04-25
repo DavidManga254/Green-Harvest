@@ -5,7 +5,7 @@ import Footer from "../../components/Footer";
 export const Route = createRootRoute({
     component: () => (
         <div className="page-wrapper">
-            {/* <Header /> */}
+            <Header />
             <div
                 style={{ maxWidth: "1100px", margin: "0 auto" }}
                 className="content-wrapper"
