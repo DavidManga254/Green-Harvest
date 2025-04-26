@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Farmer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Farmer\RegisterFarmer;
 use App\Http\Requests\Farmer\UpdateFarmerRequest;
+use App\Http\Resources\Farmer\FarmerDetailReviewResource;
 use App\Http\Resources\Farmer\FarmerPublicResource;
 use App\Http\Resources\Farmer\FarmerResource;
 use App\Http\Resources\Farmer\FarmerReviewResource;
+use App\Http\Resources\Produce\ProduceResource;
 use App\Models\Farmer\Farmer;
+use App\Models\Farmer\FarmerReview;
+use App\Models\Produce\Produce;
 use App\Models\User\User;
 use Illuminate\Http\Request;
 
@@ -189,6 +193,51 @@ class FarmerController extends Controller
         return response()->json([
             'authenticated' => true,
             'role' => 'farmer',
+        ], 200);
+    }
+
+    public function getFarmerProducts(Request $request, $id)
+    {
+        $perPage = $request->input('data_per_page', 20);
+        $page = $request->input('page', 1);
+
+
+        $produce = Produce::where('farmer_id', $id)->with('images')->paginate($perPage, ['*'], 'page', $page);
+
+
+        return response()->json([
+            'data' => ProduceResource::collection($produce->items()),
+            'pagination' => [
+                'total' => $produce->total(),
+                'per_page' => $produce->perPage(),
+                'current_page' => $produce->currentPage(),
+                'last_page' => $produce->lastPage(),
+                'next_page_url' => $produce->nextPageUrl(),
+                'prev_page_url' => $produce->previousPageUrl(),
+            ]
+        ], 200);
+    }
+
+    public function getFarmerReviews(Request $request, $farmerId)
+    {
+        $perPage = $request->input('data_per_page', 10);
+        $page = $request->input('page', 1);
+
+        $reviews = FarmerReview::where('farmer_id', $farmerId)
+            ->with('images') // assuming you have images relationship
+            ->latest()
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'data' => FarmerDetailReviewResource::collection($reviews->items()),
+            'pagination' => [
+                'total' => $reviews->total(),
+                'per_page' => $reviews->perPage(),
+                'current_page' => $reviews->currentPage(),
+                'last_page' => $reviews->lastPage(),
+                'next_page_url' => $reviews->nextPageUrl(),
+                'prev_page_url' => $reviews->previousPageUrl(),
+            ],
         ], 200);
     }
 }

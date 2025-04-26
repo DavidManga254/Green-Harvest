@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('farmer_reviews', function (Blueprint $table) {
+        Schema::create('farmer_review_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('farmer_id')->constrained('farmers')->onDelete('cascade');
-            $table->tinyInteger('rating')->unsigned()->comment('1 to 5');
-            $table->text('comment')->nullable();
+            $table->foreignId('farmer_review_id')->constrained('farmer_reviews')->onDelete('cascade');
+            $table->string('image_path');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('farmer_reviews');
+        Schema::dropIfExists('farmer_review_images');
     }
 };

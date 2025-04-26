@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('billing_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-
-            $table->string('full_name'); // Full name added
+            $table->string('full_name');
             $table->string('phone');
             $table->string('address_line_1');
             $table->string('address_line_2')->nullable();
@@ -23,6 +22,7 @@ return new class extends Migration
             $table->string('county');
             $table->string('postal_code');
             $table->string('country');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
