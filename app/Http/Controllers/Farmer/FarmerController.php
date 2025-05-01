@@ -196,13 +196,13 @@ class FarmerController extends Controller
         ], 200);
     }
 
-    public function getFarmerProducts(Request $request, $id)
+    public function getFarmerProducts(Request $request, $farmerId)
     {
         $perPage = $request->input('data_per_page', 20);
         $page = $request->input('page', 1);
 
 
-        $produce = Produce::where('farmer_id', $id)->with('images')->paginate($perPage, ['*'], 'page', $page);
+        $produce = Produce::where('farmer_id', $farmerId)->with('images')->paginate($perPage, ['*'], 'page', $page);
 
 
         return response()->json([

@@ -9,6 +9,7 @@ use App\Http\Requests\User\FindFarmerRequest;
 use App\Http\Requests\User\login;
 use Illuminate\Http\Request;
 use App\Http\Requests\User\Register;
+use App\Http\Resources\Farmer\FarmerMapMarkerResource;
 use App\Http\Resources\Farmer\FarmerReviewResource;
 use App\Mail\Register\Register as SignUpRegister;
 use App\Models\cart\Cart;
@@ -19,6 +20,7 @@ use Carbon\Carbon;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\Input;
@@ -140,31 +142,8 @@ class UserController extends Controller
         }
     }
 
-    public function findNearbyFarmers(FindFarmerRequest $request)
-    {
 
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
-        $radius = $request->input('radius', 10);
 
-        // Retrieve only farmers within the given radius using the Haversine formula
-        $farmers = Farmer::selectRaw("
-            id, name, location, latitude, longitude,
-            (6371 * acos(cos(radians(?)) * cos(radians(latitude)) *
-            cos(radians(longitude) - radians(?)) +
-            sin(radians(?)) * sin(radians(latitude)))) AS distance
-        ", [$latitude, $longitude, $latitude])
-            ->having('distance', '<=', $radius)
-            ->orderBy('distance')
-            ->get();
-
-        // Check if no farmers are found
-        if ($farmers->isEmpty()) {
-            return response()->json(['message' => 'No farmers found nearby'], 200);
-        }
-
-        return response()->json(['farmers' => $farmers], 200);
-    }
 
     public function checkFarmerAuth() {}
 
@@ -187,6 +166,22 @@ class UserController extends Controller
         );
     }
 
+    public function nearby(Request $request)
+    {
+        $lat = $request->query('latitude');
+        $lng = $request->query('longitude');
+        $radius = $request->query('radius', 50);
+
+        DB::enableQueryLog();
+        $farmers = $this->getFarmersWithinRadius($lat, $lng, $radius);
+
+        // dd(DB::getQueryLog());
+        // dd($farmers);
+
+        return response()->json(FarmerMapMarkerResource::collection($farmers));
+    }
+
+
     public function submitFarmerReview(SubmitFarmerReview $request)
     {
         $user = $request->get('authenticated_user');
@@ -206,5 +201,22 @@ class UserController extends Controller
             'message' => 'Review submitted successfully!',
             'data' => new FarmerReviewResource($review)
         ], 201);
+    }
+
+    private function getFarmersWithinRadius($lat, $lng, $radius = 50)
+    {
+        return Farmer::select('*')
+            ->selectRaw("(
+                6371 * acos(
+                    cos(radians(?)) *
+                    cos(radians(latitude)) *
+                    cos(radians(longitude) - radians(?)) +
+                    sin(radians(?)) *
+                    sin(radians(latitude))
+                )
+            ) AS distance", [$lat, $lng, $lat])
+            ->having("distance", "<=", $radius)
+            ->orderBy("distance")
+            ->get();
     }
 }

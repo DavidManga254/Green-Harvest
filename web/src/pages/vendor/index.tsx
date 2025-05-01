@@ -14,17 +14,72 @@ import {
     Modal,
     MenuItem,
     Select,
+    Skeleton,
 } from "@mui/material";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { useState } from "react";
+import Farmer from "../../api/Farmer";
+import { useQuery } from "@tanstack/react-query";
+import useNearbyFarmers from "../../utils/useNearbyFarmers";
 
-export default function VendorPage() {
+interface VendorPageInterface {
+    id: string | number;
+}
+
+const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
     const [tabIndex, setTabIndex] = useState(0);
     const [page, setPage] = useState(1);
     const [imagePreview, setImagePreview] = useState(null);
     const [sort, setSort] = useState("latest");
-    const itemsPerPage = 12;
+    // const itemsPerPage = 12;
+
+    const { data: farmers, isLoading, error, coords } = useNearbyFarmers(100);
+
+    const {
+        data: farmerProduce,
+        isLoading: farmerProduceLoading,
+        // isError: farmerProduceError,
+        isFetching: farmerisFetching,
+        // refetch,
+    } = useQuery({
+        queryKey: ["farmerProduce", id, page],
+        queryFn: () =>
+            Farmer.getFarmerProducts(id, {
+                page,
+                data_per_page: 12,
+            }),
+        placeholderData: (previousData) => previousData,
+        gcTime: 5 * 60 * 1000, // cache data for 5 minutes
+    });
+
+    const products = farmerProduce?.products || [];
+    const pagination = farmerProduce?.pagination || {};
+
+    const {
+        data: farmerReviews,
+        isLoading: farmerReviewsLoading,
+        // isError: farmerReviewsError,
+        // isFetching: farmerReviewsFetching,
+        // refetch: refetchFarmerReviews,
+    } = useQuery({
+        queryKey: ["farmerReviews", id, page, sort],
+        queryFn: () =>
+            Farmer.getFarmerReviews(id, {
+                page,
+                data_per_page: 6,
+                sort,
+            }),
+        placeholderData: (previousData) => previousData,
+        gcTime: 5 * 60 * 1000,
+    });
+
+    const handlePageChange = (
+        // event: React.ChangeEvent<unknown>,
+        value: number,
+    ) => {
+        setPage(value);
+    };
 
     const [bioOpen, setBioOpen] = useState(false);
     const handleBioOpen = () => setBioOpen(true);
@@ -38,22 +93,7 @@ export default function VendorPage() {
         setTabIndex(newValue);
     };
 
-    const handlePageChange = (event, value) => {
-        setPage(value);
-    };
-
     const handleSortChange = (event) => setSort(event.target.value);
-
-    const paginatedProducts = products.slice(
-        (page - 1) * itemsPerPage,
-        page * itemsPerPage,
-    );
-
-    const sortedReviews = [...reviews].sort((a, b) => {
-        if (sort === "latest") return new Date(b.date) - new Date(a.date);
-        if (sort === "oldest") return new Date(a.date) - new Date(b.date);
-        return 0;
-    });
 
     const { isLoaded } = useJsApiLoader({
         id: "google-map-script",
@@ -173,48 +213,91 @@ export default function VendorPage() {
             {/* Tab Content */}
             {tabIndex === 0 && (
                 <Box>
-                    <Grid container spacing={2} sx={{ mt: 2 }}>
-                        {paginatedProducts.map((product, index) => (
-                            <Grid item xs={12} sm={6} md={3} key={index}>
-                                <Card>
-                                    <CardMedia
-                                        component="img"
-                                        height="160"
-                                        image={product.image}
-                                        alt={product.name}
-                                        sx={{ objectFit: "cover", p: 1 }}
-                                    />
-                                    <CardContent>
-                                        <Typography
-                                            variant="subtitle1"
-                                            fontWeight="bold"
-                                        >
-                                            {product.name}
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                        >
-                                            {product.price}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
+                    {farmerProduceLoading || farmerisFetching ? (
+                        // Skeleton loader while fetching or initial loading
+                        <Grid container spacing={2} sx={{ mt: 2 }}>
+                            {[...Array(8)].map((_, index) => (
+                                <Grid item xs={12} sm={6} md={3} key={index}>
+                                    <Card>
+                                        <Skeleton
+                                            variant="rectangular"
+                                            height={160}
+                                        />
+                                        <CardContent>
+                                            <Skeleton width="80%" />
+                                            <Skeleton width="60%" />
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    ) : (
+                        <>
+                            <Grid container spacing={2} sx={{ mt: 2 }}>
+                                {products.map((product) => (
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={6}
+                                        md={3}
+                                        key={product.id}
+                                    >
+                                        <Card>
+                                            <CardMedia
+                                                component="img"
+                                                height="160"
+                                                image={
+                                                    product.images
+                                                        ?.image_path ||
+                                                    "/placeholder.jpg"
+                                                }
+                                                alt={product.name}
+                                                sx={{
+                                                    objectFit: "cover",
+                                                    p: 1,
+                                                }}
+                                            />
+                                            <CardContent>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    fontWeight="bold"
+                                                >
+                                                    {product.name}
+                                                </Typography>
+                                                <Typography
+                                                    variant="body2"
+                                                    color="text.secondary"
+                                                >
+                                                    KES {product.price_per_unit}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                ))}
                             </Grid>
-                        ))}
-                    </Grid>
-                    <Box display="flex" justifyContent="center" mt={4}>
-                        <Pagination
-                            count={Math.ceil(products.length / itemsPerPage)}
-                            page={page}
-                            onChange={handlePageChange}
-                            color="primary"
-                        />
-                    </Box>
+
+                            {pagination.last_page > 1 && (
+                                <Box
+                                    display="flex"
+                                    justifyContent="center"
+                                    mt={4}
+                                >
+                                    <Pagination
+                                        count={pagination.last_page}
+                                        page={pagination.current_page}
+                                        onChange={handlePageChange}
+                                        color="primary"
+                                    />
+                                </Box>
+                            )}
+                        </>
+                    )}
                 </Box>
             )}
 
             {tabIndex === 1 && (
                 <Box sx={{ mt: 2 }}>
+                    {/* Sort Dropdown */}
                     <Box
                         display="flex"
                         justifyContent="space-between"
@@ -232,65 +315,112 @@ export default function VendorPage() {
                         </Select>
                     </Box>
 
-                    {sortedReviews.map((review) => (
-                        <Card key={review.id} sx={{ mb: 2, p: 2 }}>
-                            <Grid container spacing={2} alignItems="flex-start">
-                                <Grid item>
-                                    <Avatar>{review.user.charAt(0)}</Avatar>
-                                </Grid>
-                                <Grid item xs>
-                                    <Typography>
-                                        {"★".repeat(review.rating)}
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        color="text.secondary"
+                    {/* Loading State */}
+                    {farmerReviewsLoading ? (
+                        Array.from({ length: 3 }).map((_, i) => (
+                            <Card key={i} sx={{ mb: 2, p: 2 }}>
+                                <Skeleton variant="text" width="60%" />
+                                <Skeleton variant="text" width="40%" />
+                                <Skeleton
+                                    variant="rectangular"
+                                    height={80}
+                                    sx={{ mt: 1 }}
+                                />
+                            </Card>
+                        ))
+                    ) : farmerReviews?.data?.length ? (
+                        <>
+                            {/* Review List */}
+                            {farmerReviews.data.map((review) => (
+                                <Card key={review.id} sx={{ mb: 2, p: 2 }}>
+                                    <Grid
+                                        container
+                                        spacing={2}
+                                        alignItems="flex-start"
                                     >
-                                        Color: {review.plug}
-                                    </Typography>
-                                    <Typography sx={{ mt: 1 }}>
-                                        {review.content}
-                                    </Typography>
-                                    <Typography
-                                        variant="caption"
-                                        display="block"
-                                        sx={{ mt: 1 }}
-                                    >
-                                        {review.user} | {review.date}
-                                    </Typography>
-                                </Grid>
-                                {review.image && (
-                                    <Grid item>
-                                        <img
-                                            src={review.image}
-                                            alt="review"
-                                            style={{
-                                                width: 80,
-                                                cursor: "pointer",
-                                                borderRadius: 4,
-                                            }}
-                                            onClick={() =>
-                                                setImagePreview(review.image)
-                                            }
-                                        />
+                                        <Grid item>
+                                            <Avatar>
+                                                {review.user.charAt(0)}
+                                            </Avatar>
+                                        </Grid>
+                                        <Grid item xs>
+                                            <Typography>
+                                                {"★".repeat(review.rating)}
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                            >
+                                                Color: {review.plug}
+                                            </Typography>
+                                            <Typography sx={{ mt: 1 }}>
+                                                {review.content}
+                                            </Typography>
+                                            <Typography
+                                                variant="caption"
+                                                display="block"
+                                                sx={{ mt: 1 }}
+                                            >
+                                                {review.user} | {review.date}
+                                            </Typography>
+                                        </Grid>
+                                        {review.image && (
+                                            <Grid item>
+                                                <img
+                                                    src={review.image}
+                                                    alt="review"
+                                                    style={{
+                                                        width: 80,
+                                                        cursor: "pointer",
+                                                        borderRadius: 4,
+                                                    }}
+                                                    onClick={() =>
+                                                        setImagePreview(
+                                                            review.image,
+                                                        )
+                                                    }
+                                                />
+                                            </Grid>
+                                        )}
+                                        <Grid item>
+                                            <Box
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={1}
+                                            >
+                                                <ThumbUpAltOutlinedIcon fontSize="small" />
+                                                <Typography variant="caption">
+                                                    Helpful (0)
+                                                </Typography>
+                                            </Box>
+                                        </Grid>
                                     </Grid>
-                                )}
-                                <Grid item>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={1}
-                                    >
-                                        <ThumbUpAltOutlinedIcon fontSize="small" />
-                                        <Typography variant="caption">
-                                            Helpful (0)
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                        </Card>
-                    ))}
+                                </Card>
+                            ))}
 
+                            {/* Pagination */}
+                            {farmerReviews.meta?.last_page > 1 && (
+                                <Box
+                                    display="flex"
+                                    justifyContent="center"
+                                    mt={4}
+                                >
+                                    <Pagination
+                                        count={farmerReviews.meta.last_page}
+                                        page={farmerReviews.meta.current_page}
+                                        onChange={(_, newPage) =>
+                                            setPage(newPage)
+                                        }
+                                        color="primary"
+                                    />
+                                </Box>
+                            )}
+                        </>
+                    ) : (
+                        <Typography>No reviews found.</Typography>
+                    )}
+
+                    {/* Image Modal */}
                     <Modal
                         open={!!imagePreview}
                         onClose={() => setImagePreview(null)}
@@ -360,7 +490,7 @@ export default function VendorPage() {
             )}
         </Box>
     );
-}
+};
 
 const reviews = [
     {
@@ -393,126 +523,4 @@ const reviews = [
     },
 ];
 
-const products = [
-    {
-        name: "Apples",
-        price: "Ksh14.99",
-        image: "https://assets.clevelandclinic.org/transform/cd71f4bd-81d4-45d8-a450-74df78e4477a/Apples-184940975-770x533-1_jpg",
-        rating: 4,
-    },
-    {
-        name: "Carrots",
-        price: "Ksh14.99",
-        image: "https://cdn.mos.cms.futurecdn.net/VmDx3obMsrncNiph4Lc5kW-1200-80.jpg",
-        rating: 4,
-    },
-    {
-        name: "Chanise Cabbage",
-        price: "Ksh14.99",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWQtjRdJG1ZIfRnxksgGkzzCwX4g-ZAXSBLg&s",
-        rating: 5,
-    },
-    {
-        name: "Ladies Finger",
-        price: "$14.99",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC9_3yTshma4fS59NlcAdoi-mX29pPrEWiNg&s",
-        rating: 4,
-        outOfStock: true,
-    },
-    {
-        name: "Red Tomato",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 5,
-    },
-    {
-        name: "Eggplant",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 5,
-    },
-    {
-        name: "Fresh Cauliflower",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 4,
-    },
-    {
-        name: "Green Apple",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 4,
-    },
-    {
-        name: "Red Tomato",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 5,
-    },
-    {
-        name: "Eggplant",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 5,
-    },
-    {
-        name: "Fresh Cauliflower",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 4,
-    },
-    {
-        name: "Green Apple",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 4,
-    },
-    {
-        name: "Red Tomato",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 5,
-    },
-    {
-        name: "Eggplant",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 5,
-    },
-    {
-        name: "Fresh Cauliflower",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 4,
-    },
-    {
-        name: "Green Apple",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 4,
-    },
-    {
-        name: "Red Tomato",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 5,
-    },
-    {
-        name: "Eggplant",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 5,
-    },
-    {
-        name: "Fresh Cauliflower",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 4,
-    },
-    {
-        name: "Green Apple",
-        price: "$14.99",
-        image: "https://ae-pic-a1.aliexpress-media.com/kf/Sfc7dc4459530478187a4d8e1fc21b6f1t.jpg_480x480q75.jpg_.avif",
-        rating: 4,
-    },
-];
+export default VendorPage;

@@ -1,20 +1,22 @@
 import AxiosApi from "..";
 
+type LocationDetails = {
+    latitude: number | string;
+    longitude: number | string;
+    radius: number | string;
+};
+
 class LocationApi {
-    async getFarmersNearby(LocationDetails: {
-        latitude: string | number;
-        longitude: string | number;
-        radius: string | number;
-    }) {
+    async getFarmersNearby(locationDetails: LocationDetails) {
         try {
             const response = await AxiosApi.get("/users/farmers/nearby", {
-                params: LocationDetails,
+                params: locationDetails,
             });
 
             return response.data;
-        } catch (e) {
-            console.log("error fetching narby farmers", e);
-            throw e;
+        } catch (error) {
+            console.error("Error fetching nearby farmers:", error);
+            throw error;
         }
     }
 }

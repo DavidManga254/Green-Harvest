@@ -59,7 +59,6 @@ const Productcard: React.FC<ProductCardInterface> = ({
             quantity: 1,
         });
     };
-
     return (
         <div
             onMouseEnter={changeBagColor}

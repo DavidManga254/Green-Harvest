@@ -56,7 +56,7 @@ Route::middleware(['userAuth'])->group(function () {
     Route::get('/orders/{id}', 'Order\OrderController@getOrder');
     Route::patch('/orders/{id}/status', 'Order\OrderController@updateOrderStatus');
 
-    Route::get('/users/farmers/nearby', 'User\UserController@findNearbyFarmers');
+    Route::get('/users/farmers/nearby', 'User\UserController@nearby');
     Route::post('/users/farmers/review', 'User\UserController@submitFarmerReview');
 
     Route::post('/payment/pay', 'Payment\PaymentController@redirectToGateway');
@@ -64,4 +64,10 @@ Route::middleware(['userAuth'])->group(function () {
 
     Route::get('/billing-addresses', 'Billing\BillingAddressController@index');
     Route::post('/billing-addresses', 'Billing\BillingAddressController@store');
+
+    Route::get('/farmer/{farmerId}/details/produce','Farmer\FarmerController@getFarmerProducts');
+    Route::get('/farmer/{farmerId}/details/reviews','Farmer\FarmerController@getFarmerReviews');
+
+
+
 });
