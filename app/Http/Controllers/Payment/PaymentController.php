@@ -7,6 +7,7 @@ use App\Http\Requests\Billing\BillingSaveRequest;
 use App\Models\Billing\BillingAddress;
 use App\Models\cart\Cart;
 use App\Models\cart\CartItem;
+use App\Models\Order\Order;
 use App\Models\Order\UserOrder;
 use App\Models\Order\UserOrderItem;
 use App\Models\Payment\Payment;
@@ -168,6 +169,15 @@ class PaymentController extends Controller
                     'email' => $paymentDetails['customer']['email'],
                     'transaction_id' => $paymentDetails['id'],
                     'meta' => json_encode($paymentDetails),
+                ]);
+
+                $order = Order::create([
+                    'user_id' => $request->authenticated_user->id,
+                    'total_price' => $payment->amount,
+                    'discount' => 0.00,
+                    'shipping_fee' => 0.00,
+                    'payment_method' => 'mpesa',
+                    'status' => 'order_received',
                 ]);
 
                 return response()->json([

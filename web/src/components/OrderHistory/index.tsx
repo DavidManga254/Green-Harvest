@@ -1,45 +1,29 @@
 import { Link } from "@tanstack/react-router";
 import "./index.css";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import Order from "../../api/Order";
+import Pagination from "@mui/material/Pagination";
+import Box from "@mui/material/Box";
 
 const OrderHistory: React.FC = () => {
-    const orders = [
-        {
-            orderId: "#738",
-            date: "8 Sep, 2020",
-            total: "$135.00 (5 Products)",
-            status: "Processing",
-        },
-        {
-            orderId: "#703",
-            date: "24 May, 2020",
-            total: "$25.00 (1 Product)",
-            status: "on the way",
-        },
-        {
-            orderId: "#130",
-            date: "22 Oct, 2020",
-            total: "$250.00 (4 Products)",
-            status: "Completed",
-        },
-        {
-            orderId: "#561",
-            date: "1 Feb, 2020",
-            total: "$35.00 (1 Product)",
-            status: "Completed",
-        },
-        {
-            orderId: "#536",
-            date: "21 Sep, 2020",
-            total: "$578.00 (13 Products)",
-            status: "Completed",
-        },
-        {
-            orderId: "#492",
-            date: "22 Oct, 2020",
-            total: "$345.00 (7 Products)",
-            status: "Completed",
-        },
-    ];
+    const [page, setPage] = useState(1);
+    const dataPerPage = 6;
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["orders", page],
+        queryFn: () =>
+            Order.getOrderHistory({ page, data_per_page: dataPerPage }),
+        placeholderData: (prev) => prev,
+        gcTime: 5 * 60 * 1000,
+    });
+
+    const orders = data?.orders || [];
+    const totalPages = data?.pagination?.total_pages || 1;
+
+    const handlePageChange = (_: any, value: number) => {
+        setPage(value);
+    };
 
     return (
         <div className="order-history-wrapper">
@@ -47,38 +31,85 @@ const OrderHistory: React.FC = () => {
                 <h2>Recent Order History</h2>
                 <span>View All</span>
             </div>
-            <table>
-                <tr className="title">
-                    <th>ORDER ID</th>
-                    <th>Date</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-                {orders.map((order, index) => (
-                    <tr className="orders">
-                        <td>{order.orderId}</td>
-                        <td>{order.date}</td>
-                        <td>{order.total}</td>
-                        <td>{order.status}</td>
-                        <td className="details">
-                            <Link
-                                key={index}
-                                to={`/account/order-history/$orderId`}
-                                params={{
-                                    orderId: `${index}`,
-                                }}
-                                style={{
-                                    textDecoration: "none",
-                                    color: "inherit",
-                                }}
-                            >
-                                view Details
-                            </Link>
-                        </td>
-                    </tr>
-                ))}
-            </table>
+
+            {isLoading ? (
+                <p className="loading-text">Loading your orders...</p>
+            ) : isError ? (
+                <p className="error-text">
+                    Something went wrong fetching your orders.
+                </p>
+            ) : orders.length === 0 ? (
+                <p>No orders found.</p>
+            ) : (
+                <>
+                    <table>
+                        <thead>
+                            <tr className="title">
+                                <th>ORDER ID</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orders.map((order) => (
+                                <tr className="orders" key={order.id}>
+                                    <td>#{order.id}</td>
+                                    <td>
+                                        {new Date(
+                                            order.created_at,
+                                        ).toLocaleDateString(undefined, {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                        })}
+                                    </td>
+                                    <td>
+                                        KSH
+                                        {parseFloat(order.total_price).toFixed(
+                                            2,
+                                        )}
+                                        ({order.items?.length || 0} Product
+                                        {order.items?.length !== 1 ? "s" : ""})
+                                    </td>
+                                    <td>{order.status.replaceAll("_", " ")}</td>
+                                    <td className="details">
+                                        <Link
+                                            to={`/account/order-history/${order.id}`}
+                                            params={{ orderId: `${order.id}` }}
+                                            style={{
+                                                textDecoration: "none",
+                                                color: "limegreen",
+                                                fontWeight: "500",
+                                            }}
+                                        >
+                                            view Details
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {/* Material UI Pagination */}
+                    <Box
+                        sx={{
+                            mt: 3,
+                            display: "flex",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Pagination
+                            count={totalPages}
+                            page={page}
+                            onChange={handlePageChange}
+                            color="success"
+                            shape="rounded"
+                        />
+                    </Box>
+                </>
+            )}
         </div>
     );
 };

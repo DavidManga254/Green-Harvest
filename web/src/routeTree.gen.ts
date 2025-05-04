@@ -20,6 +20,7 @@ import { Route as userSignInIndexImport } from './routes/(user)/sign-in/index'
 import { Route as userShopIndexImport } from './routes/(user)/shop/index'
 import { Route as userRegisterIndexImport } from './routes/(user)/register/index'
 import { Route as userHomeIndexImport } from './routes/(user)/home/index'
+import { Route as userFindFarmerIndexImport } from './routes/(user)/find-farmer/index'
 import { Route as userExploreIndexImport } from './routes/(user)/explore/index'
 import { Route as userCheckoutIndexImport } from './routes/(user)/checkout/index'
 import { Route as userVendorIdImport } from './routes/(user)/vendor/$id'
@@ -83,6 +84,12 @@ const userRegisterIndexRoute = userRegisterIndexImport.update({
 const userHomeIndexRoute = userHomeIndexImport.update({
   id: '/home/',
   path: '/home/',
+  getParentRoute: () => userLayoutRoute,
+} as any)
+
+const userFindFarmerIndexRoute = userFindFarmerIndexImport.update({
+  id: '/find-farmer/',
+  path: '/find-farmer/',
   getParentRoute: () => userLayoutRoute,
 } as any)
 
@@ -225,6 +232,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof userExploreIndexImport
       parentRoute: typeof userLayoutImport
     }
+    '/(user)/find-farmer/': {
+      id: '/(user)/find-farmer/'
+      path: '/find-farmer'
+      fullPath: '/find-farmer'
+      preLoaderRoute: typeof userFindFarmerIndexImport
+      parentRoute: typeof userLayoutImport
+    }
     '/(user)/home/': {
       id: '/(user)/home/'
       path: '/home'
@@ -337,6 +351,7 @@ interface userLayoutRouteChildren {
   userVendorIdRoute: typeof userVendorIdRoute
   userCheckoutIndexRoute: typeof userCheckoutIndexRoute
   userExploreIndexRoute: typeof userExploreIndexRoute
+  userFindFarmerIndexRoute: typeof userFindFarmerIndexRoute
   userHomeIndexRoute: typeof userHomeIndexRoute
   userRegisterIndexRoute: typeof userRegisterIndexRoute
   userShopIndexRoute: typeof userShopIndexRoute
@@ -351,6 +366,7 @@ const userLayoutRouteChildren: userLayoutRouteChildren = {
   userVendorIdRoute: userVendorIdRoute,
   userCheckoutIndexRoute: userCheckoutIndexRoute,
   userExploreIndexRoute: userExploreIndexRoute,
+  userFindFarmerIndexRoute: userFindFarmerIndexRoute,
   userHomeIndexRoute: userHomeIndexRoute,
   userRegisterIndexRoute: userRegisterIndexRoute,
   userShopIndexRoute: userShopIndexRoute,
@@ -394,6 +410,7 @@ export interface FileRoutesByFullPath {
   '/vendor/$id': typeof userVendorIdRoute
   '/checkout': typeof userCheckoutIndexRoute
   '/explore': typeof userExploreIndexRoute
+  '/find-farmer': typeof userFindFarmerIndexRoute
   '/home': typeof userHomeIndexRoute
   '/register': typeof userRegisterIndexRoute
   '/shop': typeof userShopIndexRoute
@@ -416,6 +433,7 @@ export interface FileRoutesByTo {
   '/vendor/$id': typeof userVendorIdRoute
   '/checkout': typeof userCheckoutIndexRoute
   '/explore': typeof userExploreIndexRoute
+  '/find-farmer': typeof userFindFarmerIndexRoute
   '/home': typeof userHomeIndexRoute
   '/register': typeof userRegisterIndexRoute
   '/shop': typeof userShopIndexRoute
@@ -440,6 +458,7 @@ export interface FileRoutesById {
   '/(user)/vendor/$id': typeof userVendorIdRoute
   '/(user)/checkout/': typeof userCheckoutIndexRoute
   '/(user)/explore/': typeof userExploreIndexRoute
+  '/(user)/find-farmer/': typeof userFindFarmerIndexRoute
   '/(user)/home/': typeof userHomeIndexRoute
   '/(user)/register/': typeof userRegisterIndexRoute
   '/(user)/shop/': typeof userShopIndexRoute
@@ -464,6 +483,7 @@ export interface FileRouteTypes {
     | '/vendor/$id'
     | '/checkout'
     | '/explore'
+    | '/find-farmer'
     | '/home'
     | '/register'
     | '/shop'
@@ -485,6 +505,7 @@ export interface FileRouteTypes {
     | '/vendor/$id'
     | '/checkout'
     | '/explore'
+    | '/find-farmer'
     | '/home'
     | '/register'
     | '/shop'
@@ -507,6 +528,7 @@ export interface FileRouteTypes {
     | '/(user)/vendor/$id'
     | '/(user)/checkout/'
     | '/(user)/explore/'
+    | '/(user)/find-farmer/'
     | '/(user)/home/'
     | '/(user)/register/'
     | '/(user)/shop/'
@@ -561,6 +583,7 @@ export const routeTree = rootRoute
         "/(user)/vendor/$id",
         "/(user)/checkout/",
         "/(user)/explore/",
+        "/(user)/find-farmer/",
         "/(user)/home/",
         "/(user)/register/",
         "/(user)/shop/",
@@ -600,6 +623,10 @@ export const routeTree = rootRoute
     },
     "/(user)/explore/": {
       "filePath": "(user)/explore/index.tsx",
+      "parent": "/(user)"
+    },
+    "/(user)/find-farmer/": {
+      "filePath": "(user)/find-farmer/index.tsx",
       "parent": "/(user)"
     },
     "/(user)/home/": {

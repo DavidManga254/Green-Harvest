@@ -4,9 +4,11 @@ namespace App\Models\User;
 
 use App\Models\Billing\BillingAddress;
 use App\Models\cart\Cart;
+use App\Models\Order\Order;
 use App\Models\Subscription\Subscription;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
@@ -36,5 +38,10 @@ class User extends Model
     public function billingAddresses()
     {
         return $this->hasMany(BillingAddress::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

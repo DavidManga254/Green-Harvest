@@ -1,7 +1,7 @@
 import "./index.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Cart from "../../api/Cart";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
@@ -177,7 +177,9 @@ const CheckoutPage: React.FC = () => {
                             <label>Total:</label>
                             <span>Ksh84.00</span>
                         </div>
-                        <button>Proceed to checkout</button>
+                        <Link to="/checkout/pay">
+                            <button>Proceed to checkout</button>
+                        </Link>
                     </div>
                 </div>
                 <div className="bill-section"></div>

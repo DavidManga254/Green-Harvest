@@ -83,16 +83,22 @@ class OrderController extends Controller
         $user = User::where('email', $authenticatedUser->email)->firstOrFail();
 
         $orders = $user->orders()
-            ->with(['items.produce.images'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+                    ->with('items.produce.images')
+                    ->orderBy('created_at', 'desc')
+                    ->paginate($request->input('data_per_page', 10));
 
         if ($orders->isEmpty()) {
             return response()->json(['message' => 'No orders found'], 404);
         }
 
         return response()->json([
-            'orders' => OrderResource::collection($orders)
+            'data' => OrderResource::collection($orders),
+            'pagination' => [
+                'current_page' => $orders->currentPage(),
+                'last_page' => $orders->lastPage(),
+                'total' => $orders->total(),
+                'per_page' => $orders->perPage(),
+            ],
         ], 200);
     }
 

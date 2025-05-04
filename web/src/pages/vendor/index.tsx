@@ -17,11 +17,9 @@ import {
     Skeleton,
 } from "@mui/material";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { useState } from "react";
 import Farmer from "../../api/Farmer";
 import { useQuery } from "@tanstack/react-query";
-import useNearbyFarmers from "../../utils/useNearbyFarmers";
 
 interface VendorPageInterface {
     id: string | number;
@@ -33,8 +31,6 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
     const [imagePreview, setImagePreview] = useState(null);
     const [sort, setSort] = useState("latest");
     // const itemsPerPage = 12;
-
-    const { data: farmers, isLoading, error, coords } = useNearbyFarmers(100);
 
     const {
         data: farmerProduce,
@@ -94,11 +90,6 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
     };
 
     const handleSortChange = (event) => setSort(event.target.value);
-
-    const { isLoaded } = useJsApiLoader({
-        id: "google-map-script",
-        googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    });
 
     return (
         <Box sx={{ p: 2, maxWidth: 1200, mx: "auto" }}>
@@ -448,79 +439,17 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
                 </Box>
             )}
 
-            {tabIndex === 2 && (
+            {/* {tabIndex === 2 && (
                 <Box sx={{ mt: 2 }}>
-                    {isLoaded ? (
-                        <GoogleMap
-                            mapContainerStyle={{
-                                width: "100%",
-                                height: "400px",
-                                borderRadius: "8px",
-                                overflow: "hidden",
-                            }}
-                            center={{
-                                lat: 37.7749,
-                                lng: -122.4194,
-                            }}
-                            zoom={11}
-                        >
-                            <Marker
-                                position={{
-                                    lat: 37.7749,
-                                    lng: -122.4194,
-                                }}
-                                icon={{
-                                    url: "https://yt3.googleusercontent.com/Q8u1ClHhveXr--dGYAajclsRnclWbTPFZoYLMRyrrw1Nxurnp3oYQfgiB7HiRiKFKqRHw0T9TVM=s160-c-k-c0x00ffffff-no-rj",
-                                    scaledSize: new window.google.maps.Size(
-                                        40,
-                                        40,
-                                    ),
-                                    origin: new window.google.maps.Point(0, 0),
-                                    anchor: new window.google.maps.Point(
-                                        20,
-                                        20,
-                                    ),
-                                }}
-                            />
-                        </GoogleMap>
+                    {isLoading ? (
+                        <p>Loading...</p>
                     ) : (
-                        <Typography>Loading map...</Typography>
+                        <FarmerMap farmers={farmers} />
                     )}
                 </Box>
-            )}
+            )} */}
         </Box>
     );
 };
-
-const reviews = [
-    {
-        id: 1,
-        user: "a***u",
-        date: "19 Apr 2025",
-        plug: "EU Plug",
-        content:
-            "Everything is correct and the device looks very good quality.",
-        rating: 5,
-        image: "https://yt3.googleusercontent.com/Q8u1ClHhveXr--dGYAajclsRnclWbTPFZoYLMRyrrw1Nxurnp3oYQfgiB7HiRiKFKqRHw0T9TVM=s160-c-k-c0x00ffffff-no-rj",
-    },
-    {
-        id: 2,
-        user: "W***a",
-        date: "19 Apr 2025",
-        plug: "BR Plug",
-        content: "Excellent quality product, highly recommended.",
-        rating: 5,
-    },
-    {
-        id: 3,
-        user: "AliExpress Shopper",
-        date: "20 Apr 2025",
-        plug: "AU Plug",
-        content:
-            "Working well now it's been around a month. It's very cheap when compared to other products with the same specs. I don't know how long it will last but I am happy for now",
-        rating: 5,
-        image: "https://yt3.googleusercontent.com/Q8u1ClHhveXr--dGYAajclsRnclWbTPFZoYLMRyrrw1Nxurnp3oYQfgiB7HiRiKFKqRHw0T9TVM=s160-c-k-c0x00ffffff-no-rj",
-    },
-];
 
 export default VendorPage;
