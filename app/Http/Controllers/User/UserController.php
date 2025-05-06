@@ -9,12 +9,16 @@ use App\Http\Requests\User\FindFarmerRequest;
 use App\Http\Requests\User\login;
 use Illuminate\Http\Request;
 use App\Http\Requests\User\Register;
+use App\Http\Requests\User\UserSubscribeRequest;
 use App\Http\Resources\Farmer\FarmerMapMarkerResource;
 use App\Http\Resources\Farmer\FarmerReviewResource;
+use App\Http\Resources\User\UserSubscriptionResource;
 use App\Mail\Register\Register as SignUpRegister;
 use App\Models\cart\Cart;
 use App\Models\Farmer\Farmer;
 use App\Models\Farmer\FarmerReview;
+use App\Models\Subscription\FarmerSubscriptionPlan;
+use App\Models\Subscription\Subscription;
 use App\Models\User\User;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
@@ -140,6 +144,7 @@ class UserController extends Controller
                 'message' => 'invalid credentials',
             ], 404);
         }
+
     }
 
 
@@ -200,6 +205,51 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Review submitted successfully!',
             'data' => new FarmerReviewResource($review)
+        ], 201);
+    }
+
+    public function availablePlans()
+    {
+        $plans = FarmerSubscriptionPlan::with('template', 'farmer.user')
+            ->where('is_active', true)
+            ->get();
+
+        return response()->json([
+            'plans' => $plans
+        ]);
+    }
+
+    public function subscribe(UserSubscribeRequest $request)
+    {
+        $user = $request->get('user');
+
+        $validated = $request->validated();
+
+        $existing = Subscription::where([
+            'user_id' => $user->id,
+            'farmer_subscription_plan_id' => $validated['farmer_plan_id'],
+            'is_active' => true
+        ])->exists();
+
+        if ($existing) {
+            return response()->json(['message' => 'You are already subscribed to this plan.'], 409);
+        }
+
+        $subscription = Subscription::create([
+            'user_id' => $user->id,
+            'farmer_subscription_plan_id' => $validated['farmer_plan_id'],
+            'payment_mode' => $validated['payment_mode'],
+            'start_date' => $validated['start_date'],
+            'next_billing_date' => $validated['payment_mode'] === 'recurring'
+                ? now()->parse($validated['start_date'])->addMonth()
+                : null,
+            'is_active' => true
+        ]);
+
+
+        return response()->json([
+            'message' => 'Subscription successful.',
+            'data' => new UserSubscriptionResource($subscription->load('farmerSubscriptionPlan.template'))
         ], 201);
     }
 

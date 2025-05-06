@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Farmer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Farmer\FarmerAttachPlanRequest;
 use App\Http\Requests\Farmer\RegisterFarmer;
 use App\Http\Requests\Farmer\UpdateFarmerRequest;
 use App\Http\Resources\Farmer\FarmerDetailReviewResource;
 use App\Http\Resources\Farmer\FarmerPublicResource;
 use App\Http\Resources\Farmer\FarmerResource;
 use App\Http\Resources\Farmer\FarmerReviewResource;
+use App\Http\Resources\Farmer\FarmerSubscriptionPlanResource;
 use App\Http\Resources\Produce\ProduceResource;
 use App\Models\Farmer\Farmer;
 use App\Models\Farmer\FarmerReview;
 use App\Models\Produce\Produce;
+use App\Models\Subscription\FarmerSubscriptionPlan;
+use App\Models\Subscription\SubscriptionPlanTemplate;
 use App\Models\User\User;
 use Illuminate\Http\Request;
 
@@ -239,5 +243,38 @@ class FarmerController extends Controller
                 'prev_page_url' => $reviews->previousPageUrl(),
             ],
         ], 200);
+    }
+
+    public function templates()
+    {
+        return response()->json([
+            'templates' => SubscriptionPlanTemplate::all()
+        ]);
+    }
+
+    public function attachTemplate(FarmerAttachPlanRequest $request)
+    {
+        $farmer = $request->get('farmer');
+
+        $templateId = $request->validated()['template_id'];
+
+        $exists = FarmerSubscriptionPlan::where('farmer_id', $farmer->id)
+            ->where('subscription_plan_template_id', $templateId)
+            ->exists();
+
+        if ($exists) {
+            return response()->json(['message' => 'You already offer this plan.'], 409);
+        }
+
+        $plan = FarmerSubscriptionPlan::create([
+            'farmer_id' => $farmer->id,
+            'subscription_plan_template_id' => $templateId,
+            'is_active' => true
+        ]);
+
+        return response()->json([
+            'message' => 'Plan attached successfully.',
+            'data' => new FarmerSubscriptionPlanResource($plan->load('template'))
+        ], 201);
     }
 }

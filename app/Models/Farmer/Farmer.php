@@ -4,6 +4,8 @@ namespace App\Models\Farmer;
 
 use App\Models\Practice\Practice;
 use App\Models\Subscription\Subscription;
+use App\Models\Subscription\SubscriptionPlan;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -46,4 +48,15 @@ class Farmer extends Model
     {
         return $this->hasMany(FarmerReview::class);
     }
+
+    public function subscriptionPlans()
+    {
+        return $this->hasMany(SubscriptionPlan::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

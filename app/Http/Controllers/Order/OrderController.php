@@ -111,7 +111,7 @@ class OrderController extends Controller
 
         $order = Order::where('id', $id)
             ->where('user_id', $authenticatedUser->id)
-            ->with(['items.produce.images', 'statusUpdates'])
+            ->with(['items.produce.images'])
             ->first();
 
         if (!$order) {

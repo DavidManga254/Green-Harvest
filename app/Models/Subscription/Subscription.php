@@ -11,13 +11,20 @@ class Subscription extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'user_id', 'farmer_subscription_plan_id', 'payment_mode',
+        'start_date', 'next_billing_date', 'is_active'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function farmer()
+    public function farmerSubscriptionPlan()
     {
-        return $this->belongsTo(Farmer::class);
+        return $this->belongsTo(FarmerSubscriptionPlan::class);
     }
+
+
 }

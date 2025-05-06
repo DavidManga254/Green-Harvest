@@ -42,6 +42,9 @@ Route::middleware(['userAuth'])->group(function () {
         Route::get('/farmers/orders', 'Farmer\DashboardController@orders');
         Route::get('/farmers/earnings', 'Farmer\DashboardController@earnings');
         Route::get('/farmers/inventory', 'Farmer\DashboardController@inventory');
+
+        Route::get('/subscription-plan-templates', 'Farmer\FarmerController@templates');
+        Route::post('/subscribe-to-template','Farmer\FarmerController@attachTemplate');
     });
 
     Route::get('/cart', 'Cart\CartController@viewCart');
@@ -68,6 +71,13 @@ Route::middleware(['userAuth'])->group(function () {
     Route::get('/farmer/{farmerId}/details/produce','Farmer\FarmerController@getFarmerProducts');
     Route::get('/farmer/{farmerId}/details/reviews','Farmer\FarmerController@getFarmerReviews');
 
+    // Route::get('/subscription-plans', [SubscriptionPlanController::class, 'index']);
+    // Route::post('/subscription-plans', [SubscriptionPlanController::class, 'store']);
+    // Route::get('/subscription-plans/{id}', [SubscriptionPlanController::class, 'show']);
+    // Route::put('/subscription-plans/{id}', [SubscriptionPlanController::class, 'update']);
+    // Route::delete('/subscription-plans/{id}', [SubscriptionPlanController::class, 'destroy']);
 
+    Route::get('/available-subscription-plans','User\UserController@availablePlans');
+    Route::post('/subscribe', 'User\UserController@subscribe');
 
 });

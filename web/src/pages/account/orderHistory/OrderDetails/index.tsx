@@ -8,12 +8,27 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Check from "@mui/icons-material/Check";
+import { useQuery } from "@tanstack/react-query";
+import Order from "../../../../api/Order";
 
 interface OrderDetailsPageInterface {
     orderId: string | undefined;
 }
 
 const OrderDetailsPage: React.FC<OrderDetailsPageInterface> = ({ orderId }) => {
+    const {
+        data: order,
+        isLoading,
+        isError,
+    } = useQuery({
+        queryKey: ["order-details", orderId],
+        queryFn: () => Order.getOrderDetails(orderId!),
+        enabled: !!orderId,
+    });
+
+    if (isLoading) return <p>Loading order details...</p>;
+    if (isError || !order) return <p>Could not load order.</p>;
+
     const orderItems = [
         {
             productName: "Red Capsicum",
@@ -38,88 +53,104 @@ const OrderDetailsPage: React.FC<OrderDetailsPageInterface> = ({ orderId }) => {
         },
     ];
 
+    const totalProducts = order.items.length;
+
     return (
         <div className="order-details-page">
             <div className="order-title">
                 <h1>Order Details</h1>
-                <span>April 24, 2024</span>
-                <span>3 Products</span>
+                <span>{new Date(order.created_at).toLocaleDateString()}</span>
+                <span>
+                    {totalProducts} Product{totalProducts > 1 ? "s" : ""}
+                </span>
             </div>
+
             <div className="order-adress">
                 <div className="addresses">
                     <div className="billing-address">
                         <h1>BILLING ADDRESS</h1>
                         <div className="billing-detail">
                             <div className="name-section">
-                                <h2>Dainne Russell</h2>
-                                <p>
-                                    4140 Parker Rd. Allentown, New Mexico 31134
-                                </p>
+                                <h2>{order.user?.name ?? "John Doe"}</h2>
+                                <p>{order.user?.address ?? "Nairobi, Kenya"}</p>
                             </div>
                             <div className="email-section">
                                 <h3>EMAIL</h3>
-                                <p>dainne.ressell@gmail.com</p>
+                                <p>{order.user?.email}</p>
                             </div>
                             <div className="number-section">
                                 <h3>PHONE</h3>
-                                <p>(671) 555-0110</p>
+                                <p>{order.user?.phone ?? "---"}</p>
                             </div>
                         </div>
                     </div>
+
                     <div className="shipping-address">
-                        <h1>BILLING ADDRESS</h1>
+                        <h1>SHIPPING ADDRESS</h1>
                         <div className="billing-detail">
                             <div className="name-section">
-                                <h2>Dainne Russell</h2>
-                                <p>
-                                    4140 Parker Rd. Allentown, New Mexico 31134
-                                </p>
+                                <h2>{order.user?.name ?? "John Doe"}</h2>
+                                <p>{order.user?.address ?? "Nairobi, Kenya"}</p>
                             </div>
                             <div className="email-section">
                                 <h3>EMAIL</h3>
-                                <p>dainne.ressell@gmail.com</p>
+                                <p>{order.user?.email}</p>
                             </div>
                             <div className="number-section">
                                 <h3>PHONE</h3>
-                                <p>(671) 555-0110</p>
+                                <p>{order.user?.phone ?? "---"}</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div className="order-summary">
                     <div className="order-summary-title">
                         <div className="id">
                             <h3>ORDER ID</h3>
-                            <p>#412</p>
+                            <p>#{order.id}</p>
                         </div>
                         <div className="payment">
                             <h3>PAYMENT METHOD</h3>
-                            <p>Paypal</p>
+                            <p>{order.payment_method ?? "Unknown"}</p>
                         </div>
                     </div>
                     <div className="order-calculation">
                         <div>
                             <h4>Subtotal:</h4>
-                            <span>$365.00</span>
+                            <span>
+                                ${parseFloat(order.total_price).toFixed(2)}
+                            </span>
                         </div>
                         <div>
                             <h4>Discount:</h4>
-                            <span>20%</span>
+                            <span>{order.discount ?? 0}%</span>
                         </div>
                         <div>
                             <h4>Shipping</h4>
-                            <span>Free</span>
+                            <span>
+                                {order.shipping_fee > 0
+                                    ? `$${order.shipping_fee}`
+                                    : "Free"}
+                            </span>
                         </div>
                         <div className="total">
                             <h4>Total</h4>
-                            <span>$84.00</span>
+                            <span>
+                                $
+                                {parseFloat(order.total_price) -
+                                    parseFloat(order.total_price) *
+                                        ((order.discount ?? 0) / 100)}
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div className="process-visual">
-                <OrderStatusStepper />
+                <OrderStatusStepper currentStatus={order.status} />
             </div>
+
             <div className="product-list">
                 <table>
                     <thead>
@@ -131,15 +162,21 @@ const OrderDetailsPage: React.FC<OrderDetailsPageInterface> = ({ orderId }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {orderItems.map((product, index) => (
+                        {order.items.map((item, index) => (
                             <tr key={index}>
                                 <td className="img-section">
-                                    <img src={product.image} />
-                                    <p>{product.productName}</p>
+                                    <img
+                                        src={
+                                            item.produce?.images?.[0]?.url ||
+                                            "/placeholder.png"
+                                        }
+                                        alt={item.produce?.name}
+                                    />
+                                    <p>{item.produce?.name}</p>
                                 </td>
-                                <td>{product.price}</td>
-                                <td>x{product.quantity}</td>
-                                <td>Ksh{product.subtotal}</td>
+                                <td>Ksh{item.price}</td>
+                                <td>x{item.quantity}</td>
+                                <td>Ksh{item.quantity * item.price}</td>
                             </tr>
                         ))}
                     </tbody>

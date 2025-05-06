@@ -14,14 +14,12 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('farmer_id')->constrained()->onDelete('cascade');
-            $table->enum('box_type', ['standard', 'customizable'])->default('standard');
-            $table->enum('frequency', ['weekly', 'bi-weekly', 'monthly'])->default('weekly');
-            $table->text('preferences')->nullable();
+            $table->foreignId('farmer_subscription_plan_id')->constrained()->onDelete('cascade');
+            $table->enum('payment_mode', ['recurring', 'seasonal']);
             $table->date('start_date');
-            $table->enum('status', ['active', 'paused', 'cancelled'])->default('active');
+            $table->date('next_billing_date')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

@@ -8,6 +8,7 @@ use App\Models\Billing\BillingAddress;
 use App\Models\cart\Cart;
 use App\Models\cart\CartItem;
 use App\Models\Order\Order;
+use App\Models\Order\OrderItem;
 use App\Models\Order\UserOrder;
 use App\Models\Order\UserOrderItem;
 use App\Models\Payment\Payment;
@@ -63,7 +64,7 @@ class PaymentController extends Controller
 
             // 4. Calculate totals
             $subtotal = $cartItems->sum(fn($item) => $item->price * $item->quantity);
-            $shipping = 250;
+            $shipping = 0;
             $total = $subtotal + $shipping;
 
 
@@ -78,11 +79,6 @@ class PaymentController extends Controller
                 'notes' => $billingData['notes'] ?? null,
             ]);
 
-            // dump($cartItems[0]->produce_id);
-            // dump($cartItems[1]->produce_id);
-            // dump($cartItems[2]->produce_id);
-            // dump($cartItems[3]->produce_id);
-            // 6. Store snapshot of order items
             foreach ($cartItems as $item) {
                 UserOrderItem::create([
                     'user_order_id' => $order->id,
@@ -120,7 +116,7 @@ class PaymentController extends Controller
 
     public function verifyPayment(Request $request, $reference)
     {
-
+        $user = $request->authenticated_user;
 
         if (!$reference) {
             return response()->json([
@@ -179,6 +175,37 @@ class PaymentController extends Controller
                     'payment_method' => 'mpesa',
                     'status' => 'order_received',
                 ]);
+
+                $cart = Cart::where('user_id', $user->id)->first();
+
+                if (!$cart) {
+                    return response()->json(['message' => 'Cart not found.'], 404);
+                }
+
+                $cartItems = CartItem::where('cart_id', $cart->id)->with('produce')->get();
+
+                foreach ($cartItems as $item) {
+                    // UserOrderItem::create([
+                    //     'user_order_id' => $order->id,
+                    //     'produce_id' => $item->produce_id,
+                    //     'quantity' => $item->quantity,
+                    //     'price' => $item->price,
+                    // ]);
+
+                    $price = $item->produce->price_per_unit;
+                    $quantity = $item->quantity;
+                    $subtotal = $price * $quantity;
+
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'produce_id' => $item->produce_id,
+                        'quantity' => $quantity,
+                        'price' => $price,
+                        'subtotal' => $subtotal,
+                    ]);
+                }
+
+                // $cartItems->each->delete();
 
                 return response()->json([
                     'status' => 'success',

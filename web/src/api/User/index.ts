@@ -58,6 +58,35 @@ class UserApi {
             throw e;
         }
     }
+
+    async getAvailableSubscriptionPlans() {
+        try {
+            const response = await AxiosApi.get(
+                "/available-subscription-plans",
+            );
+            return response.data.plans;
+        } catch (e) {
+            console.log("error fetching available subscription plans", e);
+            throw e;
+        }
+    }
+
+    async subscribeToPlan(subscriptionInfo: {
+        farmer_plan_id: number;
+        payment_mode: "recurring" | "seasonal";
+        start_date: string;
+    }) {
+        try {
+            const response = await AxiosApi.post(
+                "/subscribe",
+                subscriptionInfo,
+            );
+            return response.data;
+        } catch (e) {
+            console.log("error subscribing to plan", e);
+            throw e;
+        }
+    }
 }
 
 export default new UserApi();

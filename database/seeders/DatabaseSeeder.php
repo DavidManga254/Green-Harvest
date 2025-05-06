@@ -8,6 +8,7 @@ namespace Database\Seeders;
 use Database\Seeders\Farmer\FarmerSeeder;
 use Database\Seeders\Farmer\FarmerLocationSeeder;
 use Database\Seeders\Produce\ProduceSeeder;
+use Database\Seeders\Subscription\SubscriptionPlanTemplateSeeder;
 use Database\Seeders\User\UserSeeder;
 use Illuminate\Database\Seeder;
 
@@ -22,7 +23,8 @@ class DatabaseSeeder extends Seeder
             // UserSeeder::class,
             // FarmerSeeder::class,
             // ProduceSeeder::class
-            FarmerLocationSeeder::class
+            // FarmerLocationSeeder::class
+            SubscriptionPlanTemplateSeeder::class
         ]);
     }
 }
