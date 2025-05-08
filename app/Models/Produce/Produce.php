@@ -6,6 +6,7 @@ use App\Models\Category\Category;
 use App\Models\Farmer\Farmer;
 use App\Models\ProduceImage\ProduceImage;
 use App\Models\Review\Review;
+use App\Models\Subscription\FarmerSubscriptionPlan;
 use App\Models\Tag\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,5 +52,11 @@ class Produce extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function subscriptionPlans()
+    {
+        return $this->belongsToMany(FarmerSubscriptionPlan::class, 'farmer_subscription_plan_items')
+            ->withTimestamps();
     }
 }

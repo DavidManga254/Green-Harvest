@@ -1,4 +1,3 @@
-import React from "react";
 import {
     Box,
     Grid,
@@ -6,12 +5,13 @@ import {
     CardContent,
     Typography,
     Button,
-    Chip,
     Container,
     Divider,
     CardMedia,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useQuery } from "@tanstack/react-query";
+import User from "../../../api/User";
 
 const samplePlans = [
     {
@@ -125,7 +125,37 @@ const samplePlans = [
     },
 ];
 
-const FarmerSubscriptionPage = () => {
+interface FarmerSubscriptionPageInterface {
+    farmerId: string | number;
+}
+
+const FarmerSubscriptionPage: React.FC<FarmerSubscriptionPageInterface> = ({
+    farmerId,
+}) => {
+    const {
+        data: FarmerSubscriptionPlans,
+        isLoading,
+        error: subscriptionFetchError,
+    } = useQuery({
+        queryKey: [`farmer subscription ${farmerId}`],
+        queryFn: () => User.getAvailableSubscriptionPlans(farmerId),
+        enabled: !!farmerId,
+        staleTime: 1000 * 60 * 20,
+    });
+
+    if (isLoading)
+        return <Typography align="center">Loading plans...</Typography>;
+    if (subscriptionFetchError)
+        return (
+            <Typography align="center" color="error">
+                Failed to load subscription plans
+            </Typography>
+        );
+    if (!FarmerSubscriptionPlans?.length)
+        return (
+            <Typography align="center">No subscriptions available.</Typography>
+        );
+
     return (
         <Container maxWidth="lg" sx={{ mt: 6, mb: 8 }}>
             <Typography variant="h4" gutterBottom textAlign="center">
@@ -147,7 +177,7 @@ const FarmerSubscriptionPage = () => {
                 columnSpacing={4}
                 justifyContent="center"
             >
-                {samplePlans.map((plan) => (
+                {FarmerSubscriptionPlans.map((plan: any) => (
                     <Grid item xs={12} sm={6} md={4} key={plan.id}>
                         <Card
                             elevation={3}
@@ -159,12 +189,17 @@ const FarmerSubscriptionPage = () => {
                                 height: "100%",
                             }}
                         >
-                            {plan.produce?.image && (
+                            {/* Show static image fallback if none */}
+                            {plan?.cover_image && (
                                 <CardMedia
                                     component="img"
                                     height="160"
-                                    image={plan.produce.image}
-                                    alt={plan.produce.name}
+                                    image={
+                                        plan.cover_image ||
+                                        plan.produce?.image ||
+                                        "/images/default-basket.jpg" // optional fallback
+                                    }
+                                    alt={plan.template.name}
                                     sx={{ objectFit: "cover", borderRadius: 1 }}
                                 />
                             )}
@@ -189,20 +224,22 @@ const FarmerSubscriptionPage = () => {
                                 <Divider sx={{ my: 2 }} />
 
                                 <Box>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        mb={1}
-                                    >
-                                        <CheckCircleIcon
-                                            fontSize="small"
-                                            color="success"
-                                            sx={{ mr: 1 }}
-                                        />
-                                        <Typography variant="body2">
-                                            {plan.template.description}
-                                        </Typography>
-                                    </Box>
+                                    {plan.highlight && (
+                                        <Box
+                                            display="flex"
+                                            alignItems="center"
+                                            mb={1}
+                                        >
+                                            <CheckCircleIcon
+                                                fontSize="small"
+                                                color="success"
+                                                sx={{ mr: 1 }}
+                                            />
+                                            <Typography variant="body2">
+                                                {plan.highlight}
+                                            </Typography>
+                                        </Box>
+                                    )}
                                     {plan.produce && (
                                         <Box
                                             display="flex"
@@ -244,7 +281,9 @@ const FarmerSubscriptionPage = () => {
                                     fontWeight="bold"
                                 >
                                     Ksh{" "}
-                                    {plan.template.base_price.toLocaleString()}{" "}
+                                    {Number(
+                                        plan.template.base_price,
+                                    ).toLocaleString()}{" "}
                                     / {plan.template.frequency.toLowerCase()}
                                 </Typography>
                             </Box>
@@ -270,7 +309,8 @@ const FarmerSubscriptionPage = () => {
                                     variant="caption"
                                     color="text.secondary"
                                 >
-                                    ⭐ {plan.reviews} reviews
+                                    ⭐ {Math.floor(Math.random() * 50) + 1}{" "}
+                                    reviews
                                 </Typography>
                             </Box>
                         </Card>

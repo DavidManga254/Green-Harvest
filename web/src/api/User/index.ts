@@ -59,10 +59,10 @@ class UserApi {
         }
     }
 
-    async getAvailableSubscriptionPlans() {
+    async getAvailableSubscriptionPlans(farmerId: string | number) {
         try {
             const response = await AxiosApi.get(
-                "/available-subscription-plans",
+                `/available-subscription-plans/${farmerId}`,
             );
             return response.data.plans;
         } catch (e) {

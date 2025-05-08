@@ -18,6 +18,7 @@ class FarmerSubscriptionPlanResource extends JsonResource
             'id' => $this->id,
             'template' => $this->template,
             'is_active' => $this->is_active,
+            'cover_image' => $this->cover_image ?? null,
         ];
     }
 }

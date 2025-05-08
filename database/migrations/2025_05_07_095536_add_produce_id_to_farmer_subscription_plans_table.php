@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignId('produce_id')
                 ->nullable()
                 ->after('subscription_plan_template_id')
-                ->constrained('produce')
+                ->constrained('produces')
                 ->onDelete('set null');
         });
     }

@@ -12,6 +12,8 @@ use App\Http\Requests\User\Register;
 use App\Http\Requests\User\UserSubscribeRequest;
 use App\Http\Resources\Farmer\FarmerMapMarkerResource;
 use App\Http\Resources\Farmer\FarmerReviewResource;
+use App\Http\Resources\FarmerSubscription\FarmerSubscriptionPlanDetailResource;
+use App\Http\Resources\FarmerSubscription\FarmerSubscriptionPlanResource;
 use App\Http\Resources\User\UserSubscriptionResource;
 use App\Mail\Register\Register as SignUpRegister;
 use App\Models\cart\Cart;
@@ -220,7 +222,18 @@ class UserController extends Controller
         $plans = $query->get();
 
         return response()->json([
-            'plans' => $plans
+            'plans' => FarmerSubscriptionPlanResource::collection($plans)
+        ]);
+    }
+
+    public function show($id)
+    {
+        $plan = FarmerSubscriptionPlan::with([
+            'template', 'produce', 'items', 'farmer.user'
+        ])->findOrFail($id);
+
+        return response()->json([
+            'plan' => new FarmerSubscriptionPlanDetailResource($plan)
         ]);
     }
 

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class FarmerSubscriptionPlan extends Model
 {
     protected $fillable = [
-        'farmer_id', 'subscription_plan_template_id', 'is_active'
+        'farmer_id', 'subscription_plan_template_id', 'is_active','cover_image'
     ];
 
     public function template()
@@ -30,6 +30,12 @@ class FarmerSubscriptionPlan extends Model
     public function produce()
     {
         return $this->belongsTo(Produce::class);
+    }
+
+    public function items()
+    {
+        return $this->belongsToMany(Produce::class, 'farmer_subscription_plan_items')
+            ->withTimestamps();
     }
 
 }
