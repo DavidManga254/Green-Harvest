@@ -12,6 +12,7 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useQuery } from "@tanstack/react-query";
 import User from "../../../api/User";
+import { Link } from "@tanstack/react-router";
 
 const samplePlans = [
     {
@@ -289,19 +290,24 @@ const FarmerSubscriptionPage: React.FC<FarmerSubscriptionPageInterface> = ({
                             </Box>
 
                             <Box mt={3} px={2} pb={2}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    size="large"
-                                    sx={{
-                                        backgroundColor: "#388e3c",
-                                        "&:hover": {
-                                            backgroundColor: "#2e7d32",
-                                        },
-                                    }}
+                                <Link
+                                    to="/vendor/subscriptions/subscription-detail/$subscription"
+                                    params={{ subscription: plan.id }}
                                 >
-                                    SUBSCRIBE NOW
-                                </Button>
+                                    <Button
+                                        fullWidth
+                                        variant="contained"
+                                        size="large"
+                                        sx={{
+                                            backgroundColor: "#388e3c",
+                                            "&:hover": {
+                                                backgroundColor: "#2e7d32",
+                                            },
+                                        }}
+                                    >
+                                        SUBSCRIBE NOW
+                                    </Button>
+                                </Link>
                             </Box>
 
                             <Box textAlign="center" pb={2}>
