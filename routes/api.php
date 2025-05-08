@@ -77,7 +77,7 @@ Route::middleware(['userAuth'])->group(function () {
     // Route::put('/subscription-plans/{id}', [SubscriptionPlanController::class, 'update']);
     // Route::delete('/subscription-plans/{id}', [SubscriptionPlanController::class, 'destroy']);
 
-    Route::get('/available-subscription-plans','User\UserController@availablePlans');
+    Route::get('/available-subscription-plans/{farmerId}','User\UserController@availablePlans');
     Route::post('/subscribe', 'User\UserController@subscribe');
 
 });

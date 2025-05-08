@@ -3,7 +3,6 @@ import {
     Typography,
     Avatar,
     Button,
-    Link,
     Grid,
     Card,
     CardMedia,
@@ -20,6 +19,7 @@ import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import { useState } from "react";
 import Farmer from "../../api/Farmer";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 
 interface VendorPageInterface {
     id: string | number;
@@ -164,12 +164,17 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
                     </Modal>
                 </Grid>
                 <Grid item>
-                    <Button
+                    {/*<Button
                         variant="contained"
                         style={{ backgroundColor: "var(--green)" }}
                     >
                         Subscribed
-                    </Button>
+                    </Button>*/}
+                    <Link to="/vendor/subscriptions/$id" params={{ id: id }}>
+                        <Button variant="outlined" style={{ color: "green" }}>
+                            View Subscription Plans
+                        </Button>
+                    </Link>
                 </Grid>
             </Grid>
 

@@ -31,6 +31,7 @@ import { Route as userAccountOrderHistoryIndexImport } from './routes/(user)/acc
 import { Route as userAccountDashboardIndexImport } from './routes/(user)/account/dashboard/index'
 import { Route as farmerFarmerInventoryIndexImport } from './routes/(farmer)/farmer/inventory/index'
 import { Route as farmerFarmerDashboardIndexImport } from './routes/(farmer)/farmer/dashboard/index'
+import { Route as userVendorSubscriptionsIdImport } from './routes/(user)/vendor/subscriptions/$id'
 import { Route as userAccountOrderHistoryOrderIdImport } from './routes/(user)/account/order-history/$orderId'
 import { Route as userCheckoutPayCallbackIndexImport } from './routes/(user)/checkout/pay/callback/index'
 
@@ -158,6 +159,12 @@ const farmerFarmerDashboardIndexRoute = farmerFarmerDashboardIndexImport.update(
   } as any,
 )
 
+const userVendorSubscriptionsIdRoute = userVendorSubscriptionsIdImport.update({
+  id: '/vendor/subscriptions/$id',
+  path: '/vendor/subscriptions/$id',
+  getParentRoute: () => userLayoutRoute,
+} as any)
+
 const userAccountOrderHistoryOrderIdRoute =
   userAccountOrderHistoryOrderIdImport.update({
     id: '/order-history/$orderId',
@@ -274,6 +281,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof userAccountOrderHistoryOrderIdImport
       parentRoute: typeof userAccountLayoutImport
     }
+    '/(user)/vendor/subscriptions/$id': {
+      id: '/(user)/vendor/subscriptions/$id'
+      path: '/vendor/subscriptions/$id'
+      fullPath: '/vendor/subscriptions/$id'
+      preLoaderRoute: typeof userVendorSubscriptionsIdImport
+      parentRoute: typeof userLayoutImport
+    }
     '/(farmer)/farmer/dashboard/': {
       id: '/(farmer)/farmer/dashboard/'
       path: '/dashboard'
@@ -356,6 +370,7 @@ interface userLayoutRouteChildren {
   userRegisterIndexRoute: typeof userRegisterIndexRoute
   userShopIndexRoute: typeof userShopIndexRoute
   userSignInIndexRoute: typeof userSignInIndexRoute
+  userVendorSubscriptionsIdRoute: typeof userVendorSubscriptionsIdRoute
   userCheckoutPayIndexRoute: typeof userCheckoutPayIndexRoute
   userCheckoutPayCallbackIndexRoute: typeof userCheckoutPayCallbackIndexRoute
 }
@@ -371,6 +386,7 @@ const userLayoutRouteChildren: userLayoutRouteChildren = {
   userRegisterIndexRoute: userRegisterIndexRoute,
   userShopIndexRoute: userShopIndexRoute,
   userSignInIndexRoute: userSignInIndexRoute,
+  userVendorSubscriptionsIdRoute: userVendorSubscriptionsIdRoute,
   userCheckoutPayIndexRoute: userCheckoutPayIndexRoute,
   userCheckoutPayCallbackIndexRoute: userCheckoutPayCallbackIndexRoute,
 }
@@ -416,6 +432,7 @@ export interface FileRoutesByFullPath {
   '/shop': typeof userShopIndexRoute
   '/sign-in': typeof userSignInIndexRoute
   '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
+  '/vendor/subscriptions/$id': typeof userVendorSubscriptionsIdRoute
   '/farmer/dashboard': typeof farmerFarmerDashboardIndexRoute
   '/farmer/inventory': typeof farmerFarmerInventoryIndexRoute
   '/account/dashboard': typeof userAccountDashboardIndexRoute
@@ -439,6 +456,7 @@ export interface FileRoutesByTo {
   '/shop': typeof userShopIndexRoute
   '/sign-in': typeof userSignInIndexRoute
   '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
+  '/vendor/subscriptions/$id': typeof userVendorSubscriptionsIdRoute
   '/farmer/dashboard': typeof farmerFarmerDashboardIndexRoute
   '/farmer/inventory': typeof farmerFarmerInventoryIndexRoute
   '/account/dashboard': typeof userAccountDashboardIndexRoute
@@ -464,6 +482,7 @@ export interface FileRoutesById {
   '/(user)/shop/': typeof userShopIndexRoute
   '/(user)/sign-in/': typeof userSignInIndexRoute
   '/(user)/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
+  '/(user)/vendor/subscriptions/$id': typeof userVendorSubscriptionsIdRoute
   '/(farmer)/farmer/dashboard/': typeof farmerFarmerDashboardIndexRoute
   '/(farmer)/farmer/inventory/': typeof farmerFarmerInventoryIndexRoute
   '/(user)/account/dashboard/': typeof userAccountDashboardIndexRoute
@@ -489,6 +508,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sign-in'
     | '/account/order-history/$orderId'
+    | '/vendor/subscriptions/$id'
     | '/farmer/dashboard'
     | '/farmer/inventory'
     | '/account/dashboard'
@@ -511,6 +531,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sign-in'
     | '/account/order-history/$orderId'
+    | '/vendor/subscriptions/$id'
     | '/farmer/dashboard'
     | '/farmer/inventory'
     | '/account/dashboard'
@@ -534,6 +555,7 @@ export interface FileRouteTypes {
     | '/(user)/shop/'
     | '/(user)/sign-in/'
     | '/(user)/account/order-history/$orderId'
+    | '/(user)/vendor/subscriptions/$id'
     | '/(farmer)/farmer/dashboard/'
     | '/(farmer)/farmer/inventory/'
     | '/(user)/account/dashboard/'
@@ -588,6 +610,7 @@ export const routeTree = rootRoute
         "/(user)/register/",
         "/(user)/shop/",
         "/(user)/sign-in/",
+        "/(user)/vendor/subscriptions/$id",
         "/(user)/checkout/pay/",
         "/(user)/checkout/pay/callback/"
       ]
@@ -648,6 +671,10 @@ export const routeTree = rootRoute
     "/(user)/account/order-history/$orderId": {
       "filePath": "(user)/account/order-history/$orderId.tsx",
       "parent": "/(user)/account"
+    },
+    "/(user)/vendor/subscriptions/$id": {
+      "filePath": "(user)/vendor/subscriptions/$id.tsx",
+      "parent": "/(user)"
     },
     "/(farmer)/farmer/dashboard/": {
       "filePath": "(farmer)/farmer/dashboard/index.tsx",

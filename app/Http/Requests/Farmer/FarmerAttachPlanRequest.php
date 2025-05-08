@@ -22,7 +22,8 @@ class FarmerAttachPlanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'template_id' => 'required|exists:subscription_plan_templates,id'
+            'template_id' => 'required|exists:subscription_plan_templates,id',
+            'produce_id' => 'nullable|exists:produce,id',
         ];
     }
 }

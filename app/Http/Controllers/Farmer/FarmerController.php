@@ -255,26 +255,35 @@ class FarmerController extends Controller
     public function attachTemplate(FarmerAttachPlanRequest $request)
     {
         $farmer = $request->get('farmer');
+        $validated = $request->validated();
 
-        $templateId = $request->validated()['template_id'];
+        if (isset($validated['produce_id']) && !$farmer->produce()->where('id', $validated['produce_id'])->exists()) {
+            return response()->json(['message' => 'Invalid produce selection.'], 403);
+        }
 
         $exists = FarmerSubscriptionPlan::where('farmer_id', $farmer->id)
-            ->where('subscription_plan_template_id', $templateId)
+            ->where('subscription_plan_template_id', $validated['template_id'])
+            ->when($validated['produce_id'] ?? null, function ($query, $produceId) {
+                return $query->where('produce_id', $produceId);
+            })
             ->exists();
 
         if ($exists) {
-            return response()->json(['message' => 'You already offer this plan.'], 409);
+            return response()->json(['message' => 'You already offer this plan for that produce.'], 409);
         }
 
+        // ✅ Create plan
         $plan = FarmerSubscriptionPlan::create([
             'farmer_id' => $farmer->id,
-            'subscription_plan_template_id' => $templateId,
+            'subscription_plan_template_id' => $validated['template_id'],
+            'produce_id' => $validated['produce_id'] ?? null,
             'is_active' => true
         ]);
 
         return response()->json([
             'message' => 'Plan attached successfully.',
-            'data' => new FarmerSubscriptionPlanResource($plan->load('template'))
+            'data' => new FarmerSubscriptionPlanResource($plan->load(['template', 'produce']))
         ], 201);
     }
+
 }

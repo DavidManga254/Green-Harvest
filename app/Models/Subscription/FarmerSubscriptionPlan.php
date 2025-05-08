@@ -3,6 +3,7 @@
 namespace App\Models\Subscription;
 
 use App\Models\Farmer\Farmer;
+use App\Models\Produce\Produce;
 use Illuminate\Database\Eloquent\Model;
 
 class FarmerSubscriptionPlan extends Model
@@ -25,4 +26,10 @@ class FarmerSubscriptionPlan extends Model
     {
         return $this->hasMany(Subscription::class);
     }
+
+    public function produce()
+    {
+        return $this->belongsTo(Produce::class);
+    }
+
 }

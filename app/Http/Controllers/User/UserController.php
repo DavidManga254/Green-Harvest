@@ -208,16 +208,22 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function availablePlans()
+    public function availablePlans($farmerId)
     {
-        $plans = FarmerSubscriptionPlan::with('template', 'farmer.user')
-            ->where('is_active', true)
-            ->get();
+        $query = FarmerSubscriptionPlan::with('template', 'produce', 'farmer.user')
+            ->where('is_active', true);
+
+        if ($farmerId) {
+            $query->where('farmer_id', $farmerId);
+        }
+
+        $plans = $query->get();
 
         return response()->json([
             'plans' => $plans
         ]);
     }
+
 
     public function subscribe(UserSubscribeRequest $request)
     {

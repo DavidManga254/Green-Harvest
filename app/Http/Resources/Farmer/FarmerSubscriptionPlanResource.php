@@ -16,7 +16,7 @@ class FarmerSubscriptionPlanResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'template' => new SubscriptionPlanTemplateResource($this->template),
+            'template' => $this->template,
             'is_active' => $this->is_active,
         ];
     }
