@@ -229,13 +229,18 @@ class UserController extends Controller
     public function show($id)
     {
         $plan = FarmerSubscriptionPlan::with([
-            'template', 'produce', 'items', 'farmer.user'
+            'template',
+            'produce',
+            'items',
+            'farmer.user',
+            'reviews.user',
         ])->findOrFail($id);
 
         return response()->json([
             'plan' => new FarmerSubscriptionPlanDetailResource($plan)
         ]);
     }
+
 
 
     public function subscribe(UserSubscribeRequest $request)

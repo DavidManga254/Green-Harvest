@@ -26,5 +26,11 @@ class Subscription extends Model
         return $this->belongsTo(FarmerSubscriptionPlan::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(SubscriptionReview::class);
+    }
+
+
 
 }

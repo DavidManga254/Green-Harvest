@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Billing\BillingSaveRequest;
+use App\Http\Requests\Subscription\SubscribeToPlanRequest;
 use App\Models\Billing\BillingAddress;
 use App\Models\cart\Cart;
 use App\Models\cart\CartItem;
@@ -12,6 +13,7 @@ use App\Models\Order\OrderItem;
 use App\Models\Order\UserOrder;
 use App\Models\Order\UserOrderItem;
 use App\Models\Payment\Payment;
+use App\Models\Subscription\FarmerSubscriptionPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -112,6 +114,41 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Something went wrong while processing your order.'], 500);
         }
     }
+
+    public function subscribeToPlan(SubscribeToPlanRequest $request)
+    {
+        $user = $request->authenticated_user;
+
+        $validated = $request->validated();
+
+
+        try {
+            $plan = FarmerSubscriptionPlan::with('template')->findOrFail($validated['farmer_plan_id']);
+            $amountInCents = $plan->template->base_price * 100;
+
+            $callbackUrl = env('CUSTOMER_WEB_APP_URL') . '/checkout/pay/callback?plan_id=' . $plan->id;
+
+            $authorizationUrl = Paystack::getAuthorizationUrl([
+                'amount' => $amountInCents,
+                'email' => $user->email,
+                'currency' => 'KES',
+                'payment_method' => 'mpesa',
+                'callback_url' => $callbackUrl,
+                'metadata' => [
+                    'farmer_plan_id' => $plan->id,
+                    'start_date' => $validated['start_date'],
+                ]
+            ]);
+
+            return response()->json([
+                'authorization_url' => $authorizationUrl,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Subscription initiation failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to initiate subscription.'], 500);
+        }
+    }
+
 
 
     public function verifyPayment(Request $request, $reference)

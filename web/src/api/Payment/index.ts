@@ -22,6 +22,22 @@ class PaymentApi {
         }
     }
 
+    async subscribeToPlan(subscriptionInfo: {
+        farmer_plan_id: number;
+        start_date: string;
+    }) {
+        try {
+            const response = await AxiosApi.post(
+                "/subscribe",
+                subscriptionInfo,
+            );
+            return response.data.authorization_url.url;
+        } catch (e) {
+            console.log("Error subscribing to plan", e);
+            throw e;
+        }
+    }
+
     async verifyPayment(reference: string) {
         try {
             const response = await AxiosApi.get(`/payment/verify/${reference}`);

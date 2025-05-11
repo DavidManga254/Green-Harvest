@@ -38,4 +38,10 @@ class FarmerSubscriptionPlan extends Model
             ->withTimestamps();
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(SubscriptionReview::class);
+    }
+
+
 }

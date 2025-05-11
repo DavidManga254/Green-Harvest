@@ -30,6 +30,11 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import StarIcon from "@mui/icons-material/Star";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import User from "../../../../api/User";
+import { subscribe } from "diagnostics_channel";
+import Payment from "../../../../api/Payment";
+import { toast } from "react-toastify";
 
 const plan = {
     id: 12,
@@ -148,10 +153,102 @@ const plan = {
     ],
 };
 
-const SubscriptionDetailPage = () => {
+interface SubscriptionDetailPageInterface {
+    subscriptionId: number | string;
+}
+
+const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
+    subscriptionId,
+}) => {
     const [startDate, setStartDate] = useState("");
-    const [paymentMode, setPaymentMode] = useState("recurring");
     const [showAllReviews, setShowAllReviews] = useState(false);
+
+    const {
+        data: subscriptionPlan,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ["subscription-plan", subscriptionId],
+        queryFn: () => User.getSubscriptionPlanDetail(subscriptionId),
+        enabled: !!subscriptionId,
+        staleTime: 1000 * 60 * 10,
+    });
+
+    const { mutate: createSubscription, isPending: isSubscribing } =
+        useMutation({
+            mutationFn: (payload: {
+                farmer_plan_id: number;
+                start_date: string;
+            }) => Payment.subscribeToPlan(payload),
+
+            onMutate: () => {
+                toast("Processing subscription…", {
+                    toastId: "processing-subscription",
+                    position: "top-right",
+                    isLoading: true,
+                    closeOnClick: false,
+                    closeButton: false,
+                    autoClose: false,
+                    style: {
+                        borderLeft: "6px solid #00C853",
+                        backgroundColor: "#e8f5e9",
+                        color: "#1b5e20",
+                    },
+                });
+            },
+
+            onSuccess: (data) => {
+                toast.dismiss("processing-subscription");
+
+                if (data) {
+                    toast.success("Redirecting to Paystack...", {
+                        position: "top-right",
+                        autoClose: 3000,
+                    });
+
+                    window.location.href = data;
+                } else {
+                    toast.error("Failed to get authorization URL.", {
+                        position: "top-right",
+                        autoClose: 5000,
+                    });
+                }
+            },
+
+            onError: () => {
+                toast.dismiss("processing-subscription");
+                toast.error("Subscription failed. Please try again.", {
+                    position: "top-right",
+                    autoClose: 5000,
+                });
+            },
+        });
+
+    const subscribe = () => {
+        const selected = new Date(startDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // normalize
+
+        if (!startDate || selected <= today) {
+            alert("Please select a valid start date after today.");
+            return;
+        }
+
+        createSubscription({
+            farmer_plan_id: Number(subscriptionId),
+            start_date: startDate,
+        });
+    };
+
+    if (isLoading)
+        return <Typography align="center">Loading subscription...</Typography>;
+
+    if (error || !subscriptionPlan)
+        return (
+            <Typography align="center" color="error">
+                Failed to load subscription plan.
+            </Typography>
+        );
 
     return (
         <Container maxWidth="lg" sx={{ py: 6 }}>
@@ -159,12 +256,11 @@ const SubscriptionDetailPage = () => {
                 {/* Left: Subscription Plan Info */}
                 <Grid item xs={12} md={7}>
                     <Card elevation={3}>
-                        {plan.cover_image && (
+                        {subscriptionPlan.cover_image && (
                             <CardMedia
                                 component="img"
                                 height="240"
-                                image={plan.cover_image}
-                                alt={plan.template.name}
+                                image={subscriptionPlan.cover_image}
                                 sx={{ objectFit: "cover" }}
                             />
                         )}
@@ -176,14 +272,14 @@ const SubscriptionDetailPage = () => {
                                 sx={{ mb: 1 }}
                             />
                             <Typography variant="h5" gutterBottom>
-                                {plan.template.name}
+                                {subscriptionPlan.template.name}
                             </Typography>
                             <Typography
                                 variant="body1"
                                 color="text.secondary"
                                 mb={1}
                             >
-                                {plan.description}
+                                {subscriptionPlan.description}
                             </Typography>
 
                             <Box
@@ -231,7 +327,7 @@ const SubscriptionDetailPage = () => {
                                 color="text.secondary"
                                 mb={2}
                             >
-                                {plan.farmer.bio}
+                                {subscriptionPlan.farmer.bio}
                             </Typography>
 
                             <Typography variant="subtitle1" gutterBottom>
@@ -239,42 +335,44 @@ const SubscriptionDetailPage = () => {
                             </Typography>
 
                             <Grid container spacing={2}>
-                                {plan.included_produce.map((item) => (
-                                    <Grid item xs={12} sm={6} key={item.id}>
-                                        <Box
-                                            display="flex"
-                                            alignItems="center"
-                                            gap={2}
-                                        >
+                                {subscriptionPlan.included_produce.map(
+                                    (item) => (
+                                        <Grid item xs={12} sm={6} key={item.id}>
                                             <Box
-                                                component="img"
-                                                src={item.image}
-                                                alt={item.name}
-                                                sx={{
-                                                    width: 64,
-                                                    height: 64,
-                                                    objectFit: "cover",
-                                                    borderRadius: 1,
-                                                    border: "1px solid #ccc",
-                                                }}
-                                            />
-                                            <Box>
-                                                <Typography
-                                                    variant="body1"
-                                                    fontWeight="medium"
-                                                >
-                                                    {item.name}
-                                                </Typography>
-                                                <Typography
-                                                    variant="body2"
-                                                    color="text.secondary"
-                                                >
-                                                    Qty: {item.quantity}
-                                                </Typography>
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={2}
+                                            >
+                                                <Box
+                                                    component="img"
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    sx={{
+                                                        width: 64,
+                                                        height: 64,
+                                                        objectFit: "cover",
+                                                        borderRadius: 1,
+                                                        border: "1px solid #ccc",
+                                                    }}
+                                                />
+                                                <Box>
+                                                    <Typography
+                                                        variant="body1"
+                                                        fontWeight="medium"
+                                                    >
+                                                        {item.name}
+                                                    </Typography>
+                                                    <Typography
+                                                        variant="body2"
+                                                        color="text.secondary"
+                                                    >
+                                                        Qty: {item.quantity}
+                                                    </Typography>
+                                                </Box>
                                             </Box>
-                                        </Box>
-                                    </Grid>
-                                ))}
+                                        </Grid>
+                                    ),
+                                )}
                             </Grid>
 
                             <Box mt={3}>
@@ -323,8 +421,8 @@ const SubscriptionDetailPage = () => {
                                                 Customer Reviews
                                             </Typography>
 
-                                            {plan.reviews
-                                                .slice(0, 2)
+                                            {subscriptionPlan.reviews
+                                                ?.slice(0, 2)
                                                 .map((review) => (
                                                     <Box
                                                         key={review.id}
@@ -393,19 +491,16 @@ const SubscriptionDetailPage = () => {
                                                     </Box>
                                                 ))}
 
-                                            {plan.reviews.length > 2 && (
-                                                <Box mt={2}>
-                                                    <Button
-                                                        onClick={() =>
-                                                            setShowAllReviews(
-                                                                true,
-                                                            )
-                                                        }
-                                                        size="small"
-                                                    >
-                                                        View All Reviews
-                                                    </Button>
-                                                </Box>
+                                            {subscriptionPlan.reviews.length >
+                                                2 && (
+                                                <Button
+                                                    onClick={() =>
+                                                        setShowAllReviews(true)
+                                                    }
+                                                    size="small"
+                                                >
+                                                    View All Reviews
+                                                </Button>
                                             )}
 
                                             <ReviewModal
@@ -413,7 +508,9 @@ const SubscriptionDetailPage = () => {
                                                 onClose={() =>
                                                     setShowAllReviews(false)
                                                 }
-                                                reviews={plan.reviews}
+                                                reviews={
+                                                    subscriptionPlan.reviews
+                                                }
                                             />
                                         </Box>
                                     )}
@@ -444,28 +541,11 @@ const SubscriptionDetailPage = () => {
                             InputLabelProps={{ shrink: true }}
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
+                            inputProps={{
+                                min: new Date().toISOString().split("T")[0], // today's date in YYYY-MM-DD
+                            }}
                             sx={{ mb: 3, mt: 1 }}
                         />
-
-                        <Typography variant="subtitle2" gutterBottom>
-                            Payment Mode
-                        </Typography>
-                        <RadioGroup
-                            value={paymentMode}
-                            onChange={(e) => setPaymentMode(e.target.value)}
-                            sx={{ mb: 3 }}
-                        >
-                            <FormControlLabel
-                                value="recurring"
-                                control={<Radio color="success" />}
-                                label="Recurring (auto-renew every month)"
-                            />
-                            <FormControlLabel
-                                value="seasonal"
-                                control={<Radio color="success" />}
-                                label="One-time seasonal payment"
-                            />
-                        </RadioGroup>
 
                         <Divider sx={{ mb: 2 }} />
 
@@ -477,15 +557,16 @@ const SubscriptionDetailPage = () => {
                                 Price Breakdown
                             </Typography>
                             <Typography variant="body2">
-                                Base Price: Ksh {plan.template.base_price}
+                                Base Price: Ksh{" "}
+                                {subscriptionPlan.template.base_price}
                             </Typography>
                             <Typography variant="body2">
                                 Delivery Fee: Free
                             </Typography>
                             <Typography variant="h6" fontWeight="bold" mt={1}>
                                 Total: Ksh{" "}
-                                {plan.template.base_price.toLocaleString()} /{" "}
-                                {plan.template.frequency}
+                                {subscriptionPlan.template.base_price.toLocaleString()}{" "}
+                                / {subscriptionPlan.template.frequency}
                             </Typography>
                         </Box>
 
@@ -493,12 +574,16 @@ const SubscriptionDetailPage = () => {
                             variant="contained"
                             fullWidth
                             size="large"
+                            disabled={!startDate || isSubscribing}
                             sx={{
                                 backgroundColor: "#388e3c",
                                 "&:hover": { backgroundColor: "#2e7d32" },
                             }}
+                            onClick={subscribe}
                         >
-                            Confirm Subscription
+                            {isSubscribing
+                                ? "Processing..."
+                                : "Confirm Subscription"}
                         </Button>
                     </Card>
                 </Grid>

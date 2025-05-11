@@ -10,6 +10,7 @@ use Database\Seeders\Farmer\FarmerLocationSeeder;
 use Database\Seeders\Produce\ProduceSeeder;
 use Database\Seeders\Subscription\SubscriptionPlanSeeder;
 use Database\Seeders\Subscription\SubscriptionPlanTemplateSeeder;
+use Database\Seeders\Subscription\SubscriptionReviewSeeder;
 use Database\Seeders\User\UserSeeder;
 use Illuminate\Database\Seeder;
 
@@ -26,7 +27,8 @@ class DatabaseSeeder extends Seeder
             // ProduceSeeder::class
             // FarmerLocationSeeder::class
             // SubscriptionPlanTemplateSeeder::class
-            SubscriptionPlanSeeder::class
+            // SubscriptionPlanSeeder::class
+            SubscriptionReviewSeeder::class
         ]);
     }
 }

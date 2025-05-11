@@ -78,6 +78,7 @@ Route::middleware(['userAuth'])->group(function () {
     // Route::delete('/subscription-plans/{id}', [SubscriptionPlanController::class, 'destroy']);
 
     Route::get('/available-subscription-plans/{farmerId}','User\UserController@availablePlans');
-    Route::post('/subscribe', 'User\UserController@subscribe');
+    Route::get('/available-subscription-plans/subscription/{id}','User\UserController@show');
+    Route::post('/subscribe', 'Payment\PaymentController@subscribeToPlan');
 
 });

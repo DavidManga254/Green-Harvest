@@ -71,9 +71,20 @@ class UserApi {
         }
     }
 
+    async getSubscriptionPlanDetail(planId: number | string) {
+        try {
+            const response = await AxiosApi.get(
+                `/available-subscription-plans/subscription/${planId}`,
+            );
+            return response.data.plan;
+        } catch (e) {
+            console.log("error fetching subscription plan detail", e);
+            throw e;
+        }
+    }
+
     async subscribeToPlan(subscriptionInfo: {
         farmer_plan_id: number;
-        payment_mode: "recurring" | "seasonal";
         start_date: string;
     }) {
         try {

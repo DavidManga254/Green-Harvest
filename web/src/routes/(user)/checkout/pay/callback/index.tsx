@@ -6,7 +6,11 @@ export const Route = createFileRoute("/(user)/checkout/pay/callback/")({
 });
 
 function RouteComponent() {
-    const { reference } = Route.useSearch();
+    const { reference, plan_id } = Route.useSearch();
 
-    return <ConfirmPaymentPage reference={reference.toString()} />;
+    return (
+        <ConfirmPaymentPage
+            reference={reference ? reference.toString() : plan_id}
+        />
+    );
 }
