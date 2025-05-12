@@ -1,6 +1,6 @@
 import "./NavBar.css";
 import ChevronDown from "../../assets/icons/ChevronDown";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 const NavBar: React.FC = () => {
     const navigate = useNavigate();
@@ -19,15 +19,15 @@ const NavBar: React.FC = () => {
                     <ChevronDown height="16" width="16" />
                 </div>
                 <div className="nav-item inactive">
-                    <span>Pages</span>
+                    <Link to={"/about"}>
+                        <span>About Us</span>
+                    </Link>
                     <ChevronDown height="16" width="16" />
                 </div>
                 <div className="nav-item inactive">
-                    <span>About Us</span>
-                    <ChevronDown height="16" width="16" />
-                </div>
-                <div className="nav-item inactive">
-                    <span>Contact Us</span>
+                    <Link to={"/contact-us"}>
+                        <span>Contact Us</span>
+                    </Link>
                     <ChevronDown height="16" width="16" />
                 </div>
             </div>

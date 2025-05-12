@@ -22,7 +22,9 @@ import { Route as userRegisterIndexImport } from './routes/(user)/register/index
 import { Route as userHomeIndexImport } from './routes/(user)/home/index'
 import { Route as userFindFarmerIndexImport } from './routes/(user)/find-farmer/index'
 import { Route as userExploreIndexImport } from './routes/(user)/explore/index'
+import { Route as userContactUsIndexImport } from './routes/(user)/contact-us/index'
 import { Route as userCheckoutIndexImport } from './routes/(user)/checkout/index'
+import { Route as userAboutIndexImport } from './routes/(user)/about/index'
 import { Route as userVendorIdImport } from './routes/(user)/vendor/$id'
 import { Route as userProductProductIdImport } from './routes/(user)/product/$productId'
 import { Route as userCheckoutPayIndexImport } from './routes/(user)/checkout/pay/index'
@@ -101,9 +103,21 @@ const userExploreIndexRoute = userExploreIndexImport.update({
   getParentRoute: () => userLayoutRoute,
 } as any)
 
+const userContactUsIndexRoute = userContactUsIndexImport.update({
+  id: '/contact-us/',
+  path: '/contact-us/',
+  getParentRoute: () => userLayoutRoute,
+} as any)
+
 const userCheckoutIndexRoute = userCheckoutIndexImport.update({
   id: '/checkout/',
   path: '/checkout/',
+  getParentRoute: () => userLayoutRoute,
+} as any)
+
+const userAboutIndexRoute = userAboutIndexImport.update({
+  id: '/about/',
+  path: '/about/',
   getParentRoute: () => userLayoutRoute,
 } as any)
 
@@ -233,11 +247,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof userVendorIdImport
       parentRoute: typeof userLayoutImport
     }
+    '/(user)/about/': {
+      id: '/(user)/about/'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof userAboutIndexImport
+      parentRoute: typeof userLayoutImport
+    }
     '/(user)/checkout/': {
       id: '/(user)/checkout/'
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof userCheckoutIndexImport
+      parentRoute: typeof userLayoutImport
+    }
+    '/(user)/contact-us/': {
+      id: '/(user)/contact-us/'
+      path: '/contact-us'
+      fullPath: '/contact-us'
+      preLoaderRoute: typeof userContactUsIndexImport
       parentRoute: typeof userLayoutImport
     }
     '/(user)/explore/': {
@@ -378,7 +406,9 @@ interface userLayoutRouteChildren {
   userAccountLayoutRoute: typeof userAccountLayoutRouteWithChildren
   userProductProductIdRoute: typeof userProductProductIdRoute
   userVendorIdRoute: typeof userVendorIdRoute
+  userAboutIndexRoute: typeof userAboutIndexRoute
   userCheckoutIndexRoute: typeof userCheckoutIndexRoute
+  userContactUsIndexRoute: typeof userContactUsIndexRoute
   userExploreIndexRoute: typeof userExploreIndexRoute
   userFindFarmerIndexRoute: typeof userFindFarmerIndexRoute
   userHomeIndexRoute: typeof userHomeIndexRoute
@@ -395,7 +425,9 @@ const userLayoutRouteChildren: userLayoutRouteChildren = {
   userAccountLayoutRoute: userAccountLayoutRouteWithChildren,
   userProductProductIdRoute: userProductProductIdRoute,
   userVendorIdRoute: userVendorIdRoute,
+  userAboutIndexRoute: userAboutIndexRoute,
   userCheckoutIndexRoute: userCheckoutIndexRoute,
+  userContactUsIndexRoute: userContactUsIndexRoute,
   userExploreIndexRoute: userExploreIndexRoute,
   userFindFarmerIndexRoute: userFindFarmerIndexRoute,
   userHomeIndexRoute: userHomeIndexRoute,
@@ -442,7 +474,9 @@ export interface FileRoutesByFullPath {
   '/account': typeof userAccountLayoutRouteWithChildren
   '/product/$productId': typeof userProductProductIdRoute
   '/vendor/$id': typeof userVendorIdRoute
+  '/about': typeof userAboutIndexRoute
   '/checkout': typeof userCheckoutIndexRoute
+  '/contact-us': typeof userContactUsIndexRoute
   '/explore': typeof userExploreIndexRoute
   '/find-farmer': typeof userFindFarmerIndexRoute
   '/home': typeof userHomeIndexRoute
@@ -467,7 +501,9 @@ export interface FileRoutesByTo {
   '/account': typeof userAccountLayoutRouteWithChildren
   '/product/$productId': typeof userProductProductIdRoute
   '/vendor/$id': typeof userVendorIdRoute
+  '/about': typeof userAboutIndexRoute
   '/checkout': typeof userCheckoutIndexRoute
+  '/contact-us': typeof userContactUsIndexRoute
   '/explore': typeof userExploreIndexRoute
   '/find-farmer': typeof userFindFarmerIndexRoute
   '/home': typeof userHomeIndexRoute
@@ -494,7 +530,9 @@ export interface FileRoutesById {
   '/(user)/account': typeof userAccountLayoutRouteWithChildren
   '/(user)/product/$productId': typeof userProductProductIdRoute
   '/(user)/vendor/$id': typeof userVendorIdRoute
+  '/(user)/about/': typeof userAboutIndexRoute
   '/(user)/checkout/': typeof userCheckoutIndexRoute
+  '/(user)/contact-us/': typeof userContactUsIndexRoute
   '/(user)/explore/': typeof userExploreIndexRoute
   '/(user)/find-farmer/': typeof userFindFarmerIndexRoute
   '/(user)/home/': typeof userHomeIndexRoute
@@ -521,7 +559,9 @@ export interface FileRouteTypes {
     | '/account'
     | '/product/$productId'
     | '/vendor/$id'
+    | '/about'
     | '/checkout'
+    | '/contact-us'
     | '/explore'
     | '/find-farmer'
     | '/home'
@@ -545,7 +585,9 @@ export interface FileRouteTypes {
     | '/account'
     | '/product/$productId'
     | '/vendor/$id'
+    | '/about'
     | '/checkout'
+    | '/contact-us'
     | '/explore'
     | '/find-farmer'
     | '/home'
@@ -570,7 +612,9 @@ export interface FileRouteTypes {
     | '/(user)/account'
     | '/(user)/product/$productId'
     | '/(user)/vendor/$id'
+    | '/(user)/about/'
     | '/(user)/checkout/'
+    | '/(user)/contact-us/'
     | '/(user)/explore/'
     | '/(user)/find-farmer/'
     | '/(user)/home/'
@@ -627,7 +671,9 @@ export const routeTree = rootRoute
         "/(user)/account",
         "/(user)/product/$productId",
         "/(user)/vendor/$id",
+        "/(user)/about/",
         "/(user)/checkout/",
+        "/(user)/contact-us/",
         "/(user)/explore/",
         "/(user)/find-farmer/",
         "/(user)/home/",
@@ -665,8 +711,16 @@ export const routeTree = rootRoute
       "filePath": "(user)/vendor/$id.tsx",
       "parent": "/(user)"
     },
+    "/(user)/about/": {
+      "filePath": "(user)/about/index.tsx",
+      "parent": "/(user)"
+    },
     "/(user)/checkout/": {
       "filePath": "(user)/checkout/index.tsx",
+      "parent": "/(user)"
+    },
+    "/(user)/contact-us/": {
+      "filePath": "(user)/contact-us/index.tsx",
       "parent": "/(user)"
     },
     "/(user)/explore/": {

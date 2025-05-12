@@ -9,12 +9,14 @@ use App\Http\Requests\User\FindFarmerRequest;
 use App\Http\Requests\User\login;
 use Illuminate\Http\Request;
 use App\Http\Requests\User\Register;
+use App\Http\Requests\User\sendcontactMessage;
 use App\Http\Requests\User\UserSubscribeRequest;
 use App\Http\Resources\Farmer\FarmerMapMarkerResource;
 use App\Http\Resources\Farmer\FarmerReviewResource;
 use App\Http\Resources\FarmerSubscription\FarmerSubscriptionPlanDetailResource;
 use App\Http\Resources\FarmerSubscription\FarmerSubscriptionPlanResource;
 use App\Http\Resources\User\UserSubscriptionResource;
+use App\Mail\ContactMessage;
 use App\Mail\Register\Register as SignUpRegister;
 use App\Models\cart\Cart;
 use App\Models\Farmer\Farmer;
@@ -275,6 +277,15 @@ class UserController extends Controller
             'message' => 'Subscription successful.',
             'data' => new UserSubscriptionResource($subscription->load('farmerSubscriptionPlan.template'))
         ], 201);
+    }
+
+    public function sendContactMessage(sendcontactMessage $request)
+    {
+        $validated = $request->validated();
+
+        Mail::to('mangadavid2@gmail.com')->send(new ContactMessage($validated));
+
+        return response()->json(['message' => 'Message sent successfully!']);
     }
 
     private function getFarmersWithinRadius($lat, $lng, $radius = 50)

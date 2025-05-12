@@ -81,4 +81,6 @@ Route::middleware(['userAuth'])->group(function () {
     Route::get('/available-subscription-plans/subscription/{id}','User\UserController@show');
     Route::post('/subscribe', 'Payment\PaymentController@subscribeToPlan');
 
+    Route::post('/contact/send', 'User\UserController@sendContactMessage');
+
 });

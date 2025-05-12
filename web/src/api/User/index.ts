@@ -98,6 +98,21 @@ class UserApi {
             throw e;
         }
     }
+
+    async sendContactMessage(messageInfo: {
+        name: string;
+        email: string;
+        subject: string;
+        message: string;
+    }) {
+        try {
+            const response = await AxiosApi.post("/contact/send", messageInfo);
+            return response.data;
+        } catch (e) {
+            console.log("error sending contact message", e);
+            throw e;
+        }
+    }
 }
 
 export default new UserApi();
