@@ -11,11 +11,19 @@ const NavBar: React.FC = () => {
         <div className="navbar-wrapper">
             <div className="navigation">
                 <div className="nav-item active">
-                    <span>Home</span>
+                    <Link to="/home">
+                        <span>Home</span>
+                    </Link>
                     <ChevronDown height="16" width="16" />
                 </div>
                 <div className="nav-item inactive">
                     <span onClick={() => navigateToRoute("/shop")}>Shop</span>
+                    <ChevronDown height="16" width="16" />
+                </div>
+                <div className="nav-item inactive">
+                    <Link to={"/find-farmer"}>
+                        <span>Find Farmers</span>
+                    </Link>
                     <ChevronDown height="16" width="16" />
                 </div>
                 <div className="nav-item inactive">

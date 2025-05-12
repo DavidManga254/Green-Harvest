@@ -85,7 +85,7 @@ const MapExplorePage: React.FC = () => {
                     onClick={handleMapClick}
                 >
                     {/* Marker for user or selected pin */}
-                    {selectedLocation && (
+                    {isLoaded && selectedLocation && (
                         <Marker
                             position={selectedLocation}
                             icon={{
@@ -94,13 +94,15 @@ const MapExplorePage: React.FC = () => {
                         />
                     )}
 
-                    <Marker
-                        position={{ lat: -1.29, lng: 36.81 }}
-                        icon={{
-                            url: "https://via.placeholder.com/40",
-                            scaledSize: new window.google.maps.Size(40, 40),
-                        }}
-                    />
+                    {isLoaded && window.google && (
+                        <Marker
+                            position={{ lat: -1.29, lng: 36.81 }}
+                            icon={{
+                                url: "https://via.placeholder.com/40",
+                                scaledSize: new window.google.maps.Size(40, 40),
+                            }}
+                        />
+                    )}
 
                     {/* Render farmer markers */}
                     {/* {farmerData?.farmers.map((farmer) => (
