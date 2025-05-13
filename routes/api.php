@@ -80,6 +80,7 @@ Route::middleware(['userAuth'])->group(function () {
     Route::get('/available-subscription-plans/{farmerId}','User\UserController@availablePlans');
     Route::get('/available-subscription-plans/subscription/{id}','User\UserController@show');
     Route::post('/subscribe', 'Payment\PaymentController@subscribeToPlan');
+    Route::get('/get-subscriptions','User\UserController@getUserSubscriptions');
 
     Route::post('/contact/send', 'User\UserController@sendContactMessage');
 

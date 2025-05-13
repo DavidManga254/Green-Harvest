@@ -6,6 +6,7 @@ use App\Models\Billing\BillingAddress;
 use App\Models\cart\Cart;
 use App\Models\Order\Order;
 use App\Models\Subscription\Subscription;
+use App\Models\Subscription\SubscriptionPlan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,9 +21,9 @@ class User extends Model
 
     protected $fillable = ['name', 'email', 'password', 'phone', 'role', 'address', 'token'];
 
-    public function subscriptions()
+    public function subscriptionPlans()
     {
-        return $this->hasMany(Subscription::class);
+        return $this->hasMany(SubscriptionPlan::class);
     }
 
     public function hasVerifiedEmail(): bool
@@ -44,4 +45,14 @@ class User extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function hasActiveSubscriptionTo($planId)
+    {
+        return $this->subscriptions()
+            ->where('plan_id', $planId)
+            ->whereNull('ends_at') // or ->where('status', 'active')
+            ->exists();
+    }
+
+
 }

@@ -39,10 +39,10 @@ class Farmer extends Model
         return $this->belongsToMany(Practice::class);
     }
 
-    public function subscriptions(): HasMany
-    {
-        return $this->hasMany(Subscription::class);
-    }
+    // public function subscriptions(): HasMany
+    // {
+    //     return $this->hasMany(Subscription::class);
+    // }
 
     public function reviews()
     {

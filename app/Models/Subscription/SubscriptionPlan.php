@@ -10,7 +10,7 @@ class SubscriptionPlan extends Model
 {
     protected $fillable = [
         'user_id', 'plan_type', 'frequency', 'payment_mode',
-        'price', 'start_date', 'next_billing_date', 'is_active'
+        'price', 'start_date', 'next_billing_date', 'is_active','farmer_id','template_id'
     ];
 
     public function user()
@@ -26,5 +26,10 @@ class SubscriptionPlan extends Model
     public function farmer()
     {
         return $this->belongsTo(Farmer::class);
+    }
+
+    public function template()
+    {
+        return $this->belongsTo(SubscriptionPlanTemplate::class, 'template_id');
     }
 }

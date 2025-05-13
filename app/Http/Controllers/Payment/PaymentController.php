@@ -14,6 +14,8 @@ use App\Models\Order\UserOrder;
 use App\Models\Order\UserOrderItem;
 use App\Models\Payment\Payment;
 use App\Models\Subscription\FarmerSubscriptionPlan;
+use App\Models\Subscription\SubscriptionPlan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -103,6 +105,10 @@ class PaymentController extends Controller
                 'currency' => 'KES',
                 'payment_method' => 'mpesa',
                 'callback_url' => $callbackUrl,
+                'metadata'=>[
+                    'order_id' => $order->id,
+                    'type' => 'one-time'
+                ]
             ]);
 
             return response()->json([
@@ -118,15 +124,38 @@ class PaymentController extends Controller
     public function subscribeToPlan(SubscribeToPlanRequest $request)
     {
         $user = $request->authenticated_user;
-
         $validated = $request->validated();
 
-
         try {
+            // Step 1: Fetch the plan and related template
             $plan = FarmerSubscriptionPlan::with('template')->findOrFail($validated['farmer_plan_id']);
-            $amountInCents = $plan->template->base_price * 100;
 
+            // Step 2: Check if the user already has an active plan for the same farmer
+            $alreadySubscribed = SubscriptionPlan::where('user_id', $user->id)
+                ->where('farmer_id', $plan->farmer_id)
+                ->where('id',$validated['farmer_plan_id'])
+                ->where('is_active', 1)
+                ->exists();
+
+            if ($alreadySubscribed) {
+                return response()->json([
+                    'message' => 'You already have an active subscription to this farmer.'
+                ], 409); // HTTP 409 Conflict
+            }
+
+            // Step 3: Prepare payment
+            $amountInCents = $plan->template->base_price * 100;
             $callbackUrl = env('CUSTOMER_WEB_APP_URL') . '/checkout/pay/callback?plan_id=' . $plan->id;
+
+            $order = UserOrder::create([
+                'user_id' => $user->id,
+                'billing_address_id' => 1,
+                'subtotal' => $amountInCents,
+                'shipping' => 0,
+                'total' => $amountInCents,
+                'status' => 'pending',
+                'notes' => $billingData['notes'] ?? null,
+            ]);
 
             $authorizationUrl = Paystack::getAuthorizationUrl([
                 'amount' => $amountInCents,
@@ -137,6 +166,8 @@ class PaymentController extends Controller
                 'metadata' => [
                     'farmer_plan_id' => $plan->id,
                     'start_date' => $validated['start_date'],
+                    'type'=>'subscription',
+                    'order_id'=>$order->id
                 ]
             ]);
 
@@ -148,6 +179,7 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Failed to initiate subscription.'], 500);
         }
     }
+
 
 
 
@@ -164,18 +196,18 @@ class PaymentController extends Controller
 
         try {
             // First, check if this payment is already saved
-            $existingPayment = Payment::where('reference', $reference)->first();
+            // $existingPayment = Payment::where('reference', $reference)->first();
 
-            if ($existingPayment) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Payment already verified',
-                    'data' => [
-                        'reference' => $existingPayment->reference,
-                        'status' => $existingPayment->status,
-                    ],
-                ]);
-            }
+            // if ($existingPayment) {
+            //     return response()->json([
+            //         'status' => 'success',
+            //         'message' => 'Payment already verified',
+            //         'data' => [
+            //             'reference' => $existingPayment->reference,
+            //             'status' => $existingPayment->status,
+            //         ],
+            //     ]);
+            // }
 
             // If not already saved, call Paystack to verify
             $secretKey = config('paystack.secretKey');
@@ -193,6 +225,8 @@ class PaymentController extends Controller
 
             $paymentDetails = $response->json('data');
 
+
+
             if ($paymentDetails['status'] === 'success') {
                 $payment = Payment::create([
                     'user_id' => $request->authenticated_user->id,
@@ -204,14 +238,17 @@ class PaymentController extends Controller
                     'meta' => json_encode($paymentDetails),
                 ]);
 
-                $order = Order::create([
-                    'user_id' => $request->authenticated_user->id,
-                    'total_price' => $payment->amount,
-                    'discount' => 0.00,
-                    'shipping_fee' => 0.00,
-                    'payment_method' => 'mpesa',
-                    'status' => 'order_received',
-                ]);
+                $orderId = $paymentDetails['metadata']['order_id'] ?? null;
+
+                if (!$orderId) {
+                    return response()->json(['message' => 'Order ID missing from metadata.'], 400);
+                }
+
+                $order = UserOrder::find($orderId);
+
+                if (!$order) {
+                    return response()->json(['message' => 'Order not found.'], 404);
+                }
 
                 $cart = Cart::where('user_id', $user->id)->first();
 
@@ -222,27 +259,72 @@ class PaymentController extends Controller
                 $cartItems = CartItem::where('cart_id', $cart->id)->with('produce')->get();
 
                 foreach ($cartItems as $item) {
-                    // UserOrderItem::create([
-                    //     'user_order_id' => $order->id,
-                    //     'produce_id' => $item->produce_id,
-                    //     'quantity' => $item->quantity,
-                    //     'price' => $item->price,
-                    // ]);
+                    UserOrderItem::create([
+                        'user_order_id' => $order->id,
+                        'produce_id' => $item->produce_id,
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                    ]);
 
                     $price = $item->produce->price_per_unit;
                     $quantity = $item->quantity;
                     $subtotal = $price * $quantity;
 
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'produce_id' => $item->produce_id,
-                        'quantity' => $quantity,
-                        'price' => $price,
-                        'subtotal' => $subtotal,
-                    ]);
+                    // OrderItem::create([
+                    //     'order_id' => $order->id,
+                    //     'produce_id' => $item->produce_id,
+                    //     'quantity' => $quantity,
+                    //     'price' => $price,
+                    // ]);
                 }
 
                 // $cartItems->each->delete();
+
+                $metadata = $paymentDetails['metadata'] ?? [];
+
+
+                if (($metadata['type'] ?? null) === 'subscription') {
+                    $farmerPlanId = $metadata['farmer_plan_id'] ?? null;
+                    $startDate = $metadata['start_date'] ?? now();
+
+
+                    if ($farmerPlanId) {
+                        $farmerPlan = FarmerSubscriptionPlan::with('template')->find($farmerPlanId);
+
+
+                        if ($farmerPlan) {
+                            // Check for duplicate active subscription
+                            $alreadySubscribed = SubscriptionPlan::where('user_id', $user->id)
+                                ->where('farmer_id', $farmerPlan->farmer_id)
+                                ->where('id',$farmerPlanId)
+                                ->where('is_active', 1)
+                                ->exists();
+
+                            if (!$alreadySubscribed) {
+                                $tpl = $farmerPlan->template;
+
+                                SubscriptionPlan::create([
+                                    'user_id' => $user->id,
+                                    'farmer_id' => $farmerPlan->farmer_id,
+                                    'plan_type' => $tpl->plan_type,
+                                    'frequency' => $tpl->frequency,
+                                    'payment_mode' => 'recurring', // if this one is on farmer_plan
+                                    'price' => $tpl->base_price,
+                                    'start_date' => $startDate,
+                                    'next_billing_date' => match ($tpl->frequency) {
+                                        'weekly' => Carbon::parse($startDate)->addWeek(),
+                                        'bi-weekly' => Carbon::parse($startDate)->addWeeks(2),
+                                        'monthly' => Carbon::parse($startDate)->addMonth(),
+                                        default => Carbon::parse($startDate)->addWeek(), // fallback
+                                    },
+                                    'is_active' => 1,
+                                    'template_id'=>$farmerPlan->template->id
+                                ]);
+                            }
+                        }
+                    }
+                }
+
 
                 return response()->json([
                     'status' => 'success',

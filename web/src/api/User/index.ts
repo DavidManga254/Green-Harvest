@@ -113,6 +113,17 @@ class UserApi {
             throw e;
         }
     }
+
+    async getUserSubscriptions() {
+        try {
+            const response = await AxiosApi.get("/get-subscriptions");
+
+            return response.data.subscriptions;
+        } catch (e) {
+            console.log("error fetching user subscriptions", e);
+            throw e;
+        }
+    }
 }
 
 export default new UserApi();

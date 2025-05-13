@@ -16,6 +16,7 @@ use App\Http\Resources\Farmer\FarmerReviewResource;
 use App\Http\Resources\FarmerSubscription\FarmerSubscriptionPlanDetailResource;
 use App\Http\Resources\FarmerSubscription\FarmerSubscriptionPlanResource;
 use App\Http\Resources\User\UserSubscriptionResource;
+use App\Http\Resources\User\UserSubscriptionResourcee;
 use App\Mail\ContactMessage;
 use App\Mail\Register\Register as SignUpRegister;
 use App\Models\cart\Cart;
@@ -23,6 +24,7 @@ use App\Models\Farmer\Farmer;
 use App\Models\Farmer\FarmerReview;
 use App\Models\Subscription\FarmerSubscriptionPlan;
 use App\Models\Subscription\Subscription;
+use App\Models\Subscription\SubscriptionPlan;
 use App\Models\User\User;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
@@ -243,41 +245,55 @@ class UserController extends Controller
         ]);
     }
 
-
-
-    public function subscribe(UserSubscribeRequest $request)
+    public function getUserSubscriptions(Request $request)
     {
-        $user = $request->get('user');
+        $user = $request->authenticated_user;
 
-        $validated = $request->validated();
-
-        $existing = Subscription::where([
-            'user_id' => $user->id,
-            'farmer_subscription_plan_id' => $validated['farmer_plan_id'],
-            'is_active' => true
-        ])->exists();
-
-        if ($existing) {
-            return response()->json(['message' => 'You are already subscribed to this plan.'], 409);
-        }
-
-        $subscription = Subscription::create([
-            'user_id' => $user->id,
-            'farmer_subscription_plan_id' => $validated['farmer_plan_id'],
-            'payment_mode' => $validated['payment_mode'],
-            'start_date' => $validated['start_date'],
-            'next_billing_date' => $validated['payment_mode'] === 'recurring'
-                ? now()->parse($validated['start_date'])->addMonth()
-                : null,
-            'is_active' => true
-        ]);
-
+        $subscriptions = SubscriptionPlan::with(['template.farmerSubscriptionPlans', 'farmer.user'])
+            ->where('user_id', $user->id)
+            ->orderByDesc('created_at')
+            ->get();
 
         return response()->json([
-            'message' => 'Subscription successful.',
-            'data' => new UserSubscriptionResource($subscription->load('farmerSubscriptionPlan.template'))
-        ], 201);
+            'subscriptions' => UserSubscriptionResourcee::collection($subscriptions),
+        ]);
     }
+
+
+
+    // public function subscribe(UserSubscribeRequest $request)
+    // {
+    //     $user = $request->get('user');
+
+    //     $validated = $request->validated();
+
+    //     $existing = Subscription::where([
+    //         'user_id' => $user->id,
+    //         'farmer_subscription_plan_id' => $validated['farmer_plan_id'],
+    //         'is_active' => true
+    //     ])->exists();
+
+    //     if ($existing) {
+    //         return response()->json(['message' => 'You are already subscribed to this plan.'], 409);
+    //     }
+
+    //     $subscription = Subscription::create([
+    //         'user_id' => $user->id,
+    //         'farmer_subscription_plan_id' => $validated['farmer_plan_id'],
+    //         'payment_mode' => $validated['payment_mode'],
+    //         'start_date' => $validated['start_date'],
+    //         'next_billing_date' => $validated['payment_mode'] === 'recurring'
+    //             ? now()->parse($validated['start_date'])->addMonth()
+    //             : null,
+    //         'is_active' => true
+    //     ]);
+
+
+    //     return response()->json([
+    //         'message' => 'Subscription successful.',
+    //         'data' => new UserSubscriptionResource($subscription->load('farmerSubscriptionPlan.template'))
+    //     ], 201);
+    // }
 
     public function sendContactMessage(sendcontactMessage $request)
     {
@@ -304,4 +320,6 @@ class UserController extends Controller
             ->orderBy("distance")
             ->get();
     }
+
+
 }

@@ -30,6 +30,7 @@ import { Route as userProductProductIdImport } from './routes/(user)/product/$pr
 import { Route as userCheckoutPayIndexImport } from './routes/(user)/checkout/pay/index'
 import { Route as userAccountWishlistIndexImport } from './routes/(user)/account/wishlist/index'
 import { Route as userAccountOrderHistoryIndexImport } from './routes/(user)/account/order-history/index'
+import { Route as userAccountMySubscriptionsIndexImport } from './routes/(user)/account/my-subscriptions/index'
 import { Route as userAccountDashboardIndexImport } from './routes/(user)/account/dashboard/index'
 import { Route as farmerFarmerInventoryIndexImport } from './routes/(farmer)/farmer/inventory/index'
 import { Route as farmerFarmerDashboardIndexImport } from './routes/(farmer)/farmer/dashboard/index'
@@ -149,6 +150,13 @@ const userAccountOrderHistoryIndexRoute =
   userAccountOrderHistoryIndexImport.update({
     id: '/order-history/',
     path: '/order-history/',
+    getParentRoute: () => userAccountLayoutRoute,
+  } as any)
+
+const userAccountMySubscriptionsIndexRoute =
+  userAccountMySubscriptionsIndexImport.update({
+    id: '/my-subscriptions/',
+    path: '/my-subscriptions/',
     getParentRoute: () => userAccountLayoutRoute,
   } as any)
 
@@ -345,6 +353,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof userAccountDashboardIndexImport
       parentRoute: typeof userAccountLayoutImport
     }
+    '/(user)/account/my-subscriptions/': {
+      id: '/(user)/account/my-subscriptions/'
+      path: '/my-subscriptions'
+      fullPath: '/account/my-subscriptions'
+      preLoaderRoute: typeof userAccountMySubscriptionsIndexImport
+      parentRoute: typeof userAccountLayoutImport
+    }
     '/(user)/account/order-history/': {
       id: '/(user)/account/order-history/'
       path: '/order-history'
@@ -388,6 +403,7 @@ declare module '@tanstack/react-router' {
 interface userAccountLayoutRouteChildren {
   userAccountOrderHistoryOrderIdRoute: typeof userAccountOrderHistoryOrderIdRoute
   userAccountDashboardIndexRoute: typeof userAccountDashboardIndexRoute
+  userAccountMySubscriptionsIndexRoute: typeof userAccountMySubscriptionsIndexRoute
   userAccountOrderHistoryIndexRoute: typeof userAccountOrderHistoryIndexRoute
   userAccountWishlistIndexRoute: typeof userAccountWishlistIndexRoute
 }
@@ -395,6 +411,7 @@ interface userAccountLayoutRouteChildren {
 const userAccountLayoutRouteChildren: userAccountLayoutRouteChildren = {
   userAccountOrderHistoryOrderIdRoute: userAccountOrderHistoryOrderIdRoute,
   userAccountDashboardIndexRoute: userAccountDashboardIndexRoute,
+  userAccountMySubscriptionsIndexRoute: userAccountMySubscriptionsIndexRoute,
   userAccountOrderHistoryIndexRoute: userAccountOrderHistoryIndexRoute,
   userAccountWishlistIndexRoute: userAccountWishlistIndexRoute,
 }
@@ -488,6 +505,7 @@ export interface FileRoutesByFullPath {
   '/farmer/dashboard': typeof farmerFarmerDashboardIndexRoute
   '/farmer/inventory': typeof farmerFarmerInventoryIndexRoute
   '/account/dashboard': typeof userAccountDashboardIndexRoute
+  '/account/my-subscriptions': typeof userAccountMySubscriptionsIndexRoute
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
   '/checkout/pay': typeof userCheckoutPayIndexRoute
@@ -515,6 +533,7 @@ export interface FileRoutesByTo {
   '/farmer/dashboard': typeof farmerFarmerDashboardIndexRoute
   '/farmer/inventory': typeof farmerFarmerInventoryIndexRoute
   '/account/dashboard': typeof userAccountDashboardIndexRoute
+  '/account/my-subscriptions': typeof userAccountMySubscriptionsIndexRoute
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
   '/checkout/pay': typeof userCheckoutPayIndexRoute
@@ -544,6 +563,7 @@ export interface FileRoutesById {
   '/(farmer)/farmer/dashboard/': typeof farmerFarmerDashboardIndexRoute
   '/(farmer)/farmer/inventory/': typeof farmerFarmerInventoryIndexRoute
   '/(user)/account/dashboard/': typeof userAccountDashboardIndexRoute
+  '/(user)/account/my-subscriptions/': typeof userAccountMySubscriptionsIndexRoute
   '/(user)/account/order-history/': typeof userAccountOrderHistoryIndexRoute
   '/(user)/account/wishlist/': typeof userAccountWishlistIndexRoute
   '/(user)/checkout/pay/': typeof userCheckoutPayIndexRoute
@@ -573,6 +593,7 @@ export interface FileRouteTypes {
     | '/farmer/dashboard'
     | '/farmer/inventory'
     | '/account/dashboard'
+    | '/account/my-subscriptions'
     | '/account/order-history'
     | '/account/wishlist'
     | '/checkout/pay'
@@ -599,6 +620,7 @@ export interface FileRouteTypes {
     | '/farmer/dashboard'
     | '/farmer/inventory'
     | '/account/dashboard'
+    | '/account/my-subscriptions'
     | '/account/order-history'
     | '/account/wishlist'
     | '/checkout/pay'
@@ -626,6 +648,7 @@ export interface FileRouteTypes {
     | '/(farmer)/farmer/dashboard/'
     | '/(farmer)/farmer/inventory/'
     | '/(user)/account/dashboard/'
+    | '/(user)/account/my-subscriptions/'
     | '/(user)/account/order-history/'
     | '/(user)/account/wishlist/'
     | '/(user)/checkout/pay/'
@@ -699,6 +722,7 @@ export const routeTree = rootRoute
       "children": [
         "/(user)/account/order-history/$orderId",
         "/(user)/account/dashboard/",
+        "/(user)/account/my-subscriptions/",
         "/(user)/account/order-history/",
         "/(user)/account/wishlist/"
       ]
@@ -765,6 +789,10 @@ export const routeTree = rootRoute
     },
     "/(user)/account/dashboard/": {
       "filePath": "(user)/account/dashboard/index.tsx",
+      "parent": "/(user)/account"
+    },
+    "/(user)/account/my-subscriptions/": {
+      "filePath": "(user)/account/my-subscriptions/index.tsx",
       "parent": "/(user)/account"
     },
     "/(user)/account/order-history/": {
