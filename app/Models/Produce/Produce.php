@@ -27,6 +27,7 @@ class Produce extends Model
         'category_id',
         'rating',
         'tags',
+        'markdown_description',
     ];
 
     public function farmer(): BelongsTo

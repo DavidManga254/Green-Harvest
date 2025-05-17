@@ -230,7 +230,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function show($id)
+   public function show(Request $request, $id)
     {
         $plan = FarmerSubscriptionPlan::with([
             'template',
@@ -240,10 +240,22 @@ class UserController extends Controller
             'reviews.user',
         ])->findOrFail($id);
 
+        $user = $request->authenticated_user;
+
+        $activeSubscription = SubscriptionPlan::where('user_id', $user->id)
+            ->where('template_id', $plan->subscription_plan_template_id)
+            ->where('is_active', true)
+            ->first();
+
         return response()->json([
-            'plan' => new FarmerSubscriptionPlanDetailResource($plan)
+            'plan' => new FarmerSubscriptionPlanDetailResource($plan),
+            'user_subscription' => [
+                'is_subscribed' => (bool) $activeSubscription,
+                'subscription_plan_id' => $activeSubscription?->id,
+            ],
         ]);
     }
+
 
     public function getUserSubscriptions(Request $request)
     {
@@ -251,6 +263,7 @@ class UserController extends Controller
 
         $subscriptions = SubscriptionPlan::with(['template.farmerSubscriptionPlans', 'farmer.user'])
             ->where('user_id', $user->id)
+            ->where('is_active', true)
             ->orderByDesc('created_at')
             ->get();
 
@@ -258,6 +271,36 @@ class UserController extends Controller
             'subscriptions' => UserSubscriptionResourcee::collection($subscriptions),
         ]);
     }
+
+
+
+    public function cancelSubscription(Request $request, SubscriptionPlan $subscription)
+    {
+        $user = $request->authenticated_user;
+
+        if ($subscription->user_id !== $user->id) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized to cancel this subscription.',
+            ], 403);
+        }
+
+        if (!$subscription->is_active) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Subscription is already inactive.',
+            ], 400);
+        }
+
+        $subscription->is_active = false;
+        $subscription->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Subscription cancelled successfully.',
+        ]);
+    }
+
 
 
 

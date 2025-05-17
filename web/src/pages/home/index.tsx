@@ -26,6 +26,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Produce from "../../api/Produce";
 import Cart from "../../api/Cart";
 import displayNotification from "../../lib/displayNotification";
+import { Link } from "@tanstack/react-router";
 
 // Sample data
 const categories = [
@@ -220,101 +221,107 @@ export default function GreenHarvestPage() {
                             display="flex"
                             key={product.id}
                         >
-                            <Card
-                                sx={{
-                                    position: "relative",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "space-between",
-                                    height: "100%",
-                                    "&:hover .actions": { opacity: 1 },
-                                }}
+                            <Link
+                                to={`/product/$productId`}
+                                params={{ productId: product.id }}
                             >
-                                <CardMedia
-                                    component="img"
-                                    height="180"
-                                    s
-                                    image={
-                                        product.images?.image_path ??
-                                        "/placeholder.png"
-                                    }
-                                    alt={product.name}
-                                    sx={{ objectFit: "cover" }}
-                                />
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography
-                                        variant="subtitle2"
-                                        sx={{
-                                            display: "-webkit-box",
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: "vertical",
-                                            overflow: "hidden",
-                                            minHeight: "3em", // reserve space for 2 lines
-                                        }}
-                                    >
-                                        {product.name}
-                                    </Typography>
-                                    <Rating
-                                        value={Number(product.rating)}
-                                        readOnly
-                                        size="small"
-                                    />
-                                    <Box mt={1}>
-                                        <Typography
-                                            variant="body1"
-                                            color="primary"
-                                        >
-                                            $
-                                            {Number(
-                                                product.price_per_unit,
-                                            ).toFixed(2)}
-                                        </Typography>
-                                        {product.discount && (
-                                            <Typography
-                                                variant="body2"
-                                                sx={{
-                                                    textDecoration:
-                                                        "line-through",
-                                                }}
-                                            >
-                                                $
-                                                {(
-                                                    Number(
-                                                        product.price_per_unit,
-                                                    ) + Number(product.discount)
-                                                ).toFixed(2)}
-                                            </Typography>
-                                        )}
-                                    </Box>
-                                </CardContent>
-                                <CardActions
-                                    className="actions"
+                                <Card
                                     sx={{
-                                        position: "absolute",
-                                        bottom: 40,
-                                        right: 8,
+                                        position: "relative",
+                                        display: "flex",
                                         flexDirection: "column",
-                                        opacity: 0,
-                                        transition: "opacity 0.3s ease",
+                                        justifyContent: "space-between",
+                                        height: "100%",
+                                        "&:hover .actions": { opacity: 1 },
                                     }}
                                 >
-                                    <Tooltip title="Add to Cart">
-                                        <IconButton
-                                            onClick={() =>
-                                                handleAddtoCart(product.id)
-                                            }
-                                            color="success"
+                                    <CardMedia
+                                        component="img"
+                                        height="180"
+                                        s
+                                        image={
+                                            product.images?.image_path ??
+                                            "/placeholder.png"
+                                        }
+                                        alt={product.name}
+                                        sx={{ objectFit: "cover" }}
+                                    />
+                                    <CardContent sx={{ flexGrow: 1 }}>
+                                        <Typography
+                                            variant="subtitle2"
+                                            sx={{
+                                                display: "-webkit-box",
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: "vertical",
+                                                overflow: "hidden",
+                                                minHeight: "3em", // reserve space for 2 lines
+                                            }}
                                         >
-                                            <AddShoppingCart />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Add to Wishlist">
-                                        <IconButton color="error">
-                                            <FavoriteBorder />
-                                        </IconButton>
-                                    </Tooltip>
-                                </CardActions>
-                            </Card>
+                                            {product.name}
+                                        </Typography>
+                                        <Rating
+                                            value={Number(product.rating)}
+                                            readOnly
+                                            size="small"
+                                        />
+                                        <Box mt={1}>
+                                            <Typography
+                                                variant="body1"
+                                                color="primary"
+                                            >
+                                                $
+                                                {Number(
+                                                    product.price_per_unit,
+                                                ).toFixed(2)}
+                                            </Typography>
+                                            {product.discount && (
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                        textDecoration:
+                                                            "line-through",
+                                                    }}
+                                                >
+                                                    $
+                                                    {(
+                                                        Number(
+                                                            product.price_per_unit,
+                                                        ) +
+                                                        Number(product.discount)
+                                                    ).toFixed(2)}
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    </CardContent>
+                                    <CardActions
+                                        className="actions"
+                                        sx={{
+                                            position: "absolute",
+                                            bottom: 40,
+                                            right: 8,
+                                            flexDirection: "column",
+                                            opacity: 0,
+                                            transition: "opacity 0.3s ease",
+                                        }}
+                                    >
+                                        <Tooltip title="Add to Cart">
+                                            <IconButton
+                                                onClick={() =>
+                                                    handleAddtoCart(product.id)
+                                                }
+                                                color="success"
+                                            >
+                                                <AddShoppingCart />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Add to Wishlist">
+                                            <IconButton color="error">
+                                                <FavoriteBorder />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </CardActions>
+                                </Card>
+                            </Link>
                         </Grid>
                     ))}
                 </Grid>

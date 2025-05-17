@@ -4,20 +4,34 @@ import { useNavigate } from "@tanstack/react-router";
 import Produce from "../../api/Produce";
 import ProductDetail from "../../components/ProductDetail/ProductDetail";
 import { useState } from "react";
-import StarRating from "../../components/StarRating/StarRating";
 import Productcard from "../../components/ProductCard/ProductCard";
+import ReactMarkdown from "react-markdown";
+import rehypeSanitize from "rehype-sanitize";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
 import {
+    Box,
+    Button,
     Dialog,
-    DialogTitle,
     DialogContent,
+    DialogTitle,
+    Divider,
+    Grid,
     List,
     ListItem,
-    ListItemText,
     Pagination,
+    Tab,
+    Tabs,
     Typography,
-    Divider,
-    Box,
+    Avatar,
+    Card,
+    CardContent,
+    CircularProgress,
+    ListItemIcon,
+    ListItemText,
+    useTheme,
 } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
 
 interface ProductDetailInterface {
     productId: number | string;
@@ -340,8 +354,13 @@ const ProductDetailPage: React.FC<ProductDetailInterface> = ({ productId }) => {
                     name={productData.name}
                     price_per_unit={productData.price_per_unit}
                     rating={productData.rating}
+                    farmer={productData.farmer}
+                    productId={productId}
                 />
-                <ProductMoreDetail />
+                <ProductMoreDetail
+                    productId={productId}
+                    description={productData.markdown_description}
+                />
                 <div className="related-section">
                     <h1>Related Products</h1>
                     <div className="related-section-list">
@@ -372,234 +391,426 @@ const ProductDetailPage: React.FC<ProductDetailInterface> = ({ productId }) => {
 
 export default ProductDetailPage;
 
-const ProductMoreDetail: React.FC = () => {
-    const [showReviewModal, setShowReviewModal] = useState<boolean>(false);
-    const [page, setPage] = useState<number>(1);
+interface ProductMoreDetailProps {
+    productId: number | string;
+}
 
+interface ProductMoreDetailProps {
+    productId: number | string;
+    description?: string;
+}
+
+const ProductMoreDetail: React.FC<ProductMoreDetailProps> = ({
+    productId,
+    description,
+}) => {
+    const [activeTab, setActiveTab] = useState(0);
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [page, setPage] = useState(1);
     const perPage = 3;
 
-    const openReviewModal = () => setShowReviewModal(true);
+    // Reviews for the in-page tab
+    const {
+        data: userReviews,
+        isLoading,
+        isError,
+    } = useQuery({
+        queryKey: ["product-reviews", productId, 1],
+        queryFn: () => Produce.getProductReviews(productId, 1, perPage),
+        staleTime: 1000 * 60 * 5,
+    });
 
-    const closeReviewModal = () => setShowReviewModal(false);
+    const reviewList = userReviews?.data || [];
+    const reviewCount = userReviews?.total || 0;
 
-    const [activeTab, setActiveTab] = useState<
-        "description" | "additional-info" | "reviews"
-    >("description");
+    // Reviews for modal
+    const {
+        data: modalReviews,
+        isLoading: isModalLoading,
+        isError: isModalError,
+    } = useQuery({
+        queryKey: ["product-reviews-modal", productId, page],
+        queryFn: () => Produce.getProductReviews(productId, page, perPage),
+        enabled: showReviewModal,
+        placeholderData: (previousData) => previousData,
+        staleTime: 1000 * 60 * 5,
+    });
 
-    const handleSetActiveTab = (
-        tabName: "description" | "additional-info" | "reviews",
-    ) => {
-        if (activeTab !== tabName) {
-            setActiveTab(tabName);
-        }
-    };
-
-    const userReviews = [
-        {
-            userName: "Kristin Watson",
-            rating: 5,
-            productReview: "Duis at ullamcorper nulla, eu dictum eros.",
-            reviewDate: "2 min ago",
-            userProfileImage: "path/to/kristin-watson.jpg",
-        },
-        {
-            userName: "Jane Cooper",
-            rating: 4,
-            productReview:
-                "Keep the soil evenly moist for the healthiest growth. If sun gets too hot, Chinese cabbage tends to 'bolt' or go to seed; in long periods of heat, some kind of shade may be helpful. Watch out for snails, as they will harm the plants.",
-            reviewDate: "30 Apr, 2023",
-            userProfileImage: "path/to/jane-cooper.jpg",
-        },
-        {
-            userName: "Jacob Jones",
-            rating: 5,
-            productReview:
-                "Vivamus eget euismod magna. Nam sed lacinia nibh, et lacinia lacus.",
-            reviewDate: "2 min ago",
-            userProfileImage: "path/to/jacob-jones.jpg",
-        },
-        {
-            userName: "Ralph Edwards",
-            rating: 5,
-            productReview:
-                "200+ Canton Pak Choi Bok Choy Chinese Cabbage Seeds Heirloom Non-GMO Productive Brassica rapa VAR. chinensis, a.k.a. Canton's Choice, Bok Choi, from USA.",
-            reviewDate: "2 min ago",
-            userProfileImage: "path/to/ralph-edwards.jpg",
-        },
+    const tabLabels = [
+        "Description",
+        "Additional Info",
+        `Customer Feedback (${reviewCount || 0})`,
     ];
 
     return (
-        <div className="more-detail-section">
-            <div className="title-section">
-                <h1
-                    className={`hover ${activeTab === "description" ? "active" : ""}`}
-                    onClick={() => handleSetActiveTab("description")}
-                >
-                    Descriptions
-                </h1>
-                <h1
-                    className={`hover ${activeTab === "additional-info" ? "active" : ""}`}
-                    onClick={() => handleSetActiveTab("additional-info")}
-                >
-                    Additional Information
-                </h1>
-                <h1
-                    className={`hover ${activeTab === "reviews" ? "active" : ""}`}
-                    onClick={() => handleSetActiveTab("reviews")}
-                >
-                    Customer Feedback
-                </h1>
-            </div>
-            {activeTab === "description" && (
-                <div className="description">
-                    <p>
-                        Sed commodo aliquam dui ac porta. Fusce ipsum felis,
-                        imperdiet at posuere ac, viverra at mauris. Maecenas
-                        tincidunt ligula a sem vestibulum pharetra. Maecenas
-                        auctor tortor lacus, nec laoreet nisi porttitor vel.
-                        Etiam tincidunt metus vel dui interdum sollicitudin.
-                        Mauris sem ante, vestibulum nec orci vitae, aliquam
-                        mollis lacus. Sed et condimentum arcu, id molestie
-                        tellus. Nulla facilisi. Nam scelerisque vitae justo a
-                        convallis. Morbi urna ipsum, placerat quis commodo quis,
-                        egestas elementum leo. Donec convallis mollis enim.
-                        Aliquam id mi quam. Phasellus nec fringilla elit.
-                        <br />
-                        <br />
-                        Nulla mauris tellus, feugiat quis pharetra sed, gravida
-                        ac dui. Sed iaculis, metus faucibus elementum tincidunt,
-                        turpis mi viverra velit, pellentesque tristique neque mi
-                        eget nulla. Proin luctus elementum neque et pharetra.
-                        <br />
-                        <br />
-                        Cras et diam maximus, accumsan sapien et, sollicitudin
-                        velit. Nulla blandit eros non turpis lobortis iaculis at
-                        ut massa.
-                    </p>
-                </div>
-            )}
-            {activeTab === "additional-info" && (
-                <div className="additional-info">
-                    <table>
-                        <tr>
-                            <td className="table-label">Weight:</td>
-                            <td className="table-info">3kg</td>
-                        </tr>
-                        <tr>
-                            <td className="table-label">Color:</td>
-                            <td className="table-info">Green</td>
-                        </tr>
-                        <tr>
-                            <td className="table-label">Type:</td>
-                            <td className="table-info">Organic</td>
-                        </tr>
-                        <tr>
-                            <td className="table-label">Category:</td>
-                            <td className="table-info">Vegetables</td>
-                        </tr>
-                        <tr>
-                            <td className="table-label">Stock Status:</td>
-                            <td className="table-info">Available</td>
-                        </tr>
-                    </table>
-                </div>
-            )}
-            {activeTab === "reviews" && (
-                <div className="product-reviews">
-                    <div className="review-list">
-                        {userReviews.map((review, index) => (
-                            <>
-                                <UserReview
-                                    productReview={review.productReview}
-                                    rating={review.rating}
-                                    reviewDate={review.reviewDate}
-                                    userName={review.userName}
-                                    userProfileImage=""
-                                    key={index}
-                                />
-                                {index !== userReviews.length - 1 && <hr />}
-                            </>
-                        ))}
-                    </div>
-                    <div className="load-more">
-                        <button onClick={openReviewModal}>Load More</button>
-                    </div>
-                </div>
+        <Box sx={{ p: 3, borderRadius: 2 }}>
+            <Tabs
+                value={activeTab}
+                onChange={(_, newValue) => setActiveTab(newValue)}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="fullWidth"
+                sx={{ mb: 3, borderRadius: 1 }}
+            >
+                {tabLabels.map((label, index) => (
+                    <Tab label={label} key={index} />
+                ))}
+            </Tabs>
+
+            {/* DESCRIPTION TAB */}
+            {activeTab === 0 && (
+                <MarkdownDescription
+                    content={description || "No description yet."}
+                />
             )}
 
+            {/* ADDITIONAL INFO TAB */}
+            {activeTab === 1 && (
+                <Grid container spacing={2}>
+                    {[
+                        "Weight: 3kg",
+                        "Color: Green",
+                        "Type: Organic",
+                        "Category: Vegetables",
+                        "Stock: Available",
+                    ].map((info, i) => (
+                        <Grid item xs={6} key={i}>
+                            <Typography variant="body2" color="text.secondary">
+                                {info}
+                            </Typography>
+                        </Grid>
+                    ))}
+                </Grid>
+            )}
+
+            {/* CUSTOMER FEEDBACK TAB */}
+            {activeTab === 2 && (
+                <Box>
+                    {isLoading ? (
+                        <Box display="flex" justifyContent="center" py={3}>
+                            <CircularProgress size={28} />
+                        </Box>
+                    ) : isError ? (
+                        <Typography align="center" color="error">
+                            Failed to load reviews.
+                        </Typography>
+                    ) : reviewCount === 0 ? (
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            py={5}
+                            textAlign="center"
+                            sx={{ color: "text.secondary" }}
+                        >
+                            <Typography variant="h6" gutterBottom>
+                                No reviews yet
+                            </Typography>
+                            <Typography variant="body2">
+                                Be the first to share your thoughts about this
+                                product.
+                            </Typography>
+                        </Box>
+                    ) : (
+                        <>
+                            <Grid container spacing={2}>
+                                {reviewList.map((review: any) => (
+                                    <Grid item xs={12} key={review.id}>
+                                        <Card variant="outlined">
+                                            <CardContent>
+                                                <Box
+                                                    display="flex"
+                                                    justifyContent="space-between"
+                                                >
+                                                    <Box
+                                                        display="flex"
+                                                        gap={2}
+                                                        alignItems="center"
+                                                    >
+                                                        <Avatar
+                                                            sx={{
+                                                                bgcolor:
+                                                                    "#7cb342",
+                                                            }}
+                                                        >
+                                                            {review.initial}
+                                                        </Avatar>
+                                                        <Box>
+                                                            <Typography variant="subtitle1">
+                                                                {
+                                                                    review.user_name
+                                                                }
+                                                            </Typography>
+                                                            <Box display="flex">
+                                                                {[
+                                                                    ...Array(5),
+                                                                ].map(
+                                                                    (
+                                                                        _,
+                                                                        idx,
+                                                                    ) => (
+                                                                        <StarIcon
+                                                                            key={
+                                                                                idx
+                                                                            }
+                                                                            fontSize="small"
+                                                                            color={
+                                                                                idx <
+                                                                                review.rating
+                                                                                    ? "warning"
+                                                                                    : "disabled"
+                                                                            }
+                                                                        />
+                                                                    ),
+                                                                )}
+                                                            </Box>
+                                                        </Box>
+                                                    </Box>
+                                                    <Typography
+                                                        variant="caption"
+                                                        color="text.secondary"
+                                                    >
+                                                        {review.posted_at}
+                                                    </Typography>
+                                                </Box>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{ mt: 2 }}
+                                                >
+                                                    {review.comment}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                ))}
+                            </Grid>
+
+                            {reviewCount > perPage && (
+                                <Box
+                                    display="flex"
+                                    justifyContent="center"
+                                    mt={3}
+                                >
+                                    <Button
+                                        variant="outlined"
+                                        color="success"
+                                        onClick={() => setShowReviewModal(true)}
+                                    >
+                                        View More Reviews
+                                    </Button>
+                                </Box>
+                            )}
+                        </>
+                    )}
+                </Box>
+            )}
+
+            {/* MODAL DIALOG FOR FULL PAGINATED REVIEWS */}
             <Dialog
                 open={showReviewModal}
-                onClose={closeReviewModal}
+                onClose={() => setShowReviewModal(false)}
                 maxWidth="sm"
                 fullWidth
             >
                 <DialogTitle>User Reviews</DialogTitle>
-                <DialogContent>
-                    <List>
-                        {userReviews.map((review, index) => (
-                            <>
-                                <ListItem
-                                    key={index}
-                                    sx={{ mb: 2.5 }}
-                                    disablePadding
-                                >
-                                    <UserReview
-                                        productReview={review.productReview}
-                                        rating={review.rating}
-                                        reviewDate={review.reviewDate}
-                                        userName={review.userName}
-                                        userProfileImage=""
-                                    />
-                                    {index !== userReviews.length - 1 && (
-                                        <Divider />
-                                    )}
-                                </ListItem>
-                            </>
-                        ))}
-                    </List>
+                <DialogContent dividers>
+                    {isModalLoading ? (
+                        <Box display="flex" justifyContent="center" py={3}>
+                            <CircularProgress size={28} />
+                        </Box>
+                    ) : isModalError ? (
+                        <Typography align="center" color="error" py={3}>
+                            Failed to load reviews.
+                        </Typography>
+                    ) : (
+                        <>
+                            <List>
+                                {(modalReviews?.data || []).map(
+                                    (review: any, i: number) => (
+                                        <ListItem
+                                            key={review.id}
+                                            disablePadding
+                                            sx={{ mb: 2 }}
+                                        >
+                                            <Box width="100%">
+                                                <Box
+                                                    display="flex"
+                                                    justifyContent="space-between"
+                                                    alignItems="center"
+                                                >
+                                                    <Box
+                                                        display="flex"
+                                                        alignItems="center"
+                                                        gap={1}
+                                                    >
+                                                        <Avatar
+                                                            sx={{
+                                                                bgcolor:
+                                                                    "#8bc34a",
+                                                            }}
+                                                        >
+                                                            {review.initial}
+                                                        </Avatar>
+                                                        <Typography variant="subtitle2">
+                                                            {review.user_name}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Typography
+                                                        variant="caption"
+                                                        color="text.secondary"
+                                                    >
+                                                        {review.posted_at}
+                                                    </Typography>
+                                                </Box>
+                                                <Box display="flex" mt={1}>
+                                                    {[...Array(5)].map(
+                                                        (_, idx) => (
+                                                            <StarIcon
+                                                                key={idx}
+                                                                fontSize="small"
+                                                                color={
+                                                                    idx <
+                                                                    review.rating
+                                                                        ? "warning"
+                                                                        : "disabled"
+                                                                }
+                                                            />
+                                                        ),
+                                                    )}
+                                                </Box>
+                                                <Typography
+                                                    variant="body2"
+                                                    mt={1}
+                                                >
+                                                    {review.comment}
+                                                </Typography>
+                                                {i <
+                                                    modalReviews.data.length -
+                                                        1 && (
+                                                    <Divider sx={{ mt: 2 }} />
+                                                )}
+                                            </Box>
+                                        </ListItem>
+                                    ),
+                                )}
+                            </List>
 
-                    <Box display="flex" justifyContent="center" mt={2}>
-                        <Pagination
-                            count={Math.ceil(userReviews.length / perPage)}
-                            page={page}
-                            onChange={(_, value) => setPage(value)}
-                            color="primary"
-                        />
-                    </Box>
+                            <Box display="flex" justifyContent="center" mt={2}>
+                                <Pagination
+                                    count={modalReviews?.last_page || 1}
+                                    page={page}
+                                    onChange={(_, val) => setPage(val)}
+                                    color="success"
+                                />
+                            </Box>
+                        </>
+                    )}
                 </DialogContent>
             </Dialog>
-        </div>
+        </Box>
     );
 };
 
-interface UserReviewInterface {
-    userName: string;
-    rating: number;
-    productReview: string;
-    reviewDate: string;
-    userProfileImage: string;
-}
+const MarkdownDescription = ({ content }: { content: string }) => {
+    const theme = useTheme();
 
-const UserReview: React.FC<UserReviewInterface> = ({
-    productReview,
-    rating,
-    reviewDate,
-    userName,
-    userProfileImage,
-}) => {
     return (
-        <div className="user-review">
-            <div className="top-section">
-                <div className="user-detail">
-                    <img src="/src/assets/images/image.png" />
-                    <div>
-                        <h2>{userName}</h2>
-                        <StarRating rating={rating} />
-                    </div>
-                </div>
-                <span className="date-time">{reviewDate}</span>
-            </div>
-            <p>{productReview}</p>
-        </div>
+        <Box
+            sx={{
+                borderRadius: 2,
+                padding: 3,
+                lineHeight: 1.8,
+                fontSize: "1rem",
+            }}
+        >
+            <ReactMarkdown
+                rehypePlugins={[rehypeSanitize]}
+                components={{
+                    h1: ({ node, ...props }) => (
+                        <Typography
+                            variant="h4"
+                            fontWeight="bold"
+                            color="success.dark"
+                            gutterBottom
+                            {...props}
+                        />
+                    ),
+                    h2: ({ node, ...props }) => (
+                        <Typography
+                            variant="h5"
+                            fontWeight="bold"
+                            color="success.main"
+                            sx={{ mt: 3, mb: 1 }}
+                            {...props}
+                        />
+                    ),
+                    h3: ({ node, ...props }) => (
+                        <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            sx={{ mt: 2, mb: 1 }}
+                            {...props}
+                        />
+                    ),
+                    p: ({ node, ...props }) => (
+                        <Typography variant="body2" sx={{ mb: 2 }} {...props} />
+                    ),
+                    ul: ({ node, ...props }) => (
+                        <List dense sx={{ pl: 2, mb: 2 }} {...props} />
+                    ),
+                    li: ({ children }) => (
+                        <ListItem
+                            disableGutters
+                            sx={{ alignItems: "flex-start" }}
+                        >
+                            <ListItemIcon sx={{ minWidth: 32 }}>
+                                <CheckCircleIcon
+                                    color="success"
+                                    fontSize="small"
+                                />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={
+                                    <Typography variant="body2">
+                                        {children}
+                                    </Typography>
+                                }
+                            />
+                        </ListItem>
+                    ),
+                    blockquote: ({ node, ...props }) => (
+                        <Box
+                            sx={{
+                                borderLeft: `4px solid ${theme.palette.success.light}`,
+                                backgroundColor: "#e8f5e9",
+                                px: 2,
+                                py: 1,
+                                my: 2,
+                                fontStyle: "italic",
+                            }}
+                            {...props}
+                        />
+                    ),
+                    img: ({ src, alt }) => (
+                        <Box
+                            component="img"
+                            src={src}
+                            alt={alt}
+                            sx={{
+                                width: "100%",
+                                maxHeight: 400,
+                                objectFit: "cover",
+                                borderRadius: 2,
+                                my: 2,
+                            }}
+                        />
+                    ),
+                    hr: () => <Divider sx={{ my: 3 }} />,
+                }}
+            >
+                {content}
+            </ReactMarkdown>
+        </Box>
     );
 };

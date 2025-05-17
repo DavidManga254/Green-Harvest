@@ -1,13 +1,25 @@
+import {
+    Avatar,
+    Box,
+    Button,
+    Chip,
+    Divider,
+    Grid,
+    IconButton,
+    Typography,
+} from "@mui/material";
 import { useState } from "react";
+import StarIcon from "@mui/icons-material/Star";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
 import Instagram from "../../assets/icons/instagram";
 import Twitter from "../../assets/icons/twitter";
-import StarRating from "../StarRating/StarRating";
-import "./ProductDetail.css";
-import Minus from "../../assets/icons/Minus";
-import Plus from "../../assets/icons/plus";
-import Bag from "../../assets/icons/Bag";
-import Heart from "../../assets/icons/Heart";
 import ImagePreview from "../ImagePreview/ImagePreview";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import Cart from "../../api/Cart";
 
 interface ProductDetailHeaderinterface {
     name: string;
@@ -22,6 +34,12 @@ interface ProductDetailHeaderinterface {
     images: {
         image_path: string;
     }[];
+    farmer?: {
+        name: string;
+        profile_image?: string;
+        location?: string;
+    };
+    productId: number | string;
 }
 
 const ProductDetailHeader: React.FC<ProductDetailHeaderinterface> = ({
@@ -32,141 +50,201 @@ const ProductDetailHeader: React.FC<ProductDetailHeaderinterface> = ({
     description,
     category,
     images,
+    farmer,
+    productId,
 }) => {
     const productImages = images.map((image) => image.image_path);
+    const [count, setCount] = useState(1);
+
+    const queryClient = useQueryClient();
+
+    const cartMutation = useMutation({
+        mutationFn: Cart.addToCart,
+        onMutate: () => {
+            // Show loading toast and save its ID
+            const toastId = toast.loading("Adding to cart...", {
+                position: "top-right",
+                closeOnClick: false,
+                closeButton: false,
+            });
+
+            // Return context for later use in onSuccess/onError
+            return { toastId };
+        },
+
+        onSuccess: (_data, _variables, context) => {
+            if (context?.toastId) toast.dismiss(context.toastId);
+
+            queryClient.refetchQueries({ queryKey: ["cart summary"] });
+            toast.success("Added to cart", {
+                position: "top-right",
+                autoClose: 3000,
+            });
+            setCount(1);
+        },
+
+        onError: (_error, _variables, context) => {
+            if (context?.toastId) toast.dismiss(context.toastId);
+
+            toast.error("Failed to add to cart", {
+                position: "top-right",
+                autoClose: 4000,
+            });
+        },
+    });
+
+    const handleAddToCart = () => {
+        cartMutation.mutate({
+            produceId: productId,
+            quantity: count,
+        });
+    };
 
     return (
-        <div className="product-detail-header">
-            <div className="product-preview">
-                <ImagePreview imagesUrl={productImages} />
-            </div>
-            <div className="product-detail-info">
-                <div className="detail-header">
-                    <div className="product-title">
-                        <h1>{name}</h1>
-                        <StockStatus inStock />
-                    </div>
-                    <div className="review-section-start">
-                        <div className="review">
-                            <StarRating rating={rating} />
-                            <span>4 Reviews</span>
-                        </div>
-                    </div>
-                    <div className="product-price">
-                        <span className="old-price">${price_per_unit}</span>
-                        <span className="discounted-price">$17.28</span>
-                        <PercentageOff percent={64} />
-                    </div>
-                </div>
+        <Box p={4} borderRadius={2}>
+            <Grid container spacing={4}>
+                <Grid item xs={12} md={6}>
+                    <ImagePreview imagesUrl={productImages} />
+                </Grid>
 
-                {/* share section */}
-                <div className="share-section">
-                    <div className="share-buttons">
-                        <span>Share item: </span>
-                        <span>
+                <Grid item xs={12} md={6}>
+                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                        {name}
+                    </Typography>
+
+                    <Box display="flex" alignItems="center" gap={1} mb={2}>
+                        {[...Array(5)].map((_, i) => (
+                            <StarIcon
+                                key={i}
+                                fontSize="small"
+                                color={i < rating ? "warning" : "disabled"}
+                            />
+                        ))}
+                        <Typography variant="body2">({rating})</Typography>
+                    </Box>
+
+                    {farmer && (
+                        <Box display="flex" alignItems="center" gap={2} mb={2}>
+                            <Avatar
+                                src={farmer.profile_image}
+                                alt={farmer.name}
+                                sx={{
+                                    width: 48,
+                                    height: 48,
+                                    bgcolor: "#8bc34a",
+                                }}
+                            >
+                                {farmer.name.charAt(0)}
+                            </Avatar>
+                            <Box>
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    {farmer.name}
+                                </Typography>
+                                {farmer.location && (
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                    >
+                                        {farmer.location}
+                                    </Typography>
+                                )}
+                            </Box>
+                        </Box>
+                    )}
+
+                    <Box display="flex" alignItems="center" gap={2} mb={2}>
+                        <Typography
+                            variant="h5"
+                            color="text.primary"
+                            fontWeight="bold"
+                        >
+                            Ksh {price_per_unit}
+                        </Typography>
+                        {is_on_sale && <Chip label="On Sale" color="success" />}
+                    </Box>
+
+                    <Typography variant="body1" color="text.secondary" mb={3}>
+                        {description}
+                    </Typography>
+
+                    <Box display="flex" gap={2} alignItems="center" mb={2}>
+                        <Typography variant="subtitle2">Share:</Typography>
+                        <IconButton size="small">
                             <Twitter height="18" width="18" />
-                        </span>
-                        <span>
+                        </IconButton>
+                        <IconButton size="small">
                             <Instagram height="18" width="18" />
-                        </span>
-                    </div>
-                </div>
-                {/* product description */}
-                <div className="product-description">
-                    <p>{description}</p>
-                </div>
-                <div className="product-prompt">
-                    <Counter onCountChange={() => {}} />
-                    <button className="add-to-cart">
-                        <div>
-                            Add to Cart{""}
-                            <Bag color="white" width="15" height="15" />
-                        </div>
-                    </button>
-                    <span className="add-fav hover">
-                        <Heart color="#2C742F" width="20" height="20" />
-                    </span>
-                </div>
-                <div className="product-categories">
-                    <div className="category">
-                        <span className="name">Category:</span>
-                        <span className="category-name">{category.name}</span>
-                        {/* TODO  make category backend own table and map*/}
-                        {/* <div>
-                            {category.map((category, index) => (
-                                <span key={index} className="category-name">
-                                    {category.name}
-                                </span>
+                        </IconButton>
+                    </Box>
+
+                    <Divider sx={{ my: 3 }} />
+
+                    <Box display="flex" gap={2} alignItems="center" mb={3}>
+                        <IconButton
+                            onClick={() => setCount(Math.max(1, count - 1))}
+                        >
+                            <RemoveIcon />
+                        </IconButton>
+                        <Typography>{count}</Typography>
+                        <IconButton onClick={() => setCount(count + 1)}>
+                            <AddIcon />
+                        </IconButton>
+
+                        <Button
+                            variant="contained"
+                            startIcon={<AddShoppingCartIcon />}
+                            sx={{
+                                bgcolor: "#388e3c",
+                                "&:hover": { bgcolor: "#2e7d32" },
+                            }}
+                            onClick={handleAddToCart}
+                            disabled={cartMutation.isPending}
+                        >
+                            {cartMutation.isPending
+                                ? "Adding..."
+                                : "Add to Cart"}
+                        </Button>
+
+                        <IconButton color="success">
+                            <FavoriteBorderIcon />
+                        </IconButton>
+                    </Box>
+
+                    <Box mt={2}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                            Category:
+                        </Typography>
+                        <Typography variant="body2">{category.name}</Typography>
+                    </Box>
+
+                    <Box mt={1}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                            Tags:
+                        </Typography>
+                        <Box display="flex" gap={1} flexWrap="wrap">
+                            {[
+                                "Vegetables",
+                                "Healthy",
+                                "Cabbage",
+                                "Organic",
+                            ].map((tag, i) => (
+                                <Chip
+                                    key={i}
+                                    label={tag}
+                                    variant="outlined"
+                                    color="success"
+                                    size="small"
+                                />
                             ))}
-                        </div> */}
-                    </div>
-                    <div className="tag">
-                        <span className="name">Tag:</span>
-                        <div>
-                            <span className="tag-name">Vegetables</span>
-                            <span className="tag-name">Healthy</span>
-                            <span className="tag-name">Chinese</span>
-                            <span className="tag-name">Cabbage</span>
-                            <span className="tag-name">Green Cabbage</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        </Box>
+                    </Box>
+                </Grid>
+            </Grid>
+        </Box>
     );
 };
 
 export default ProductDetailHeader;
-
-interface StockStatusInterface {
-    inStock: boolean;
-}
-
-const StockStatus: React.FC<StockStatusInterface> = ({ inStock }) => (
-    <span className={`stock-card ${inStock ? "in-stock" : "out-stock"}`}>
-        {inStock ? "In Stock" : "Out of Stock"}
-    </span>
-);
-
-interface PercentageOffInterface {
-    percent: number;
-}
-const PercentageOff: React.FC<PercentageOffInterface> = ({ percent }) => (
-    <div className="percentage-off">{percent}% Off</div>
-);
-
-type CounterProps = {
-    onCountChange: (count: number) => void;
-};
-
-const Counter: React.FC<CounterProps> = ({ onCountChange }) => {
-    const [count, setCount] = useState(0);
-
-    const handleIncrement = () => {
-        const newCount = count + 1;
-        setCount(newCount);
-        onCountChange(newCount);
-    };
-
-    const handleDecrement = () => {
-        const newCount = count - 1;
-        if (newCount <= 0) {
-            setCount(0);
-        } else {
-            setCount(newCount);
-        }
-        onCountChange(newCount);
-    };
-
-    return (
-        <div className="add-minus-button">
-            <button className="inc" onClick={handleDecrement}>
-                <Minus color="black" />
-            </button>
-            <span>{count}</span>
-            <button className="inc" onClick={handleIncrement}>
-                <Plus />{" "}
-            </button>
-        </div>
-    );
-};

@@ -76,7 +76,7 @@ class UserApi {
             const response = await AxiosApi.get(
                 `/available-subscription-plans/subscription/${planId}`,
             );
-            return response.data.plan;
+            return response.data;
         } catch (e) {
             console.log("error fetching subscription plan detail", e);
             throw e;
@@ -121,6 +121,18 @@ class UserApi {
             return response.data.subscriptions;
         } catch (e) {
             console.log("error fetching user subscriptions", e);
+            throw e;
+        }
+    }
+
+    async cancelSubscription(subscriptionId: number) {
+        try {
+            const response = await AxiosApi.post(
+                `/subscriptions/${subscriptionId}/cancel`,
+            );
+            return response.data;
+        } catch (e) {
+            console.log("error cancelling subscription", e);
             throw e;
         }
     }

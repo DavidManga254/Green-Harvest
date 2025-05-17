@@ -15,7 +15,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.1.1",
-    "@mui/icons-material": "^6.3.1",
+    "@mui/icons-material": "^6.4.11",
     "@mui/material": "^6.4.11",
     "@mui/styled-engine-sc": "^6.3.1",
     "@react-google-maps/api": "^2.20.6",
@@ -31,9 +31,11 @@
     "react-hook-form": "^7.56.1",
     "react-leaflet": "^4.2.1",
     "react-leaflet-cluster": "^2.1.0",
+    "react-markdown": "^10.1.0",
     "react-select": "^5.10.1",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.2",
+    "rehype-sanitize": "^6.0.0",
     "styled-components": "^6.1.14"
   },
   "devDependencies": {

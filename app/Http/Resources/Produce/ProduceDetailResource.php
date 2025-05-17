@@ -34,6 +34,11 @@ class ProduceDetailResource extends JsonResource
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
             'rating' => $this->rating,
+            'farmer'=>[
+                "name" => $this->farmer->name,
+                "profile_image" => $this->farmer->profile_image,
+            ],
+            'markdown_description' => $this->markdown_description
         ];
     }
 }

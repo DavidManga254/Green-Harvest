@@ -30,7 +30,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import StarIcon from "@mui/icons-material/Star";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import User from "../../../../api/User";
 import { subscribe } from "diagnostics_channel";
 import Payment from "../../../../api/Payment";
@@ -240,6 +240,52 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
         });
     };
 
+    const queryClient = useQueryClient();
+
+    const { mutate: cancelSubscription } = useMutation({
+        mutationFn: (subscriptionId: number) =>
+            User.cancelSubscription(subscriptionId),
+
+        onMutate: () => {
+            toast("Cancelling your subscription…", {
+                toastId: "cancel-subscription",
+                position: "top-right",
+                isLoading: true,
+                closeOnClick: false,
+                closeButton: false,
+                autoClose: false,
+                style: {
+                    borderLeft: "6px solid #f44336",
+                    backgroundColor: "#ffebee",
+                    color: "#b71c1c",
+                },
+            });
+        },
+
+        onSuccess: () => {
+            toast.dismiss("cancel-subscription");
+            toast.success("Subscription cancelled successfully.", {
+                position: "top-right",
+                autoClose: 4000,
+            });
+
+            // Refresh subscription list
+            queryClient.invalidateQueries({ queryKey: ["user-subscriptions"] });
+        },
+
+        onError: () => {
+            toast.dismiss("cancel-subscription");
+            toast.error("Failed to cancel subscription. Please try again.", {
+                position: "top-right",
+                autoClose: 5000,
+            });
+        },
+    });
+
+    const handleCancelSubscription = (subscriptionId: number) => {
+        cancelSubscription(subscriptionId);
+    };
+
     if (isLoading)
         return <Typography align="center">Loading subscription...</Typography>;
 
@@ -256,11 +302,11 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
                 {/* Left: Subscription Plan Info */}
                 <Grid item xs={12} md={7}>
                     <Card elevation={3}>
-                        {subscriptionPlan.cover_image && (
+                        {subscriptionPlan.plan.cover_image && (
                             <CardMedia
                                 component="img"
                                 height="240"
-                                image={subscriptionPlan.cover_image}
+                                image={subscriptionPlan.plan.cover_image}
                                 sx={{ objectFit: "cover" }}
                             />
                         )}
@@ -272,14 +318,14 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
                                 sx={{ mb: 1 }}
                             />
                             <Typography variant="h5" gutterBottom>
-                                {subscriptionPlan.template.name}
+                                {subscriptionPlan.plan.template.name}
                             </Typography>
                             <Typography
                                 variant="body1"
                                 color="text.secondary"
                                 mb={1}
                             >
-                                {subscriptionPlan.description}
+                                {subscriptionPlan.plan.description}
                             </Typography>
 
                             <Box
@@ -327,7 +373,7 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
                                 color="text.secondary"
                                 mb={2}
                             >
-                                {subscriptionPlan.farmer.bio}
+                                {subscriptionPlan.plan.farmer.bio}
                             </Typography>
 
                             <Typography variant="subtitle1" gutterBottom>
@@ -335,7 +381,7 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
                             </Typography>
 
                             <Grid container spacing={2}>
-                                {subscriptionPlan.included_produce.map(
+                                {subscriptionPlan.plan.included_produce.map(
                                     (item) => (
                                         <Grid item xs={12} sm={6} key={item.id}>
                                             <Box
@@ -421,7 +467,7 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
                                                 Customer Reviews
                                             </Typography>
 
-                                            {subscriptionPlan.reviews
+                                            {subscriptionPlan.plan.reviews
                                                 ?.slice(0, 2)
                                                 .map((review) => (
                                                     <Box
@@ -491,8 +537,8 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
                                                     </Box>
                                                 ))}
 
-                                            {subscriptionPlan.reviews.length >
-                                                2 && (
+                                            {subscriptionPlan.plan.reviews
+                                                .length > 2 && (
                                                 <Button
                                                     onClick={() =>
                                                         setShowAllReviews(true)
@@ -509,7 +555,8 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
                                                     setShowAllReviews(false)
                                                 }
                                                 reviews={
-                                                    subscriptionPlan.reviews
+                                                    subscriptionPlan.plan
+                                                        .reviews
                                                 }
                                             />
                                         </Box>
@@ -522,70 +569,106 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
 
                 {/* Right: Checkout Form */}
                 <Grid item xs={12} md={5}>
-                    <Card
-                        elevation={3}
-                        sx={{
-                            p: 3,
-                            position: "sticky",
-                            top: 100,
-                        }}
-                    >
-                        <Typography variant="h6" gutterBottom>
-                            Subscription Checkout
-                        </Typography>
-
-                        <TextField
-                            fullWidth
-                            label="Start Date"
-                            type="date"
-                            InputLabelProps={{ shrink: true }}
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            inputProps={{
-                                min: new Date().toISOString().split("T")[0], // today's date in YYYY-MM-DD
-                            }}
-                            sx={{ mb: 3, mt: 1 }}
-                        />
-
-                        <Divider sx={{ mb: 2 }} />
-
-                        <Box mb={2}>
-                            <Typography
-                                variant="subtitle2"
-                                color="text.secondary"
-                            >
-                                Price Breakdown
-                            </Typography>
-                            <Typography variant="body2">
-                                Base Price: Ksh{" "}
-                                {subscriptionPlan.template.base_price}
-                            </Typography>
-                            <Typography variant="body2">
-                                Delivery Fee: Free
-                            </Typography>
-                            <Typography variant="h6" fontWeight="bold" mt={1}>
-                                Total: Ksh{" "}
-                                {subscriptionPlan.template.base_price.toLocaleString()}{" "}
-                                / {subscriptionPlan.template.frequency}
-                            </Typography>
-                        </Box>
-
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            size="large"
-                            disabled={!startDate || isSubscribing}
+                    {subscriptionPlan.user_subscription.is_subscribed ===
+                    false ? (
+                        <Card
+                            elevation={3}
                             sx={{
-                                backgroundColor: "#388e3c",
-                                "&:hover": { backgroundColor: "#2e7d32" },
+                                p: 3,
+                                position: "sticky",
+                                top: 100,
                             }}
-                            onClick={subscribe}
                         >
-                            {isSubscribing
-                                ? "Processing..."
-                                : "Confirm Subscription"}
-                        </Button>
-                    </Card>
+                            <Typography variant="h6" gutterBottom>
+                                Subscription Checkout
+                            </Typography>
+
+                            <TextField
+                                fullWidth
+                                label="Start Date"
+                                type="date"
+                                InputLabelProps={{ shrink: true }}
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                inputProps={{
+                                    min: new Date().toISOString().split("T")[0], // today's date in YYYY-MM-DD
+                                }}
+                                sx={{ mb: 3, mt: 1 }}
+                            />
+
+                            <Divider sx={{ mb: 2 }} />
+
+                            <Box mb={2}>
+                                <Typography
+                                    variant="subtitle2"
+                                    color="text.secondary"
+                                >
+                                    Price Breakdown
+                                </Typography>
+                                <Typography variant="body2">
+                                    Base Price: Ksh{" "}
+                                    {subscriptionPlan.plan.template.base_price}
+                                </Typography>
+                                <Typography variant="body2">
+                                    Delivery Fee: Free
+                                </Typography>
+                                <Typography
+                                    variant="h6"
+                                    fontWeight="bold"
+                                    mt={1}
+                                >
+                                    Total: Ksh{" "}
+                                    {subscriptionPlan.plan.template.base_price.toLocaleString()}{" "}
+                                    / {subscriptionPlan.template.frequency}
+                                </Typography>
+                            </Box>
+
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                size="large"
+                                disabled={!startDate || isSubscribing}
+                                sx={{
+                                    backgroundColor: "#388e3c",
+                                    "&:hover": { backgroundColor: "#2e7d32" },
+                                }}
+                                onClick={subscribe}
+                            >
+                                {isSubscribing
+                                    ? "Processing..."
+                                    : "Confirm Subscription"}
+                            </Button>
+                        </Card>
+                    ) : (
+                        <Card
+                            elevation={3}
+                            sx={{
+                                p: 3,
+                                position: "sticky",
+                                top: 100,
+                                textAlign: "center",
+                            }}
+                        >
+                            <Typography variant="h6" gutterBottom>
+                                You are already subscribed to this plan.
+                            </Typography>
+
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                size="large"
+                                sx={{ mt: 2 }}
+                                onClick={() => {
+                                    handleCancelSubscription(
+                                        subscriptionPlan.user_subscription
+                                            .subscription_plan_id,
+                                    );
+                                }}
+                            >
+                                Cancel Subscription
+                            </Button>
+                        </Card>
+                    )}
                 </Grid>
             </Grid>
         </Container>

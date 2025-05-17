@@ -26,6 +26,8 @@ Route::middleware(['userAuth'])->group(function () {
     //produce
     Route::get('/produce', 'Produce\ProduceController@index');
     Route::get('/produce/{id}', 'Produce\ProduceController@show');
+    Route::get('/products/{produceId}/reviews', 'Produce\ProduceController@getProductReviews');
+
 
     //produce farmer only access
     Route::middleware(['farmerAuth'])->group(function () {
@@ -81,7 +83,10 @@ Route::middleware(['userAuth'])->group(function () {
     Route::get('/available-subscription-plans/subscription/{id}','User\UserController@show');
     Route::post('/subscribe', 'Payment\PaymentController@subscribeToPlan');
     Route::get('/get-subscriptions','User\UserController@getUserSubscriptions');
+    Route::post('/subscriptions/{subscription}/cancel', 'User\UserController@cancelSubscription');
+
 
     Route::post('/contact/send', 'User\UserController@sendContactMessage');
+
 
 });

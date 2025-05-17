@@ -7,7 +7,9 @@ use App\Http\Requests\Produce\ProduceCreate;
 use App\Http\Requests\Produce\ProduceUpdate;
 use App\Http\Resources\Produce\ProduceDetailResource;
 use App\Http\Resources\Produce\ProduceResource;
+use App\Http\Resources\Product\ProductReviewResource;
 use App\Models\Produce\Produce;
+use App\Models\Review\Review;
 use Illuminate\Http\Request;
 
 class ProduceController extends Controller
@@ -79,7 +81,7 @@ class ProduceController extends Controller
 
     public function show($id)
     {
-        $produce = Produce::where('id', $id)->with('images')->with('tags')->with('reviews.user')->with('category')->first();
+        $produce = Produce::where('id', $id)->with('images')->with('tags')->with(['farmer'])->with('category')->first();
 
         if (!$produce) {
             return response()->json([
@@ -87,12 +89,23 @@ class ProduceController extends Controller
             ], 404);
         }
 
-
-
         return response()->json([
             'data' => new ProduceDetailResource($produce),
         ], 200);
     }
+
+    public function getProductReviews(Request $request, $produceId)
+    {
+        $perPage = $request->query('per_page', 5);
+
+        $reviews = Review::with('user')
+            ->where('produce_id', $produceId)
+            ->latest()
+            ->paginate($perPage);
+
+        return ProductReviewResource::collection($reviews);
+    }
+
 
     public function delete(Request $request, $id)
     {

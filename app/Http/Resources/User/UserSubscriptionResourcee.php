@@ -16,6 +16,7 @@ class UserSubscriptionResourcee extends JsonResource
     {
         return [
             'id' => $this->id,
+            'subscription_plan_id' => $this->template->farmerSubscriptionPlans[0]->id ?? null,
             'name' => $this->template->name ?? null,
             'description' => $this->template->description ?? null,
             'frequency' => $this->template->frequency ?? $this->frequency,
