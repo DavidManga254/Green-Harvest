@@ -20,6 +20,8 @@ import { useState } from "react";
 import Farmer from "../../api/Farmer";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import SingleFarmerMap from "../../components/SingleFarmerMap";
+import ProductCard2 from "../../components/ProductCard2";
 
 interface VendorPageInterface {
     id: string | number;
@@ -31,6 +33,19 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
     const [imagePreview, setImagePreview] = useState(null);
     const [sort, setSort] = useState("latest");
     // const itemsPerPage = 12;
+
+    const {
+        data: farmerOverview,
+        isLoading: farmerOverviewLoading,
+        // isError: farmerProduceError,
+        isFetching: farmerOverviewFetching,
+        // refetch,
+    } = useQuery({
+        queryKey: ["farmerOverview", id, page],
+        queryFn: () => Farmer.getFarmerOverview(id),
+        placeholderData: (previousData) => previousData,
+        gcTime: 5 * 60 * 1000, // cache data for 5 minutes
+    });
 
     const {
         data: farmerProduce,
@@ -70,10 +85,7 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
         gcTime: 5 * 60 * 1000,
     });
 
-    const handlePageChange = (
-        // event: React.ChangeEvent<unknown>,
-        value: number,
-    ) => {
+    const handlePageChange = (_event: any, value: number) => {
         setPage(value);
     };
 
@@ -109,29 +121,64 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
             {/* Profile Section */}
             <Grid container spacing={2} alignItems="center">
                 <Grid item>
-                    <Avatar
-                        src="https://media.istockphoto.com/id/1049653176/photo/happy-thai-female-farmer-harvesting-rice-in-countryside-thailand.jpg?s=612x612&w=0&k=20&c=BD--rcVXQNb-2IE3gg-9BVm8HQ4QqfGjGB7WOFshdJw="
-                        alt="K-Wiss"
-                        sx={{ width: 100, height: 100 }}
-                    />
+                    {farmerOverviewLoading ? (
+                        <Skeleton variant="circular" width={100} height={100} />
+                    ) : (
+                        <Avatar
+                            src={farmerOverview?.profile_image}
+                            alt={farmerOverview?.name}
+                            sx={{ width: 100, height: 100 }}
+                        />
+                    )}
                 </Grid>
                 <Grid item xs>
-                    <Typography variant="h5" fontWeight="bold">
-                        Mama Achieng
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        102 subscribers · 15 products
-                    </Typography>
-                    <Typography variant="body1" sx={{ mt: 1 }}>
-                        {shortBio}{" "}
-                        <Button
-                            style={{ color: "var(--green)" }}
-                            size="small"
-                            onClick={handleBioOpen}
+                    {farmerOverviewLoading ? (
+                        <>
+                            <Skeleton width={200} height={32} />
+                            <Skeleton width={180} height={20} />
+                        </>
+                    ) : (
+                        <>
+                            <Typography variant="h5" fontWeight="bold">
+                                {farmerOverview?.name}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {farmerOverview?.subscriber_count} subscribers ·{" "}
+                                {farmerOverview?.produce_count} products
+                            </Typography>
+                        </>
+                    )}
+
+                    {farmerOverviewLoading ? (
+                        <>
+                            <Skeleton width="100%" height={20} />
+                            <Skeleton width="80%" height={20} />
+                        </>
+                    ) : farmerOverview?.description ? (
+                        <Typography variant="body1" sx={{ mt: 1 }}>
+                            {farmerOverview.description.length > 100
+                                ? `${farmerOverview.description.slice(0, 100)}...`
+                                : farmerOverview.description}{" "}
+                            {farmerOverview.description.length > 100 && (
+                                <Button
+                                    style={{ color: "var(--green)" }}
+                                    size="small"
+                                    onClick={handleBioOpen}
+                                >
+                                    Read More
+                                </Button>
+                            )}
+                        </Typography>
+                    ) : (
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mt: 1 }}
                         >
-                            Read More
-                        </Button>
-                    </Typography>
+                            No bio provided.
+                        </Typography>
+                    )}
+
                     <Modal open={bioOpen} onClose={handleBioClose}>
                         <Box
                             sx={{
@@ -238,36 +285,7 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
                                         md={3}
                                         key={product.id}
                                     >
-                                        <Card>
-                                            <CardMedia
-                                                component="img"
-                                                height="160"
-                                                image={
-                                                    product.images
-                                                        ?.image_path ||
-                                                    "/placeholder.jpg"
-                                                }
-                                                alt={product.name}
-                                                sx={{
-                                                    objectFit: "cover",
-                                                    p: 1,
-                                                }}
-                                            />
-                                            <CardContent>
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    fontWeight="bold"
-                                                >
-                                                    {product.name}
-                                                </Typography>
-                                                <Typography
-                                                    variant="body2"
-                                                    color="text.secondary"
-                                                >
-                                                    KES {product.price_per_unit}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
+                                        <ProductCard2 product={product} />
                                     </Grid>
                                 ))}
                             </Grid>
@@ -444,15 +462,24 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
                 </Box>
             )}
 
-            {/* {tabIndex === 2 && (
+            {tabIndex === 2 && (
                 <Box sx={{ mt: 2 }}>
-                    {isLoading ? (
-                        <p>Loading...</p>
+                    {farmerOverviewLoading ? (
+                        <Skeleton variant="rectangular" height={400} />
+                    ) : farmerOverview?.latitude &&
+                      farmerOverview?.longitude ? (
+                        <SingleFarmerMap
+                            name={farmerOverview.name}
+                            latitude={parseFloat(farmerOverview.latitude)}
+                            longitude={parseFloat(farmerOverview.longitude)}
+                        />
                     ) : (
-                        <FarmerMap farmers={farmers} />
+                        <Typography>
+                            No location data available for this farmer.
+                        </Typography>
                     )}
                 </Box>
-            )} */}
+            )}
         </Box>
     );
 };

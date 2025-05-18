@@ -3,6 +3,7 @@
 namespace App\Models\Farmer;
 
 use App\Models\Practice\Practice;
+use App\Models\Produce\Produce;
 use App\Models\Subscription\Subscription;
 use App\Models\Subscription\SubscriptionPlan;
 use App\Models\User\User;
@@ -57,6 +58,11 @@ class Farmer extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function produces()
+    {
+        return $this->hasMany(Produce::class);
     }
 
 }

@@ -35,6 +35,7 @@ class ProduceDetailResource extends JsonResource
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
             'rating' => $this->rating,
             'farmer'=>[
+                "id"=>$this->farmer->id,
                 "name" => $this->farmer->name,
                 "profile_image" => $this->farmer->profile_image,
             ],

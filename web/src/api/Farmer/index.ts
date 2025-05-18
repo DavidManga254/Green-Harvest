@@ -46,6 +46,18 @@ class FarmerApi {
             throw e;
         }
     }
+
+    async getFarmerOverview(farmerId: number | string) {
+        try {
+            const response = await AxiosApi.get(
+                `/farmer/${farmerId}/details/overview`,
+            );
+            return response.data;
+        } catch (e) {
+            console.error("Error fetching farmer overview", e);
+            throw e;
+        }
+    }
 }
 
 export default new FarmerApi();

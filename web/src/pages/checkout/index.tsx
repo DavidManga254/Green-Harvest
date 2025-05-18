@@ -104,7 +104,8 @@ const CheckoutPage: React.FC = () => {
                                             {item.produce.name}
                                         </div>
                                         <div className="cart-item-price">
-                                            ${parseFloat(item.price).toFixed(2)}
+                                            Ksh
+                                            {parseFloat(item.price).toFixed(2)}
                                         </div>
                                     </div>
                                     <div className="cart-quantity">
@@ -131,7 +132,7 @@ const CheckoutPage: React.FC = () => {
                                         </button>
                                     </div>
                                     <div className="cart-subtotal">
-                                        $
+                                        Ksh
                                         {parseFloat(item.price) * item.quantity}
                                     </div>
                                     <button

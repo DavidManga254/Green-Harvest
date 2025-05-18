@@ -16,6 +16,7 @@ use App\Models\Farmer\Farmer;
 use App\Models\Farmer\FarmerReview;
 use App\Models\Produce\Produce;
 use App\Models\Subscription\FarmerSubscriptionPlan;
+use App\Models\Subscription\SubscriptionPlan;
 use App\Models\Subscription\SubscriptionPlanTemplate;
 use App\Models\User\User;
 use Illuminate\Http\Request;
@@ -243,6 +244,28 @@ class FarmerController extends Controller
                 'prev_page_url' => $reviews->previousPageUrl(),
             ],
         ], 200);
+    }
+
+    public function getFarmerDetails($id)
+    {
+        $farmer = Farmer::findOrFail($id);
+
+        // Number of produces from farmer_subscription_plans
+        $produceCount = Produce::where('farmer_id', $id)->count();
+
+        // Number of unique users subscribed to this farmer
+        $subscriberCount = SubscriptionPlan::where('farmer_id', $id)->distinct('user_id')->count('user_id');
+
+        return response()->json([
+            'id' => $farmer->id,
+            'name' => $farmer->name,
+            'description' => $farmer->description,
+            'profile_image' => $farmer->profile_image,
+            'produce_count' => $produceCount,
+            'subscriber_count' => $subscriberCount,
+            'latitude' => $farmer->latitude,
+            'longitude' => $farmer->longitude,
+        ]);
     }
 
     public function templates()

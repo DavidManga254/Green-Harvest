@@ -20,6 +20,7 @@ import ImagePreview from "../ImagePreview/ImagePreview";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Cart from "../../api/Cart";
+import { Link } from "@tanstack/react-router";
 
 interface ProductDetailHeaderinterface {
     name: string;
@@ -137,12 +138,17 @@ const ProductDetailHeader: React.FC<ProductDetailHeaderinterface> = ({
                                 {farmer.name.charAt(0)}
                             </Avatar>
                             <Box>
-                                <Typography
-                                    variant="subtitle1"
-                                    fontWeight="bold"
+                                <Link
+                                    to="/vendor/$id"
+                                    params={{ id: farmer.id }}
                                 >
-                                    {farmer.name}
-                                </Typography>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                    >
+                                        {farmer.name}
+                                    </Typography>
+                                </Link>
                                 {farmer.location && (
                                     <Typography
                                         variant="body2"

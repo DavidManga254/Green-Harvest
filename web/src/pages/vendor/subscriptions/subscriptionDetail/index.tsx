@@ -15,6 +15,7 @@ import {
     Button,
     Chip,
     DialogActions,
+    Skeleton,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
@@ -286,8 +287,152 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
         cancelSubscription(subscriptionId);
     };
 
-    if (isLoading)
-        return <Typography align="center">Loading subscription...</Typography>;
+    if (isLoading) {
+        return (
+            <Container maxWidth="lg" sx={{ py: 6 }}>
+                <Grid container spacing={6}>
+                    {/* Left Panel Skeleton */}
+                    <Grid item xs={12} md={7}>
+                        <Card elevation={3}>
+                            <Skeleton variant="rectangular" height={240} />
+                            <CardContent>
+                                <Skeleton
+                                    variant="rectangular"
+                                    width={100}
+                                    height={28}
+                                    sx={{ mb: 2 }}
+                                />
+                                <Skeleton
+                                    variant="text"
+                                    height={32}
+                                    width="60%"
+                                />
+                                <Skeleton variant="text" width="90%" />
+                                <Skeleton variant="text" width="85%" />
+                                <Box mt={2} mb={2}>
+                                    <Skeleton width={140} height={20} />
+                                </Box>
+
+                                <Divider sx={{ my: 2 }} />
+
+                                {/* Farmer Profile */}
+                                <Box display="flex" alignItems="center" mb={2}>
+                                    <Skeleton
+                                        variant="circular"
+                                        width={40}
+                                        height={40}
+                                        sx={{ mr: 2 }}
+                                    />
+                                    <Box>
+                                        <Skeleton width={100} height={20} />
+                                        <Skeleton width={80} height={16} />
+                                    </Box>
+                                </Box>
+                                <Skeleton width="100%" height={50} />
+
+                                <Skeleton
+                                    width={160}
+                                    height={28}
+                                    sx={{ mt: 3 }}
+                                />
+                                <Grid container spacing={2} sx={{ mt: 1 }}>
+                                    {[...Array(3)].map((_, i) => (
+                                        <Grid item xs={12} sm={6} key={i}>
+                                            <Box display="flex" gap={2}>
+                                                <Skeleton
+                                                    variant="rectangular"
+                                                    width={64}
+                                                    height={64}
+                                                />
+                                                <Box flex={1}>
+                                                    <Skeleton height={20} />
+                                                    <Skeleton height={16} />
+                                                </Box>
+                                            </Box>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+
+                                {/* Why choose this box */}
+                                <Box mt={3}>
+                                    <Skeleton width={180} height={24} />
+                                    {[...Array(3)].map((_, i) => (
+                                        <Box
+                                            display="flex"
+                                            alignItems="center"
+                                            key={i}
+                                            mt={1}
+                                        >
+                                            <Skeleton
+                                                variant="circular"
+                                                width={24}
+                                                height={24}
+                                                sx={{ mr: 1 }}
+                                            />
+                                            <Skeleton width="60%" height={16} />
+                                        </Box>
+                                    ))}
+                                </Box>
+
+                                {/* Review previews */}
+                                <Box mt={4}>
+                                    <Skeleton width={180} height={24} />
+                                    {[...Array(2)].map((_, i) => (
+                                        <Box key={i} sx={{ mt: 2 }}>
+                                            <Box
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={1}
+                                                mb={1}
+                                            >
+                                                <Skeleton
+                                                    variant="circular"
+                                                    width={32}
+                                                    height={32}
+                                                />
+                                                <Box>
+                                                    <Skeleton width={100} />
+                                                    <Skeleton width={80} />
+                                                </Box>
+                                            </Box>
+                                            <Skeleton width="50%" />
+                                            <Skeleton
+                                                width="100%"
+                                                height={40}
+                                            />
+                                        </Box>
+                                    ))}
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* Right Panel Skeleton (Checkout) */}
+                    <Grid item xs={12} md={5}>
+                        <Card
+                            elevation={3}
+                            sx={{ p: 3, position: "sticky", top: 100 }}
+                        >
+                            <Skeleton width="60%" height={28} sx={{ mb: 2 }} />
+                            <Skeleton
+                                variant="rectangular"
+                                height={56}
+                                sx={{ mb: 3 }}
+                            />
+                            <Skeleton width="40%" height={20} />
+                            <Skeleton width="50%" height={20} />
+                            <Skeleton width="60%" height={32} sx={{ mt: 2 }} />
+                            <Skeleton
+                                variant="rectangular"
+                                height={48}
+                                sx={{ mt: 3, borderRadius: 2 }}
+                            />
+                        </Card>
+                    </Grid>
+                </Grid>
+            </Container>
+        );
+    }
 
     if (error || !subscriptionPlan)
         return (
@@ -619,7 +764,7 @@ const SubscriptionDetailPage: React.FC<SubscriptionDetailPageInterface> = ({
                                 >
                                     Total: Ksh{" "}
                                     {subscriptionPlan.plan.template.base_price.toLocaleString()}{" "}
-                                    / {subscriptionPlan.template.frequency}
+                                    / {subscriptionPlan.plan.template.frequency}
                                 </Typography>
                             </Box>
 

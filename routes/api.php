@@ -74,6 +74,7 @@ Route::middleware(['userAuth'])->group(function () {
 
     Route::get('/farmer/{farmerId}/details/produce','Farmer\FarmerController@getFarmerProducts');
     Route::get('/farmer/{farmerId}/details/reviews','Farmer\FarmerController@getFarmerReviews');
+    Route::get('/farmer/{id}/details/overview','Farmer\FarmerController@getFarmerDetails');
 
     // Route::get('/subscription-plans', [SubscriptionPlanController::class, 'index']);
     // Route::post('/subscription-plans', [SubscriptionPlanController::class, 'store']);
