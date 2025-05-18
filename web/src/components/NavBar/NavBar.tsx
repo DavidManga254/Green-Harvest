@@ -17,7 +17,9 @@ const NavBar: React.FC = () => {
                     <ChevronDown height="16" width="16" />
                 </div>
                 <div className="nav-item inactive">
-                    <span onClick={() => navigateToRoute("/shop")}>Shop</span>
+                    <Link to={"/shop"}>
+                        <span>Shop</span>
+                    </Link>
                     <ChevronDown height="16" width="16" />
                 </div>
                 <div className="nav-item inactive">

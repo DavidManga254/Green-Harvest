@@ -27,6 +27,7 @@ import { Route as userCheckoutIndexImport } from './routes/(user)/checkout/index
 import { Route as userAboutIndexImport } from './routes/(user)/about/index'
 import { Route as userVendorIdImport } from './routes/(user)/vendor/$id'
 import { Route as userProductProductIdImport } from './routes/(user)/product/$productId'
+import { Route as userProductSearchResultsIndexImport } from './routes/(user)/product/search-results/index'
 import { Route as userCheckoutPayIndexImport } from './routes/(user)/checkout/pay/index'
 import { Route as userAccountWishlistIndexImport } from './routes/(user)/account/wishlist/index'
 import { Route as userAccountOrderHistoryIndexImport } from './routes/(user)/account/order-history/index'
@@ -133,6 +134,13 @@ const userProductProductIdRoute = userProductProductIdImport.update({
   path: '/product/$productId',
   getParentRoute: () => userLayoutRoute,
 } as any)
+
+const userProductSearchResultsIndexRoute =
+  userProductSearchResultsIndexImport.update({
+    id: '/product/search-results/',
+    path: '/product/search-results/',
+    getParentRoute: () => userLayoutRoute,
+  } as any)
 
 const userCheckoutPayIndexRoute = userCheckoutPayIndexImport.update({
   id: '/checkout/pay/',
@@ -381,6 +389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof userCheckoutPayIndexImport
       parentRoute: typeof userLayoutImport
     }
+    '/(user)/product/search-results/': {
+      id: '/(user)/product/search-results/'
+      path: '/product/search-results'
+      fullPath: '/product/search-results'
+      preLoaderRoute: typeof userProductSearchResultsIndexImport
+      parentRoute: typeof userLayoutImport
+    }
     '/(user)/vendor/subscriptions/subscription-detail/$subscription': {
       id: '/(user)/vendor/subscriptions/subscription-detail/$subscription'
       path: '/vendor/subscriptions/subscription-detail/$subscription'
@@ -434,6 +449,7 @@ interface userLayoutRouteChildren {
   userSignInIndexRoute: typeof userSignInIndexRoute
   userVendorSubscriptionsIdRoute: typeof userVendorSubscriptionsIdRoute
   userCheckoutPayIndexRoute: typeof userCheckoutPayIndexRoute
+  userProductSearchResultsIndexRoute: typeof userProductSearchResultsIndexRoute
   userVendorSubscriptionsSubscriptionDetailSubscriptionRoute: typeof userVendorSubscriptionsSubscriptionDetailSubscriptionRoute
   userCheckoutPayCallbackIndexRoute: typeof userCheckoutPayCallbackIndexRoute
 }
@@ -453,6 +469,7 @@ const userLayoutRouteChildren: userLayoutRouteChildren = {
   userSignInIndexRoute: userSignInIndexRoute,
   userVendorSubscriptionsIdRoute: userVendorSubscriptionsIdRoute,
   userCheckoutPayIndexRoute: userCheckoutPayIndexRoute,
+  userProductSearchResultsIndexRoute: userProductSearchResultsIndexRoute,
   userVendorSubscriptionsSubscriptionDetailSubscriptionRoute:
     userVendorSubscriptionsSubscriptionDetailSubscriptionRoute,
   userCheckoutPayCallbackIndexRoute: userCheckoutPayCallbackIndexRoute,
@@ -509,6 +526,7 @@ export interface FileRoutesByFullPath {
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
   '/checkout/pay': typeof userCheckoutPayIndexRoute
+  '/product/search-results': typeof userProductSearchResultsIndexRoute
   '/vendor/subscriptions/subscription-detail/$subscription': typeof userVendorSubscriptionsSubscriptionDetailSubscriptionRoute
   '/checkout/pay/callback': typeof userCheckoutPayCallbackIndexRoute
 }
@@ -537,6 +555,7 @@ export interface FileRoutesByTo {
   '/account/order-history': typeof userAccountOrderHistoryIndexRoute
   '/account/wishlist': typeof userAccountWishlistIndexRoute
   '/checkout/pay': typeof userCheckoutPayIndexRoute
+  '/product/search-results': typeof userProductSearchResultsIndexRoute
   '/vendor/subscriptions/subscription-detail/$subscription': typeof userVendorSubscriptionsSubscriptionDetailSubscriptionRoute
   '/checkout/pay/callback': typeof userCheckoutPayCallbackIndexRoute
 }
@@ -567,6 +586,7 @@ export interface FileRoutesById {
   '/(user)/account/order-history/': typeof userAccountOrderHistoryIndexRoute
   '/(user)/account/wishlist/': typeof userAccountWishlistIndexRoute
   '/(user)/checkout/pay/': typeof userCheckoutPayIndexRoute
+  '/(user)/product/search-results/': typeof userProductSearchResultsIndexRoute
   '/(user)/vendor/subscriptions/subscription-detail/$subscription': typeof userVendorSubscriptionsSubscriptionDetailSubscriptionRoute
   '/(user)/checkout/pay/callback/': typeof userCheckoutPayCallbackIndexRoute
 }
@@ -597,6 +617,7 @@ export interface FileRouteTypes {
     | '/account/order-history'
     | '/account/wishlist'
     | '/checkout/pay'
+    | '/product/search-results'
     | '/vendor/subscriptions/subscription-detail/$subscription'
     | '/checkout/pay/callback'
   fileRoutesByTo: FileRoutesByTo
@@ -624,6 +645,7 @@ export interface FileRouteTypes {
     | '/account/order-history'
     | '/account/wishlist'
     | '/checkout/pay'
+    | '/product/search-results'
     | '/vendor/subscriptions/subscription-detail/$subscription'
     | '/checkout/pay/callback'
   id:
@@ -652,6 +674,7 @@ export interface FileRouteTypes {
     | '/(user)/account/order-history/'
     | '/(user)/account/wishlist/'
     | '/(user)/checkout/pay/'
+    | '/(user)/product/search-results/'
     | '/(user)/vendor/subscriptions/subscription-detail/$subscription'
     | '/(user)/checkout/pay/callback/'
   fileRoutesById: FileRoutesById
@@ -705,6 +728,7 @@ export const routeTree = rootRoute
         "/(user)/sign-in/",
         "/(user)/vendor/subscriptions/$id",
         "/(user)/checkout/pay/",
+        "/(user)/product/search-results/",
         "/(user)/vendor/subscriptions/subscription-detail/$subscription",
         "/(user)/checkout/pay/callback/"
       ]
@@ -805,6 +829,10 @@ export const routeTree = rootRoute
     },
     "/(user)/checkout/pay/": {
       "filePath": "(user)/checkout/pay/index.tsx",
+      "parent": "/(user)"
+    },
+    "/(user)/product/search-results/": {
+      "filePath": "(user)/product/search-results/index.tsx",
       "parent": "/(user)"
     },
     "/(user)/vendor/subscriptions/subscription-detail/$subscription": {

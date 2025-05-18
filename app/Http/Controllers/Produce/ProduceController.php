@@ -149,6 +149,37 @@ class ProduceController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query') ?? $request->input('name');
+        $perPage = $request->input('per_page') ?? $request->input('data_per_page', 10);
+        $page = $request->input('page', 1);
+
+
+
+        $produce = Produce::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                ->orWhere('description', 'like', "%{$query}%")
+                ->orWhere('markdown_description', 'like', "%{$query}%");
+            })
+            ->with(['images', 'category', 'farmer.user'])
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'data' => ProduceResource::collection($produce->items())->resolve(),
+            'pagination' => [
+                'total' => $produce->total(),
+                'per_page' => $produce->perPage(),
+                'current_page' => $produce->currentPage(),
+                'last_page' => $produce->lastPage(),
+                'next_page_url' => $produce->nextPageUrl(),
+                'prev_page_url' => $produce->previousPageUrl(),
+            ]
+        ], 200);
+    }
+
     public function getFarmerProduce(Request $request)
     {
         $farmer = $request->get('farmer');
