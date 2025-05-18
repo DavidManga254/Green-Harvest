@@ -5,6 +5,7 @@ namespace App\Models\User;
 use App\Models\Billing\BillingAddress;
 use App\Models\cart\Cart;
 use App\Models\Order\Order;
+use App\Models\Order\UserOrder;
 use App\Models\Subscription\Subscription;
 use App\Models\Subscription\SubscriptionPlan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,7 +44,7 @@ class User extends Model
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(UserOrder::class);
     }
 
     public function hasActiveSubscriptionTo($planId)

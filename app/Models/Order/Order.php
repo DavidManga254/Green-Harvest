@@ -41,4 +41,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderStatus::class);
     }
+
+    public function statuses()
+    {
+        return $this->hasMany(OrderStatus::class)->orderBy('updated_at');
+    }
 }

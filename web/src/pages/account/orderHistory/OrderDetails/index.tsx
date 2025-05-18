@@ -7,9 +7,10 @@ import {
     stepConnectorClasses,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import Check from "@mui/icons-material/Check";
 import { useQuery } from "@tanstack/react-query";
 import Order from "../../../../api/Order";
+import { Typography, Box } from "@mui/material";
+import { Check } from "@mui/icons-material";
 
 interface OrderDetailsPageInterface {
     orderId: string | undefined;
@@ -28,30 +29,6 @@ const OrderDetailsPage: React.FC<OrderDetailsPageInterface> = ({ orderId }) => {
 
     if (isLoading) return <p>Loading order details...</p>;
     if (isError || !order) return <p>Could not load order.</p>;
-
-    const orderItems = [
-        {
-            productName: "Red Capsicum",
-            price: 14.0,
-            quantity: 5,
-            subtotal: 70.0,
-            image: "/src/assets/images/apple.png",
-        },
-        {
-            productName: "Green Capsicum",
-            price: 14.0,
-            quantity: 2,
-            subtotal: 28.0,
-            image: "/src/assets/images/apple.png",
-        },
-        {
-            productName: "Green Chili Green Chili Green Chiljffffffffjji",
-            price: 26.7,
-            quantity: 10,
-            subtotal: 267.0,
-            image: "/src/assets/images/apple.png",
-        },
-    ];
 
     const totalProducts = order.items.length;
 
@@ -119,7 +96,7 @@ const OrderDetailsPage: React.FC<OrderDetailsPageInterface> = ({ orderId }) => {
                         <div>
                             <h4>Subtotal:</h4>
                             <span>
-                                ${parseFloat(order.total_price).toFixed(2)}
+                                Ksh{parseFloat(order.total_price).toFixed(2)}
                             </span>
                         </div>
                         <div>
@@ -130,14 +107,14 @@ const OrderDetailsPage: React.FC<OrderDetailsPageInterface> = ({ orderId }) => {
                             <h4>Shipping</h4>
                             <span>
                                 {order.shipping_fee > 0
-                                    ? `$${order.shipping_fee}`
+                                    ? `Ksh${order.shipping_fee}`
                                     : "Free"}
                             </span>
                         </div>
                         <div className="total">
                             <h4>Total</h4>
                             <span>
-                                $
+                                KSh
                                 {parseFloat(order.total_price) -
                                     parseFloat(order.total_price) *
                                         ((order.discount ?? 0) / 100)}
@@ -148,7 +125,7 @@ const OrderDetailsPage: React.FC<OrderDetailsPageInterface> = ({ orderId }) => {
             </div>
 
             <div className="process-visual">
-                <OrderStatusStepper currentStatus={order.status} />
+                <VerticalOrderStepper statuses={order.statuses} />
             </div>
 
             <div className="product-list">
@@ -167,7 +144,7 @@ const OrderDetailsPage: React.FC<OrderDetailsPageInterface> = ({ orderId }) => {
                                 <td className="img-section">
                                     <img
                                         src={
-                                            item.produce?.images?.[0]?.url ||
+                                            item.produce?.image ||
                                             "/placeholder.png"
                                         }
                                         alt={item.produce?.name}
@@ -188,78 +165,76 @@ const OrderDetailsPage: React.FC<OrderDetailsPageInterface> = ({ orderId }) => {
 
 export default OrderDetailsPage;
 
-const steps = ["Order received", "Processing", "On the way", "Delivered"];
-const activeStep = 1; // 0-based index
-
-const CustomConnector = styled(StepConnector)(() => ({
-    [`&.${stepConnectorClasses.alternativeLabel}`]: {
-        top: 20,
-    },
-    [`& .${stepConnectorClasses.line}`]: {
-        height: 3,
-        border: 0,
-        backgroundColor: "#e0e0e0",
-        borderRadius: 1,
-    },
-    // Fix: highlight connector between completed steps
-    [`&.${stepConnectorClasses.active} .${stepConnectorClasses.line}`]: {
-        backgroundColor: "#4caf50",
-    },
-    [`&.${stepConnectorClasses.completed} .${stepConnectorClasses.line}`]: {
-        backgroundColor: "#4caf50",
-    },
-}));
-
-const StepIconContainer = styled("div")<{
-    ownerState: { active?: boolean; completed?: boolean };
-}>(({ ownerState }) => ({
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: 36,
-    height: 36,
-    borderRadius: "50%",
-    fontWeight: "bold",
-    color: ownerState.completed || ownerState.active ? "#fff" : "#4caf50",
-    backgroundColor:
-        ownerState.completed || ownerState.active ? "#4caf50" : "transparent",
-    border:
-        ownerState.completed || ownerState.active
-            ? "none"
-            : "2px dashed #4caf50",
-}));
-
-function CustomStepIcon(props) {
-    const { active, completed, icon } = props;
-
-    return (
-        <StepIconContainer ownerState={{ active, completed }}>
-            {completed ? <Check /> : icon}
-        </StepIconContainer>
-    );
+interface OrderStatus {
+    status: string;
+    created_at: string;
 }
 
-const OrderStatusStepper = () => {
+interface Props {
+    statuses: OrderStatus[];
+}
+
+const VerticalOrderStepper: React.FC<Props> = ({ statuses }) => {
+    const allSteps = [
+        "order_received",
+        "processing",
+        "on_the_way",
+        "delivered",
+    ];
+
+    const completedSteps = statuses.map((s) => s.status);
+    const currentStep = allSteps.findIndex(
+        (step) => !completedSteps.includes(step),
+    );
+
     return (
-        <Stepper
-            alternativeLabel
-            activeStep={activeStep}
-            connector={<CustomConnector />}
-        >
-            {steps.map((label, index) => (
-                <Step key={label}>
-                    <StepLabel StepIconComponent={CustomStepIcon}>
-                        <span
-                            style={{
-                                fontWeight:
-                                    index === activeStep ? "bold" : "normal",
-                            }}
-                        >
-                            {label}
-                        </span>
-                    </StepLabel>
-                </Step>
-            ))}
-        </Stepper>
+        <Box mt={2}>
+            <Typography variant="h6" gutterBottom>
+                Order Status
+            </Typography>
+            <Stepper
+                orientation="vertical"
+                activeStep={currentStep === -1 ? allSteps.length : currentStep}
+            >
+                {allSteps.map((stepLabel, index) => {
+                    const found = statuses.find((s) => s.status === stepLabel);
+
+                    return (
+                        <Step key={stepLabel} completed={Boolean(found)}>
+                            <StepLabel
+                                StepIconComponent={() =>
+                                    found ? (
+                                        <Check color="success" />
+                                    ) : (
+                                        <div>{index + 1}</div>
+                                    )
+                                }
+                            >
+                                <Typography fontWeight="bold">
+                                    {formatStatusLabel(stepLabel)}
+                                </Typography>
+                                {found && (
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
+                                        {new Date(
+                                            found.created_at,
+                                        ).toLocaleString()}
+                                    </Typography>
+                                )}
+                            </StepLabel>
+                        </Step>
+                    );
+                })}
+            </Stepper>
+        </Box>
     );
 };
+
+function formatStatusLabel(label: string) {
+    return label
+        .split("_")
+        .map((w) => w[0].toUpperCase() + w.slice(1))
+        .join(" ");
+}

@@ -8,6 +8,7 @@ use App\Http\Resources\Order\OrderResource;
 use App\Models\Order\Order;
 use App\Models\Order\OrderItem;
 use App\Models\Order\OrderStatus;
+use App\Models\Order\UserOrder;
 use App\Models\Produce\Produce;
 use App\Models\User\User;
 use Illuminate\Http\Request;
@@ -109,9 +110,14 @@ class OrderController extends Controller
     {
         $authenticatedUser = $request->get('authenticated_user');
 
-        $order = Order::where('id', $id)
+        $order = UserOrder::where('id', $id)
             ->where('user_id', $authenticatedUser->id)
-            ->with(['items.produce.images'])
+            ->with([
+                'items.produce.images',
+                'statuses' => fn($q) => $q->orderBy('updated_at') ,// 👈 load status history
+                'user',
+                'billingAddress'
+            ])
             ->first();
 
         if (!$order) {
@@ -122,6 +128,7 @@ class OrderController extends Controller
             'order_details' => new OrderResource($order)
         ], 200);
     }
+
 
     // /**
     //  * Update order status.
