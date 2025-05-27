@@ -22,7 +22,8 @@ class StoreMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'vendor_id' => ['required', 'exists:farmers,id'],
+            'vendor_id' => ['exists:farmers,id'],
+            'customer_id'=> ['exists:users,id'],
             'message' => ['required', 'string', 'max:5000'],
         ];
     }

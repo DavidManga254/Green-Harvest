@@ -139,6 +139,7 @@ class UserController extends Controller
 
                 return response()->json([
                     'message' => 'Logged In',
+                    ''
                 ], 200)->withCookie($cookie);
             } else {
                 return response()->json([
@@ -161,21 +162,39 @@ class UserController extends Controller
 
 
 
+    // private function createCookie($jwt)
+    // {
+    //     return  cookie(
+    //         env('APP_COOKIE_NAME'),
+    //         $jwt,
+    //         config('constants.cookie_lifetime'),
+    //         null,
+    //         env('APP_DEV_ENVIRONMENT') ? "" : env('SESSION_DOMAIN'),
+    //         // env('APP_ENV') === 'production',
+    //         true,
+    //         true,
+    //         false,
+    //         env('APP_DEV_ENVIRONMENT') ? "none" : 'strict'
+    //     );
+    // }
+
     private function createCookie($jwt)
-    {
-        return  cookie(
-            env('APP_COOKIE_NAME'),
-            $jwt,
-            config('constants.cookie_lifetime'),
-            null,
-            env('APP_DEV_ENVIRONMENT') ? "" : env('SESSION_DOMAIN'),
-            // env('APP_ENV') === 'production',
-            true,
-            true,
-            false,
-            env('APP_DEV_ENVIRONMENT') ? "none" : 'strict'
-        );
-    }
+{
+    $isLocal = env('APP_DEV_ENVIRONMENT', true); // true if you're on localhost
+
+    return cookie(
+        env('APP_COOKIE_NAME'),
+        $jwt,
+        config('constants.cookie_lifetime'),
+        null,
+        $isLocal ? null : env('SESSION_DOMAIN'),
+        $isLocal ? false : true,               // Secure: false in dev, true in prod
+        true,                                   // HttpOnly: keep true
+        false,                                  // Raw
+        $isLocal ? 'Lax' : 'None'               // SameSite: 'Lax' or 'None'
+    );
+}
+
 
     public function nearby(Request $request)
     {

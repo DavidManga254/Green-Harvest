@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\BroadcastServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,10 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'userAuth' => \App\Http\Middleware\User\ConfirmAuthorised::class,
-            'farmerAuth' => \App\Http\Middleware\Farmer\FarmerAuth::class
+            'farmerAuth' => \App\Http\Middleware\Farmer\FarmerAuth::class,
+            'chatAuth' => \App\Http\Middleware\ChatAuthMiddleware::class,
 
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })->withProviders([
+        BroadcastServiceProvider::class
+    ])->create();

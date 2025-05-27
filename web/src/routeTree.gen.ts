@@ -14,6 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as userLayoutImport } from './routes/(user)/layout'
+import { Route as userChatLayoutImport } from './routes/(user)/chat/layout'
 import { Route as userAccountLayoutImport } from './routes/(user)/account/layout'
 import { Route as farmerFarmerLayoutImport } from './routes/(farmer)/farmer/layout'
 import { Route as userSignInIndexImport } from './routes/(user)/sign-in/index'
@@ -24,6 +25,7 @@ import { Route as userFindFarmerIndexImport } from './routes/(user)/find-farmer/
 import { Route as userExploreIndexImport } from './routes/(user)/explore/index'
 import { Route as userContactUsIndexImport } from './routes/(user)/contact-us/index'
 import { Route as userCheckoutIndexImport } from './routes/(user)/checkout/index'
+import { Route as userChatIndexImport } from './routes/(user)/chat/index'
 import { Route as userAboutIndexImport } from './routes/(user)/about/index'
 import { Route as userVendorIdImport } from './routes/(user)/vendor/$id'
 import { Route as userProductProductIdImport } from './routes/(user)/product/$productId'
@@ -36,6 +38,7 @@ import { Route as userAccountDashboardIndexImport } from './routes/(user)/accoun
 import { Route as farmerFarmerInventoryIndexImport } from './routes/(farmer)/farmer/inventory/index'
 import { Route as farmerFarmerDashboardIndexImport } from './routes/(farmer)/farmer/dashboard/index'
 import { Route as userVendorSubscriptionsIdImport } from './routes/(user)/vendor/subscriptions/$id'
+import { Route as userChatConversationIdImport } from './routes/(user)/chat/conversation/$id'
 import { Route as userAccountOrderHistoryOrderIdImport } from './routes/(user)/account/order-history/$orderId'
 import { Route as userCheckoutPayCallbackIndexImport } from './routes/(user)/checkout/pay/callback/index'
 import { Route as userVendorSubscriptionsSubscriptionDetailSubscriptionImport } from './routes/(user)/vendor/subscriptions/subscription-detail/$subscription'
@@ -55,6 +58,12 @@ const Route = Import.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const userChatLayoutRoute = userChatLayoutImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => userLayoutRoute,
 } as any)
 
 const userAccountLayoutRoute = userAccountLayoutImport.update({
@@ -115,6 +124,12 @@ const userCheckoutIndexRoute = userCheckoutIndexImport.update({
   id: '/checkout/',
   path: '/checkout/',
   getParentRoute: () => userLayoutRoute,
+} as any)
+
+const userChatIndexRoute = userChatIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => userChatLayoutRoute,
 } as any)
 
 const userAboutIndexRoute = userAboutIndexImport.update({
@@ -196,6 +211,12 @@ const userVendorSubscriptionsIdRoute = userVendorSubscriptionsIdImport.update({
   getParentRoute: () => userLayoutRoute,
 } as any)
 
+const userChatConversationIdRoute = userChatConversationIdImport.update({
+  id: '/conversation/$id',
+  path: '/conversation/$id',
+  getParentRoute: () => userChatLayoutRoute,
+} as any)
+
 const userAccountOrderHistoryOrderIdRoute =
   userAccountOrderHistoryOrderIdImport.update({
     id: '/order-history/$orderId',
@@ -249,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof userAccountLayoutImport
       parentRoute: typeof userLayoutImport
     }
+    '/(user)/chat': {
+      id: '/(user)/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof userChatLayoutImport
+      parentRoute: typeof userLayoutImport
+    }
     '/(user)/product/$productId': {
       id: '/(user)/product/$productId'
       path: '/product/$productId'
@@ -269,6 +297,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/about'
       preLoaderRoute: typeof userAboutIndexImport
       parentRoute: typeof userLayoutImport
+    }
+    '/(user)/chat/': {
+      id: '/(user)/chat/'
+      path: '/'
+      fullPath: '/chat/'
+      preLoaderRoute: typeof userChatIndexImport
+      parentRoute: typeof userChatLayoutImport
     }
     '/(user)/checkout/': {
       id: '/(user)/checkout/'
@@ -332,6 +367,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/account/order-history/$orderId'
       preLoaderRoute: typeof userAccountOrderHistoryOrderIdImport
       parentRoute: typeof userAccountLayoutImport
+    }
+    '/(user)/chat/conversation/$id': {
+      id: '/(user)/chat/conversation/$id'
+      path: '/conversation/$id'
+      fullPath: '/chat/conversation/$id'
+      preLoaderRoute: typeof userChatConversationIdImport
+      parentRoute: typeof userChatLayoutImport
     }
     '/(user)/vendor/subscriptions/$id': {
       id: '/(user)/vendor/subscriptions/$id'
@@ -434,8 +476,23 @@ const userAccountLayoutRouteChildren: userAccountLayoutRouteChildren = {
 const userAccountLayoutRouteWithChildren =
   userAccountLayoutRoute._addFileChildren(userAccountLayoutRouteChildren)
 
+interface userChatLayoutRouteChildren {
+  userChatIndexRoute: typeof userChatIndexRoute
+  userChatConversationIdRoute: typeof userChatConversationIdRoute
+}
+
+const userChatLayoutRouteChildren: userChatLayoutRouteChildren = {
+  userChatIndexRoute: userChatIndexRoute,
+  userChatConversationIdRoute: userChatConversationIdRoute,
+}
+
+const userChatLayoutRouteWithChildren = userChatLayoutRoute._addFileChildren(
+  userChatLayoutRouteChildren,
+)
+
 interface userLayoutRouteChildren {
   userAccountLayoutRoute: typeof userAccountLayoutRouteWithChildren
+  userChatLayoutRoute: typeof userChatLayoutRouteWithChildren
   userProductProductIdRoute: typeof userProductProductIdRoute
   userVendorIdRoute: typeof userVendorIdRoute
   userAboutIndexRoute: typeof userAboutIndexRoute
@@ -456,6 +513,7 @@ interface userLayoutRouteChildren {
 
 const userLayoutRouteChildren: userLayoutRouteChildren = {
   userAccountLayoutRoute: userAccountLayoutRouteWithChildren,
+  userChatLayoutRoute: userChatLayoutRouteWithChildren,
   userProductProductIdRoute: userProductProductIdRoute,
   userVendorIdRoute: userVendorIdRoute,
   userAboutIndexRoute: userAboutIndexRoute,
@@ -506,9 +564,11 @@ export interface FileRoutesByFullPath {
   '/': typeof userLayoutRouteWithChildren
   '/farmer': typeof farmerFarmerLayoutRouteWithChildren
   '/account': typeof userAccountLayoutRouteWithChildren
+  '/chat': typeof userChatLayoutRouteWithChildren
   '/product/$productId': typeof userProductProductIdRoute
   '/vendor/$id': typeof userVendorIdRoute
   '/about': typeof userAboutIndexRoute
+  '/chat/': typeof userChatIndexRoute
   '/checkout': typeof userCheckoutIndexRoute
   '/contact-us': typeof userContactUsIndexRoute
   '/explore': typeof userExploreIndexRoute
@@ -518,6 +578,7 @@ export interface FileRoutesByFullPath {
   '/shop': typeof userShopIndexRoute
   '/sign-in': typeof userSignInIndexRoute
   '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
+  '/chat/conversation/$id': typeof userChatConversationIdRoute
   '/vendor/subscriptions/$id': typeof userVendorSubscriptionsIdRoute
   '/farmer/dashboard': typeof farmerFarmerDashboardIndexRoute
   '/farmer/inventory': typeof farmerFarmerInventoryIndexRoute
@@ -538,6 +599,7 @@ export interface FileRoutesByTo {
   '/product/$productId': typeof userProductProductIdRoute
   '/vendor/$id': typeof userVendorIdRoute
   '/about': typeof userAboutIndexRoute
+  '/chat': typeof userChatIndexRoute
   '/checkout': typeof userCheckoutIndexRoute
   '/contact-us': typeof userContactUsIndexRoute
   '/explore': typeof userExploreIndexRoute
@@ -547,6 +609,7 @@ export interface FileRoutesByTo {
   '/shop': typeof userShopIndexRoute
   '/sign-in': typeof userSignInIndexRoute
   '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
+  '/chat/conversation/$id': typeof userChatConversationIdRoute
   '/vendor/subscriptions/$id': typeof userVendorSubscriptionsIdRoute
   '/farmer/dashboard': typeof farmerFarmerDashboardIndexRoute
   '/farmer/inventory': typeof farmerFarmerInventoryIndexRoute
@@ -566,9 +629,11 @@ export interface FileRoutesById {
   '/(user)': typeof userLayoutRouteWithChildren
   '/(farmer)/farmer': typeof farmerFarmerLayoutRouteWithChildren
   '/(user)/account': typeof userAccountLayoutRouteWithChildren
+  '/(user)/chat': typeof userChatLayoutRouteWithChildren
   '/(user)/product/$productId': typeof userProductProductIdRoute
   '/(user)/vendor/$id': typeof userVendorIdRoute
   '/(user)/about/': typeof userAboutIndexRoute
+  '/(user)/chat/': typeof userChatIndexRoute
   '/(user)/checkout/': typeof userCheckoutIndexRoute
   '/(user)/contact-us/': typeof userContactUsIndexRoute
   '/(user)/explore/': typeof userExploreIndexRoute
@@ -578,6 +643,7 @@ export interface FileRoutesById {
   '/(user)/shop/': typeof userShopIndexRoute
   '/(user)/sign-in/': typeof userSignInIndexRoute
   '/(user)/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
+  '/(user)/chat/conversation/$id': typeof userChatConversationIdRoute
   '/(user)/vendor/subscriptions/$id': typeof userVendorSubscriptionsIdRoute
   '/(farmer)/farmer/dashboard/': typeof farmerFarmerDashboardIndexRoute
   '/(farmer)/farmer/inventory/': typeof farmerFarmerInventoryIndexRoute
@@ -597,9 +663,11 @@ export interface FileRouteTypes {
     | '/'
     | '/farmer'
     | '/account'
+    | '/chat'
     | '/product/$productId'
     | '/vendor/$id'
     | '/about'
+    | '/chat/'
     | '/checkout'
     | '/contact-us'
     | '/explore'
@@ -609,6 +677,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sign-in'
     | '/account/order-history/$orderId'
+    | '/chat/conversation/$id'
     | '/vendor/subscriptions/$id'
     | '/farmer/dashboard'
     | '/farmer/inventory'
@@ -628,6 +697,7 @@ export interface FileRouteTypes {
     | '/product/$productId'
     | '/vendor/$id'
     | '/about'
+    | '/chat'
     | '/checkout'
     | '/contact-us'
     | '/explore'
@@ -637,6 +707,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sign-in'
     | '/account/order-history/$orderId'
+    | '/chat/conversation/$id'
     | '/vendor/subscriptions/$id'
     | '/farmer/dashboard'
     | '/farmer/inventory'
@@ -654,9 +725,11 @@ export interface FileRouteTypes {
     | '/(user)'
     | '/(farmer)/farmer'
     | '/(user)/account'
+    | '/(user)/chat'
     | '/(user)/product/$productId'
     | '/(user)/vendor/$id'
     | '/(user)/about/'
+    | '/(user)/chat/'
     | '/(user)/checkout/'
     | '/(user)/contact-us/'
     | '/(user)/explore/'
@@ -666,6 +739,7 @@ export interface FileRouteTypes {
     | '/(user)/shop/'
     | '/(user)/sign-in/'
     | '/(user)/account/order-history/$orderId'
+    | '/(user)/chat/conversation/$id'
     | '/(user)/vendor/subscriptions/$id'
     | '/(farmer)/farmer/dashboard/'
     | '/(farmer)/farmer/inventory/'
@@ -715,6 +789,7 @@ export const routeTree = rootRoute
       "parent": "/",
       "children": [
         "/(user)/account",
+        "/(user)/chat",
         "/(user)/product/$productId",
         "/(user)/vendor/$id",
         "/(user)/about/",
@@ -751,6 +826,14 @@ export const routeTree = rootRoute
         "/(user)/account/wishlist/"
       ]
     },
+    "/(user)/chat": {
+      "filePath": "(user)/chat/layout.tsx",
+      "parent": "/(user)",
+      "children": [
+        "/(user)/chat/",
+        "/(user)/chat/conversation/$id"
+      ]
+    },
     "/(user)/product/$productId": {
       "filePath": "(user)/product/$productId.tsx",
       "parent": "/(user)"
@@ -762,6 +845,10 @@ export const routeTree = rootRoute
     "/(user)/about/": {
       "filePath": "(user)/about/index.tsx",
       "parent": "/(user)"
+    },
+    "/(user)/chat/": {
+      "filePath": "(user)/chat/index.tsx",
+      "parent": "/(user)/chat"
     },
     "/(user)/checkout/": {
       "filePath": "(user)/checkout/index.tsx",
@@ -798,6 +885,10 @@ export const routeTree = rootRoute
     "/(user)/account/order-history/$orderId": {
       "filePath": "(user)/account/order-history/$orderId.tsx",
       "parent": "/(user)/account"
+    },
+    "/(user)/chat/conversation/$id": {
+      "filePath": "(user)/chat/conversation/$id.tsx",
+      "parent": "/(user)/chat"
     },
     "/(user)/vendor/subscriptions/$id": {
       "filePath": "(user)/vendor/subscriptions/$id.tsx",

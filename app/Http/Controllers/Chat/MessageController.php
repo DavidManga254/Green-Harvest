@@ -6,13 +6,36 @@ use App\Events\MessageSent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\StoreMessageRequest;
 use App\Http\Resources\Chat\MessageResource;
+use App\Http\Resources\ChatMessage\ChatResource;
 use App\Models\Chat\Chat;
 use App\Models\Chat\Message;
+use Carbon\Carbon;
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
-    public function store(StoreMessageRequest $request)
+
+
+public function getUserChats(Request $request)
+{
+    $user = $request->user();
+
+    $chats = Chat::with([
+        'vendor:id,name,profile_image',
+        'latestMessage'
+    ])
+    ->where('customer_id', $user->id)
+    ->orderByDesc('last_activity_at')
+    ->get();
+
+    return response()->json([
+        'data' => ChatResource::Collection($chats)
+    ]);
+}
+
+    public function storeAsCustomer(StoreMessageRequest $request)
     {
         $user = $request->authenticated_user;
 
@@ -38,36 +61,104 @@ class MessageController extends Controller
         return new MessageResource($message);
     }
 
+    public function storeAsFarmer(StoreMessageRequest $request)
+    {
+        $user = $request->authenticated_user;
+        $customerId = $request->customer_id;
 
-    public function index(Request $request, Chat $chat)
+        $farmer = $user->farmer; // assumes hasOne Farmer relation
+
+
+
+        if (!$farmer) {
+            return response()->json(['message' => 'You are not associated with a farmer profile.'], 403);
+        }
+
+        $chat = Chat::firstOrCreate([
+            'customer_id' => $customerId,
+            'vendor_id' => $farmer->id,
+        ]);
+
+        $message = Message::create([
+            'chat_id' => $chat->id,
+            'sender_id' => $user->id,
+            'message' => $request->message,
+        ]);
+
+        $chat->update(['last_activity_at' => now()]);
+
+        broadcast(new MessageSent($message));
+        Log::info('📨 MessageSent dispatched manually');
+        // broadcast(new MessageSent($message))->toOthers();
+
+        return new MessageResource($message);
+    }
+
+
+    public function generateChatSessionToken(Request $request)
     {
         $user = $request->authenticated_user;
 
-        // Authorization
-        $isCustomer = $chat->customer_id === $user->id;
-        $isVendor = $chat->vendor && $chat->vendor->user_id === $user->id;
+        $issuedAt = now()->timestamp;
+        $expiration = now()->addHour()->timestamp; // 1 hour
 
-        if (!($isCustomer || $isVendor)) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+        $payload = [
+            'iat' => $issuedAt,
+            'exp' => $expiration,
+            'id' => $user->id,
+            'email' => $user->email,
+            'name' => $user->name,
+            'type' => 'chat-session',
+        ];
 
-        // Get messages newest-first (bottom-up pagination)
-        $messages = Message::where('chat_id', $chat->id)
-            ->with('sender')
-            ->orderBy('created_at', 'desc')
-            ->paginate(30);
+        $token = JWT::encode($payload, env('JWT_KEY'), 'HS256');
 
         return response()->json([
-            'messages' => MessageResource::collection($messages->getCollection()->reverse()->values()),
-            'pagination' => [
-                'current_page' => $messages->currentPage(),
-                'last_page' => $messages->lastPage(),
-                'per_page' => $messages->perPage(),
-                'total' => $messages->total(),
-                'has_more' => $messages->hasMorePages(),
-            ]
+            'chat_token' => $token,
+            'expires_at' => Carbon::createFromTimestamp($expiration)->toIso8601String(),
         ]);
     }
+
+
+
+    public function index(Request $request, Chat $chat)
+{
+    $user = $request->authenticated_user;
+
+    // Authorization
+    $isCustomer = $chat->customer_id === $user->id;
+    $isVendor = $chat->vendor && $chat->vendor->user_id === $user->id;
+
+    if (!($isCustomer || $isVendor)) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+
+    // Get messages newest-first (bottom-up pagination)
+    $messages = Message::where('chat_id', $chat->id)
+        ->with('sender')
+        ->orderBy('created_at', 'desc')
+        ->paginate(30);
+
+    // Get farmer profile details
+    $farmerUser = optional($chat->vendor);
+
+    return response()->json([
+        'messages' => MessageResource::collection($messages->getCollection()->reverse()->values()),
+        'pagination' => [
+            'current_page' => $messages->currentPage(),
+            'last_page' => $messages->lastPage(),
+            'per_page' => $messages->perPage(),
+            'total' => $messages->total(),
+            'has_more' => $messages->hasMorePages(),
+        ],
+        'farmer' => $farmerUser ? [
+            'id' => $farmerUser->id,
+            'name' => $farmerUser->name,
+            'avatar' => $farmerUser->profile_image, // or use `asset($farmerUser->profile_photo_path)`
+        ] : null,
+    ]);
+}
+
 
 
 }

@@ -87,6 +87,10 @@ Route::middleware(['userAuth'])->group(function () {
     Route::post('/contact/send', 'User\UserController@sendContactMessage');
 
 
-    Route::post('/messages', 'Chat\MessageController@store');
+    Route::post('/messages/customer/store', 'Chat\MessageController@storeAsCustomer');
+    Route::post('/messages/farmer/store', 'Chat\MessageController@storeAsFarmer');
     Route::get('/chats/{chat}/messages', 'Chat\MessageController@index');
+    Route::post('/chat/token', 'Chat\MessageController@generateChatSessionToken');
+    Route::get('/chats','Chat\MessageController@getUserChats');
+
 });

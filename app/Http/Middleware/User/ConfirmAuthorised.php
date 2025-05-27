@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Firebase\JWT\Key;
 use Symfony\Component\HttpFoundation\Response;
 
+use function PHPUnit\Framework\returnCallback;
+
 class ConfirmAuthorised
 {
     /**
@@ -20,8 +22,20 @@ class ConfirmAuthorised
     public function handle(Request $request, Closure $next): Response
     {
 
+//         return response()->json([
+//     'method' => $request->method(),
+//     'url' => $request->fullUrl(),
+//     'headers' => $request->headers->all(),
+//     'cookies' => $request->cookies->all(),
+//     'query' => $request->query(),
+//     'body' => $request->all(),
+//     'ip' => $request->ip(),
+//     'server' => $request->server(), // optional: raw server data ($_SERVER)
+// ], 200);
 
-        $token = '';
+
+        $token = null;
+
 
         try {
             $token = $_COOKIE[env('APP_COOKIE_NAME')];
@@ -29,6 +43,14 @@ class ConfirmAuthorised
             return response()->json([
                 'message' => 'token name not found',
             ], 401);
+        }
+
+        if (!$token && $request->hasHeader('Authorization')) {
+            $authHeader = $request->header('Authorization');
+
+            if (str_starts_with($authHeader, 'Bearer ')) {
+                $token = substr($authHeader, 7); // Remove "Bearer " prefix
+            }
         }
 
 
@@ -60,6 +82,10 @@ class ConfirmAuthorised
             if ($user->email === $decodedToken['email'] && $user->name === $decodedToken['name']) {
 
                 $request->merge(['authenticated_user' => $user]);
+
+                $request->setUserResolver(function () use ($user) {
+                    return $user;
+                });
 
                 return $next($request);
             } else {
