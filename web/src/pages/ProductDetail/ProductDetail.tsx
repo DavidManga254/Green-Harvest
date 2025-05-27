@@ -30,6 +30,7 @@ import {
     ListItemIcon,
     ListItemText,
     useTheme,
+    Skeleton,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 
@@ -54,7 +55,49 @@ const ProductDetailPage: React.FC<ProductDetailInterface> = ({ productId }) => {
     };
 
     if (isLoading) {
-        return <h1>isLoading</h1>;
+        if (isLoading) {
+            return (
+                <Box className="product-detail-wrapper" p={3}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} md={6}>
+                            <Skeleton variant="rectangular" height={300} />
+                            <Skeleton
+                                variant="text"
+                                sx={{ mt: 2 }}
+                                width="80%"
+                            />
+                            <Skeleton variant="text" width="60%" />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Skeleton variant="text" width="50%" height={40} />
+                            <Skeleton variant="text" width="30%" />
+                            <Skeleton variant="text" width="70%" />
+                            <Skeleton
+                                variant="rectangular"
+                                height={150}
+                                sx={{ mt: 2 }}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <Box mt={5}>
+                        <Skeleton variant="text" width="30%" />
+                        <Grid container spacing={2} mt={1}>
+                            {Array.from({ length: 4 }).map((_, index) => (
+                                <Grid item xs={6} sm={3} key={index}>
+                                    <Skeleton
+                                        variant="rectangular"
+                                        height={200}
+                                    />
+                                    <Skeleton variant="text" />
+                                    <Skeleton variant="text" width="60%" />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Box>
+                </Box>
+            );
+        }
     }
 
     if (error) {

@@ -1,4 +1,3 @@
-import Logo from "../../assets/icons/Logo";
 import MapPin from "../../assets/icons/map-pin";
 import CartHeader from "../Cart/Cart";
 import NavBar from "../NavBar/NavBar";
@@ -20,7 +19,7 @@ const Header: React.FC = () => {
                 </div>
             </div>
             <div className="logo-navigation">
-                <Logo width="183" height="38" />
+                <h1 style={{ color: "green" }}>ShambaBox</h1>
                 <SearchBar />
                 <CartHeader />
             </div>

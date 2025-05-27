@@ -76,11 +76,6 @@ Route::middleware(['userAuth'])->group(function () {
     Route::get('/farmer/{farmerId}/details/reviews','Farmer\FarmerController@getFarmerReviews');
     Route::get('/farmer/{id}/details/overview','Farmer\FarmerController@getFarmerDetails');
 
-    // Route::get('/subscription-plans', [SubscriptionPlanController::class, 'index']);
-    // Route::post('/subscription-plans', [SubscriptionPlanController::class, 'store']);
-    // Route::get('/subscription-plans/{id}', [SubscriptionPlanController::class, 'show']);
-    // Route::put('/subscription-plans/{id}', [SubscriptionPlanController::class, 'update']);
-    // Route::delete('/subscription-plans/{id}', [SubscriptionPlanController::class, 'destroy']);
 
     Route::get('/available-subscription-plans/{farmerId}','User\UserController@availablePlans');
     Route::get('/available-subscription-plans/subscription/{id}','User\UserController@show');
@@ -92,4 +87,6 @@ Route::middleware(['userAuth'])->group(function () {
     Route::post('/contact/send', 'User\UserController@sendContactMessage');
 
 
+    Route::post('/messages', 'Chat\MessageController@store');
+    Route::get('/chats/{chat}/messages', 'Chat\MessageController@index');
 });

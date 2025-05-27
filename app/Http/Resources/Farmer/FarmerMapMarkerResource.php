@@ -19,6 +19,7 @@ class FarmerMapMarkerResource extends JsonResource
             'latitude' => (float) $this->latitude,
             'longitude' => (float) $this->longitude,
             'profile_image' => $this->profile_image,
+            'name'=>$this->name
         ];
     }
 }

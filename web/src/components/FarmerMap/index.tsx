@@ -1,3 +1,4 @@
+import { Link, useNavigate } from "@tanstack/react-router";
 import useCurrentLocation from "../../utils/useCurrentLocation";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -23,6 +24,10 @@ const createProfileIcon = (imageUrl) =>
 
 const FarmerMap = ({ farmers }) => {
     const { location } = useCurrentLocation();
+    const navigate = useNavigate();
+
+    const handleNavigateToFarmer = (id: number | string) =>
+        navigate({ to: "/vendor/$id", params: { id: `${id}` } });
 
     return (
         <MapContainer
@@ -49,13 +54,26 @@ const FarmerMap = ({ farmers }) => {
                         icon={createProfileIcon(farmer.profile_image)}
                     >
                         <Popup>
-                            <div>
-                                <img
-                                    src={farmer.profile_image}
-                                    alt="Profile"
-                                    width="50"
-                                />
-                                <p>Farmer ID: {farmer.id}</p>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <Link
+                                    to="/vendor/$id"
+                                    params={{ id: farmer.id }}
+                                >
+                                    <img
+                                        src={farmer.profile_image}
+                                        alt="Profile"
+                                        width="50"
+                                        style={{ margin: "0 auto" }}
+                                    />
+                                    <p>{farmer.name}</p>
+                                </Link>
                             </div>
                         </Popup>
                     </Marker>

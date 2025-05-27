@@ -124,7 +124,9 @@ return [
     ],
 
     // 'providers' => [
-    //     Unicodeveloper\Paystack\PaystackServiceProvider::class,
+    //     // Unicodeveloper\Paystack\PaystackServiceProvider::class,
+    //     // App\Providers\BroadcastServiceProvider::class,
+
     // ],
 
     // 'aliases' => [
