@@ -37,19 +37,9 @@ const resources: IResourceItem[] = [
         },
     },
     {
-        name: "customer",
-        list: "/customer",
-        show: "/customer/:id",
-        meta: {
-            label: "Customer",
-            icon: <UserOutlined />,
-        },
-    },
-    {
         name: "orders",
         list: "/orders",
         show: "/orders/:id",
-        create: "/orders/create",
         edit: "/orders/edit/:id",
         meta: {
             label: "Orders",

@@ -72,7 +72,7 @@ function App() {
                                         }
                                     >
                                         <Route
-                                            path="/dashboard"
+                                            path="/"
                                             element={<DashboardPage />}
                                         />
                                         <Route path="/produce">

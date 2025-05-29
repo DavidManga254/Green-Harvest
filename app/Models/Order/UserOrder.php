@@ -3,6 +3,7 @@
 namespace App\Models\Order;
 
 use App\Models\Billing\BillingAddress;
+use App\Models\Farmer\Farmer;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,7 @@ class UserOrder extends Model
         'total',
         'status',
         'notes',
+        'farmer_id'
     ];
 
     public function user(): BelongsTo
@@ -50,4 +52,10 @@ class UserOrder extends Model
     {
         return $this->belongsTo(BillingAddress::class, 'billing_address_id');
     }
+
+    public function farmer()
+    {
+        return $this->belongsTo(Farmer::class);
+    }
+
 }
