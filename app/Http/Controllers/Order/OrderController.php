@@ -154,4 +154,100 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Order status updated successfully!'], 200);
     }
+
+    public function getFarmerOrders(Request $request)
+    {
+        $farmer = $request->get('farmer');
+
+        // Base query with relationships
+        $query = UserOrder::where('farmer_id', $farmer->id)
+            ->with([
+                'user',
+                'items.produce',
+                'statuses',
+                'billingAddress'
+            ]);
+
+        // Handle Refine filters
+        $filters = $request->input('filters', []);
+        foreach ($filters as $filter) {
+            if (isset($filter['field'], $filter['operator'], $filter['value'])) {
+                switch ($filter['operator']) {
+                    case 'eq':
+                        $query->where($filter['field'], $filter['value']);
+                        break;
+                    case 'ne':
+                        $query->where($filter['field'], '!=', $filter['value']);
+                        break;
+                    case 'contains':
+                        $query->where($filter['field'], 'like', '%' . $filter['value'] . '%');
+                        break;
+                    case 'gte':
+                        $query->where($filter['field'], '>=', $filter['value']);
+                        break;
+                    case 'lte':
+                        $query->where($filter['field'], '<=', $filter['value']);
+                        break;
+                }
+            }
+        }
+
+        // Handle Refine sorters
+        $sorters = $request->input('sorters', []);
+        foreach ($sorters as $sort) {
+            $query->orderBy($sort['field'], $sort['order'] ?? 'asc');
+        }
+
+        // Handle pagination
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+        $paginator = $query->paginate($perPage, ['*'], 'page', $page);
+
+        // Return response in Refine-compatible format
+        return response()->json([
+            'data' => $paginator->items(),
+            'total' => $paginator->total(),
+            'current' => $paginator->currentPage(),
+            'pageSize' => $paginator->perPage(),
+        ]);
+
+    }
+
+    public function update(Request $request, $id)
+    {
+        $order = UserOrder::findOrFail($id);
+        $order->status = $request->input('status');
+        $order->save();
+
+        return response()->json(['data' => $order]);
+    }
+
+
+
+    public function showFarmerOrder(Request $request, $id)
+    {
+        $farmer = $request->farmer;
+
+        $order = UserOrder::with([
+            'user:id,name,email,phone',
+            'billingAddress',
+            'items.produce.images',
+            'statuses' => fn($q) => $q->orderBy('created_at'),
+        ])
+            ->where('farmer_id', $farmer->id)
+            ->where('id', $id)
+            ->first();
+
+        if (!$order) {
+            return response()->json(['error' => 'Order not found or access denied'], 404);
+        }
+
+        return response()->json([
+            'data' => $order,
+        ]);
+    }
+
+
+
+
 }

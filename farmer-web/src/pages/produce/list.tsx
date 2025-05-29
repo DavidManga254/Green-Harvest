@@ -53,6 +53,8 @@ const ProducePage: React.FC<ProducePageInterface> = ({ children }) => {
         },
     });
 
+    console.log("here", tableProps);
+
     return (
         <div className="produce-page">
             <List

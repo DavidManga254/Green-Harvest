@@ -26,6 +26,8 @@ import ChatList from "./pages/chat";
 import ChatListPage from "./pages/chat";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ChatConversationPage from "./pages/chat/$id";
+import OrderList from "./pages/order/list";
+import OrderShow from "./pages/order/$id";
 
 const queryClient = new QueryClient();
 
@@ -99,6 +101,16 @@ function App() {
                                                 element={
                                                     <ChatConversationPage />
                                                 }
+                                            />
+                                        </Route>
+                                        <Route path="/orders">
+                                            <Route
+                                                index
+                                                element={<OrderList />}
+                                            />
+                                            <Route
+                                                path="/orders/:id"
+                                                element={<OrderShow />}
                                             />
                                         </Route>
                                     </Route>

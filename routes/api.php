@@ -54,6 +54,10 @@ Route::middleware(['userAuth'])->group(function () {
         Route::get('/chats/farmer/{chat}/messages', 'Chat\MessageController@getFarmerMessages');
         Route::post('/messages/farmer/store', 'Chat\MessageController@storeAsFarmer');
 
+        Route::get('/farmer/orders',"Order\OrderController@getFarmerOrders");
+        Route::put('/farmer/orders/update/{id}','Order\OrderController@update');
+        Route::get('/farmer/orders/show/{id}','Order\OrderController@showFarmerOrder');
+
 
     });
 

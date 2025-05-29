@@ -3,6 +3,8 @@ import AxiosApi from "../../api";
 
 const dataProvider: DataProvider = {
     getList: async ({ resource, pagination, filters, sorters, meta }) => {
+        console.log("getList CALLED with resource:", resource);
+
         const { current = 1, pageSize = 20 } = pagination ?? {};
         const response = await AxiosApi.get(`/farmer/${resource}`, {
             params: {
@@ -14,9 +16,12 @@ const dataProvider: DataProvider = {
             },
         });
 
+        const data = response.data.data;
+        const total = response.data.total ?? data.length;
+
         return {
-            data: response.data.data,
-            total: response.data.total,
+            data,
+            total,
         };
     },
     create: async ({ resource, variables, meta }) => {
