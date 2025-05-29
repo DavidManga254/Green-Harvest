@@ -37,6 +37,15 @@ const resources: IResourceItem[] = [
         },
     },
     {
+        name: "subscriptions",
+        list: "/subscriptions",
+        show: "/subscriptions/:id",
+        create: "/subscriptions/create",
+        meta: {
+            label: "My Subscriptions",
+        },
+    },
+    {
         name: "orders",
         list: "/orders",
         show: "/orders/:id",

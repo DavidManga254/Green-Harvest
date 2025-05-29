@@ -58,6 +58,13 @@ Route::middleware(['userAuth'])->group(function () {
         Route::put('/farmer/orders/update/{id}','Order\OrderController@update');
         Route::get('/farmer/orders/show/{id}','Order\OrderController@showFarmerOrder');
 
+        Route::get('farmer/subscriptions','Subscription\SubscriptionPlanController@getFarmerPlans');
+        Route::get('/farmer/subscriptions/show/{id}','Subscription\SubscriptionPlanController@farmerShowSub');
+        Route::get('/farmer/subscriptions/delete/{id}','Subscription\SubscriptionPlanController@farmerDeleteSub');
+        Route::get('/farmer/subscription-plan-templates', 'Subscription\SubscriptionPlanController@templates');
+
+        Route::post('/farmer/subscriptions/create', 'Subscription\SubscriptionPlanController@farmerStoreSub');
+
 
     });
 

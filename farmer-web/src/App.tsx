@@ -28,6 +28,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ChatConversationPage from "./pages/chat/$id";
 import OrderList from "./pages/order/list";
 import OrderShow from "./pages/order/$id";
+import { SubscriptionList } from "./pages/subscriptions/list";
+import { SubscriptionShow } from "./pages/subscriptions/$id";
+import { SubscriptionCreate } from "./pages/subscriptions/create";
 
 const queryClient = new QueryClient();
 
@@ -111,6 +114,20 @@ function App() {
                                             <Route
                                                 path="/orders/:id"
                                                 element={<OrderShow />}
+                                            />
+                                        </Route>
+                                        <Route path="/subscriptions">
+                                            <Route
+                                                index
+                                                element={<SubscriptionList />}
+                                            />
+                                            <Route
+                                                path="/subscriptions/:id"
+                                                element={<SubscriptionShow />}
+                                            />
+                                            <Route
+                                                path="/subscriptions/create"
+                                                element={<SubscriptionCreate />}
                                             />
                                         </Route>
                                     </Route>

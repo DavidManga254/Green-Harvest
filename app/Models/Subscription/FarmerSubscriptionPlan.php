@@ -11,6 +11,8 @@ class FarmerSubscriptionPlan extends Model
     protected $fillable = [
         'farmer_id', 'subscription_plan_template_id', 'is_active','cover_image'
     ];
+    protected $guarded = []; // allows all
+
 
     public function template()
     {

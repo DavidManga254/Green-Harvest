@@ -4,6 +4,7 @@ namespace App\Models\Farmer;
 
 use App\Models\Practice\Practice;
 use App\Models\Produce\Produce;
+use App\Models\Subscription\FarmerSubscriptionPlan;
 use App\Models\Subscription\Subscription;
 use App\Models\Subscription\SubscriptionPlan;
 use App\Models\User\User;
@@ -52,7 +53,7 @@ class Farmer extends Model
 
     public function subscriptionPlans()
     {
-        return $this->hasMany(SubscriptionPlan::class);
+        return $this->hasMany(FarmerSubscriptionPlan::class);
     }
 
     public function user()
