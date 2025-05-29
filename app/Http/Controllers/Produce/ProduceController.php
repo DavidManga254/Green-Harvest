@@ -20,7 +20,7 @@ class ProduceController extends Controller
         $page = $request->input('page', 1);
 
 
-        $produce = Produce::with('images')->paginate($perPage, ['*'], 'page', $page);
+        $produce = Produce::with('images')->with('farmer:id')->paginate($perPage, ['*'], 'page', $page);
 
 
         return response()->json([
@@ -54,13 +54,21 @@ class ProduceController extends Controller
             'available_from' => $validated['available_from'],
             'available_to' => $validated['available_to'],
             'category_id' => $validated['category_id'],
-            'tags' => $validated['tags'] ?? [],
         ]);
 
         if (!empty($validated['tags'])) {
             $produce->tags()->sync([]); // If you're saving tags in a pivot
             // Otherwise, it's already stored as JSON
         }
+
+        if (!empty($validated['images']) && is_array($validated['images'])) {
+    foreach ($validated['images'] as $url) {
+        $produce->images()->create([
+            'image_path' => $url,
+        ]);
+    }
+}
+
 
         // if ($request->hasFile('images')) {
         //     foreach ($request->file('images') as $image) {

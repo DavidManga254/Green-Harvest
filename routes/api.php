@@ -92,5 +92,6 @@ Route::middleware(['userAuth'])->group(function () {
     Route::get('/chats/{chat}/messages', 'Chat\MessageController@index');
     Route::post('/chat/token', 'Chat\MessageController@generateChatSessionToken');
     Route::get('/chats','Chat\MessageController@getUserChats');
+    Route::post('/chats/check-or-create','Chat\MessageController@CheckChatStatusWithFarmer');
 
 });

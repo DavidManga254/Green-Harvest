@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Chat;
 use App\Events\MessageSent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\StoreMessageRequest;
+use App\Http\Requests\Message\CheckChatStatusWithVendor;
 use App\Http\Resources\Chat\MessageResource;
 use App\Http\Resources\ChatMessage\ChatResource;
 use App\Models\Chat\Chat;
 use App\Models\Chat\Message;
+use App\Models\Farmer\Farmer;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
@@ -18,22 +20,39 @@ class MessageController extends Controller
 {
 
 
-public function getUserChats(Request $request)
-{
-    $user = $request->user();
+    public function getUserChats(Request $request)
+    {
+        $user = $request->user();
 
-    $chats = Chat::with([
-        'vendor:id,name,profile_image',
-        'latestMessage'
-    ])
-    ->where('customer_id', $user->id)
-    ->orderByDesc('last_activity_at')
-    ->get();
+        $chats = Chat::with([
+            'vendor:id,name,profile_image',
+            'latestMessage'
+        ])
+        ->where('customer_id', $user->id)
+        ->orderByDesc('last_activity_at')
+        ->get();
 
-    return response()->json([
-        'data' => ChatResource::Collection($chats)
-    ]);
-}
+        return response()->json([
+            'data' => ChatResource::Collection($chats)
+        ]);
+    }
+
+    public function CheckChatStatusWithFarmer(CheckChatStatusWithVendor $request){
+        $user = $request->authenticated_user;
+
+        $vendorId = $request->input('vendor_id');
+
+        if (!$vendorId || !Farmer::where('id', $vendorId)->exists()) {
+            return response()->json(['error' => 'Invalid vendor'], 400);
+        }
+
+        $chat = Chat::firstOrCreate([
+            'customer_id' => $user->id,
+            'vendor_id' => $vendorId,
+        ]);
+
+        return response()->json(['chat_id' => $chat->id]);
+    }
 
     public function storeAsCustomer(StoreMessageRequest $request)
     {
@@ -52,6 +71,7 @@ public function getUserChats(Request $request)
             'chat_id' => $chat->id,
             'sender_id' => $user->id,
             'message' => $request->message,
+            'product_id' => $request->product_id,
         ]);
 
         $chat->update(['last_activity_at' => now()]);
@@ -122,42 +142,42 @@ public function getUserChats(Request $request)
 
 
     public function index(Request $request, Chat $chat)
-{
-    $user = $request->authenticated_user;
+    {
+        $user = $request->authenticated_user;
 
-    // Authorization
-    $isCustomer = $chat->customer_id === $user->id;
-    $isVendor = $chat->vendor && $chat->vendor->user_id === $user->id;
+        // Authorization
+        $isCustomer = $chat->customer_id === $user->id;
+        $isVendor = $chat->vendor && $chat->vendor->user_id === $user->id;
 
-    if (!($isCustomer || $isVendor)) {
-        return response()->json(['error' => 'Unauthorized'], 403);
+        if (!($isCustomer || $isVendor)) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Get messages newest-first (bottom-up pagination)
+        $messages = Message::where('chat_id', $chat->id)
+            ->with(['sender','product'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(30);
+
+        // Get farmer profile details
+        $farmerUser = optional($chat->vendor);
+
+        return response()->json([
+            'messages' => MessageResource::collection($messages->getCollection()->reverse()->values()),
+            'pagination' => [
+                'current_page' => $messages->currentPage(),
+                'last_page' => $messages->lastPage(),
+                'per_page' => $messages->perPage(),
+                'total' => $messages->total(),
+                'has_more' => $messages->hasMorePages(),
+            ],
+            'farmer' => $farmerUser ? [
+                'id' => $farmerUser->id,
+                'name' => $farmerUser->name,
+                'avatar' => $farmerUser->profile_image, // or use `asset($farmerUser->profile_photo_path)`
+            ] : null,
+        ]);
     }
-
-    // Get messages newest-first (bottom-up pagination)
-    $messages = Message::where('chat_id', $chat->id)
-        ->with('sender')
-        ->orderBy('created_at', 'desc')
-        ->paginate(30);
-
-    // Get farmer profile details
-    $farmerUser = optional($chat->vendor);
-
-    return response()->json([
-        'messages' => MessageResource::collection($messages->getCollection()->reverse()->values()),
-        'pagination' => [
-            'current_page' => $messages->currentPage(),
-            'last_page' => $messages->lastPage(),
-            'per_page' => $messages->perPage(),
-            'total' => $messages->total(),
-            'has_more' => $messages->hasMorePages(),
-        ],
-        'farmer' => $farmerUser ? [
-            'id' => $farmerUser->id,
-            'name' => $farmerUser->name,
-            'avatar' => $farmerUser->profile_image, // or use `asset($farmerUser->profile_photo_path)`
-        ] : null,
-    ]);
-}
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Chat;
 
+use App\Models\Produce\Produce;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,7 @@ class Message extends Model
         'chat_id',
         'sender_id',
         'message',
+        'product_id'
     ];
 
     public function chat() {
@@ -20,5 +22,11 @@ class Message extends Model
     public function sender() {
         return $this->belongsTo(User::class, 'sender_id');
     }
+
+    public function product()
+    {
+        return $this->belongsTo(Produce::class);
+    }
+
 
 }

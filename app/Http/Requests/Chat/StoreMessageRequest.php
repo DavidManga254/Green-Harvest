@@ -24,6 +24,7 @@ class StoreMessageRequest extends FormRequest
         return [
             'vendor_id' => ['exists:farmers,id'],
             'customer_id'=> ['exists:users,id'],
+            'produce_id'=>['exists:produce,id','nullable'],
             'message' => ['required', 'string', 'max:5000'],
         ];
     }

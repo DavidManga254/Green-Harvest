@@ -30,7 +30,11 @@ class MessageApi {
         return await this.ensureChatTokenValid();
     }
 
-    async sendMessage(payload: { vendor_id: number; message: string }) {
+    async sendMessage(payload: {
+        vendor_id: number;
+        message: string;
+        product_id?: number;
+    }) {
         try {
             const response = await AxiosApi.post(
                 "/messages/customer/store",
@@ -61,6 +65,19 @@ class MessageApi {
             return response.data;
         } catch (e) {
             console.error("Error fetching user chats", e);
+            throw e;
+        }
+    }
+
+    async getChatWithVendor(payload: { vendor_id: number }) {
+        try {
+            const response = await AxiosApi.post(
+                "/chats/check-or-create",
+                payload,
+            );
+            return response.data;
+        } catch (e) {
+            console.error("Error getting vendor chat", e);
             throw e;
         }
     }

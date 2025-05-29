@@ -35,7 +35,7 @@ class ProduceCreate extends FormRequest
             'tags' => 'nullable|array',
             'tags.*' => 'string',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ];
     }
 }

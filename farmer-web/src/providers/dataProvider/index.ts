@@ -19,6 +19,20 @@ const dataProvider: DataProvider = {
             total: response.data.total,
         };
     },
+    create: async ({ resource, variables, meta }) => {
+        const response = await AxiosApi.post(
+            `/farmer/${resource}/create`,
+            variables,
+            {
+                params: meta,
+            }
+        );
+
+        return {
+            data: response.data.data,
+        };
+    },
+
     getOne: async ({ resource, id, meta }) => {
         const response = await AxiosApi.get(`/farmer/${resource}/show/${id}`, {
             params: meta,

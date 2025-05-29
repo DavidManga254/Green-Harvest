@@ -1,9 +1,11 @@
-import { Form, Input, Modal } from "antd";
-import ProducePage from "./list";
+import { Row, Col, Form, Input, Modal, Checkbox, Select, Image } from "antd";
+import { InputNumber } from "antd";
+import { useEffect } from "react";
 import { useModalForm } from "@refinedev/antd";
 import { useGo } from "@refinedev/core";
-import { Upload, message } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import ProducePage from "./list";
+
+const { TextArea } = Input;
 
 const ProduceCreatePage: React.FC = () => {
     const go = useGo();
@@ -16,173 +18,176 @@ const ProduceCreatePage: React.FC = () => {
         });
     };
 
-    const { formProps, modalProps } = useModalForm({
+    const { formProps, modalProps, form } = useModalForm({
         action: "create",
         defaultVisible: true,
         resource: "produce",
         redirect: false,
         mutationMode: "pessimistic",
         onMutationSuccess: goToProducePage,
-        meta: {},
+        transform: (values) => ({
+            ...values,
+            images: values.images ?? [],
+        }),
     });
 
-    const normFile = (e: any) => {
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e?.fileList;
-    };
+    const imageList: string[] = Form.useWatch("images", form) || [];
 
     return (
         <div className="produce-create-page">
             <ProducePage>
                 <Modal
                     {...modalProps}
-                    mask={true}
+                    mask
                     onCancel={goToProducePage}
-                    title={"Create Produce"}
-                    width={512}
+                    title="Create Produce"
+                    width={600}
                 >
-                    <Form {...formProps} layout="vertical">
+                    <Form {...formProps} layout="vertical" form={form}>
                         <Form.Item
                             label="Produce Name"
                             name="name"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please enter the produce name",
-                                },
-                            ]}
+                            rules={[{ required: true }]}
                         >
-                            <Input placeholder="Enter produce name" />
+                            <Input placeholder="e.g. Fresh Tomatoes" />
                         </Form.Item>
 
                         <Form.Item
                             label="Description"
                             name="description"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please enter the description",
-                                },
-                            ]}
+                            rules={[{ required: true }]}
                         >
-                            <Input.TextArea
+                            <TextArea
                                 rows={4}
-                                placeholder="Enter description"
+                                placeholder="Short description..."
                             />
                         </Form.Item>
 
-                        <Form.Item
-                            label="Price per Unit"
-                            name="price_per_unit"
-                            rules={[{ required: true, type: "number", min: 0 }]}
-                        >
-                            <Input
-                                type="number"
-                                placeholder="Enter price per unit"
-                            />
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="Price per Unit"
+                                    name="price_per_unit"
+                                    rules={[{ required: true }]}
+                                >
+                                    <InputNumber
+                                        min={0}
+                                        style={{ width: "100%" }}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="Quantity"
+                                    name="quantity"
+                                    rules={[{ required: true }]}
+                                >
+                                    <InputNumber
+                                        min={1}
+                                        style={{ width: "100%" }}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <Form.Item
+                                    name="is_on_sale"
+                                    valuePropName="checked"
+                                >
+                                    <Checkbox>Is On Sale</Checkbox>
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="Discount (%)"
+                                    name="discount"
+                                    rules={[
+                                        { type: "number", min: 0, max: 100 },
+                                    ]}
+                                >
+                                    <InputNumber
+                                        min={0}
+                                        max={100}
+                                        style={{ width: "100%" }}
+                                        placeholder="e.g. 10"
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+
+                        <Form.Item name="out_of_stock" valuePropName="checked">
+                            <Checkbox>Out of Stock</Checkbox>
                         </Form.Item>
 
-                        <Form.Item
-                            label="Quantity"
-                            name="quantity"
-                            rules={[{ required: true, type: "number", min: 1 }]}
-                        >
-                            <Input type="number" placeholder="Enter quantity" />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Is On Sale"
-                            name="is_on_sale"
-                            valuePropName="checked"
-                        >
-                            <Input type="checkbox" />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Discount (%)"
-                            name="discount"
-                            rules={[{ type: "number", min: 0, max: 100 }]}
-                        >
-                            <Input
-                                type="number"
-                                placeholder="Enter discount %"
-                            />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Out of Stock"
-                            name="out_of_stock"
-                            valuePropName="checked"
-                        >
-                            <Input type="checkbox" />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Available From"
-                            name="available_from"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please select a start date",
-                                },
-                            ]}
-                        >
-                            <Input type="date" />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Available To"
-                            name="available_to"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please select an end date",
-                                },
-                            ]}
-                        >
-                            <Input type="date" />
-                        </Form.Item>
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="Available From"
+                                    name="available_from"
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input type="date" />
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="Available To"
+                                    name="available_to"
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input type="date" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
 
                         <Form.Item
                             label="Category ID"
                             name="category_id"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please enter category ID",
-                                },
-                            ]}
+                            rules={[{ required: true }]}
                         >
-                            <Input
-                                type="number"
-                                placeholder="Enter category ID"
+                            <InputNumber min={1} style={{ width: "100%" }} />
+                        </Form.Item>
+
+                        {/* <Form.Item label="Tags" name="tags">
+                            <Select mode="tags" placeholder="Add tags" />
+                        </Form.Item> */}
+
+                        <Form.Item label="Image URLs" name="images">
+                            <Select
+                                mode="tags"
+                                placeholder="Enter image URLs"
+                                tokenSeparators={[","]}
                             />
                         </Form.Item>
 
-                        <Form.Item label="Tags" name="tags">
-                            <Input placeholder="Comma-separated tags (e.g. organic,green)" />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Images"
-                            name="images"
-                            valuePropName="fileList"
-                            getValueFromEvent={normFile}
-                        >
-                            <Upload
-                                listType="picture-card"
-                                accept="image/*"
-                                beforeUpload={() => false} // prevents automatic upload
-                                multiple
+                        {imageList.length > 0 && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                    marginBottom: 16,
+                                }}
                             >
-                                <div>
-                                    <PlusOutlined />
-                                    <div style={{ marginTop: 8 }}>Upload</div>
-                                </div>
-                            </Upload>
-                        </Form.Item>
+                                {imageList.map((url, idx) => (
+                                    <Image
+                                        key={idx}
+                                        src={url}
+                                        width={60}
+                                        height={60}
+                                        style={{
+                                            objectFit: "cover",
+                                            borderRadius: 6,
+                                            border: "1px solid #ddd",
+                                        }}
+                                        alt={`img-${idx}`}
+                                        fallback="/placeholder.png"
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </Form>
                 </Modal>
             </ProducePage>

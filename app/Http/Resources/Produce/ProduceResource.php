@@ -28,7 +28,8 @@ class ProduceResource extends JsonResource
             // 'available_from' => $this->available_from,
             // 'available_to' => $this->available_to,
             'rating' => $this->rating,
-            'images' => new ImageResource($this->images->first())
+            'images' => new ImageResource($this->images->first()),
+            'farmer_id'=>$this->farmer->id
             // 'tags' => $this->tags,
         ];
     }

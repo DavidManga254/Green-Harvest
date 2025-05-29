@@ -1,5 +1,6 @@
 import { Box, Skeleton, Typography } from "@mui/material";
-import { useEffect, useRef } from "react";
+import { Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 interface Message {
     id: number;
@@ -68,6 +69,7 @@ const MessagesList: React.FC<Props> = ({
                     })}
                     senderName={msg.sender.name}
                     avatar={msg.sender.avatar}
+                    product={msg.product_detail}
                 />
             ))}
         </>
@@ -81,9 +83,20 @@ interface BubbleProps {
     timestamp: string;
     senderName?: string;
     avatar?: string | null;
+    product?: {
+        id: number;
+        name: string;
+        price_per_unit: string;
+        image?: string;
+    };
 }
 
-const MessageBubble: React.FC<BubbleProps> = ({ text, isSent, timestamp }) => {
+const MessageBubble: React.FC<BubbleProps> = ({
+    text,
+    isSent,
+    timestamp,
+    product,
+}) => {
     return (
         <Box
             sx={{
@@ -102,6 +115,57 @@ const MessageBubble: React.FC<BubbleProps> = ({ text, isSent, timestamp }) => {
                     maxWidth: "70%",
                 }}
             >
+                {/* Product preview if exists */}
+                {product && (
+                    <Box
+                        sx={{
+                            mb: 1,
+                            p: 1,
+                            borderRadius: 2,
+                            backgroundColor: isSent ? "#2e7d32" : "#f0f0f0",
+                            color: isSent ? "white" : "black",
+                        }}
+                    >
+                        <Link
+                            to="/product/$productId"
+                            params={{ productId: product.id }}
+                        >
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                {product.image && (
+                                    <Box
+                                        component="img"
+                                        src={product.image}
+                                        alt={product.name}
+                                        sx={{
+                                            width: 40,
+                                            height: 40,
+                                            borderRadius: 1,
+                                            mr: 1.5,
+                                            objectFit: "cover",
+                                        }}
+                                    />
+                                )}
+                                <Box>
+                                    <Typography
+                                        fontWeight={600}
+                                        variant="body2"
+                                        noWrap
+                                    >
+                                        {product.name}
+                                    </Typography>
+                                    <Typography variant="caption">
+                                        Ksh{" "}
+                                        {Number(product.price_per_unit).toFixed(
+                                            2,
+                                        )}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Link>
+                    </Box>
+                )}
+
+                {/* Actual message text */}
                 <Typography variant="body2">{text}</Typography>
                 <Typography
                     variant="caption"

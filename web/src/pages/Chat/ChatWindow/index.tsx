@@ -7,12 +7,14 @@ import Message from "../../../api/Message";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEcho } from "../../../lib/echo";
 import { useEffect, useRef } from "react";
+import Produce from "../../../api/Produce";
 
 interface ChatWindowInterface {
     chatId: string | number;
+    product_id: string | number | null;
 }
 
-const ChatWindow: React.FC<ChatWindowInterface> = ({ chatId }) => {
+const ChatWindow: React.FC<ChatWindowInterface> = ({ chatId, product_id }) => {
     const queryClient = useQueryClient();
 
     const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -23,6 +25,12 @@ const ChatWindow: React.FC<ChatWindowInterface> = ({ chatId }) => {
             queryFn: () => Message.getChatMessages(chatId),
         },
     );
+
+    const { data: ProductChatData, isLoading: dataIsLoading } = useQuery({
+        queryKey: [`Product chat ${product_id}`, product_id],
+        queryFn: () => Produce.getProductDetails(`${product_id}`),
+        enabled: !!product_id,
+    });
 
     const farmer = userConversation?.farmer;
 
@@ -89,9 +97,6 @@ const ChatWindow: React.FC<ChatWindowInterface> = ({ chatId }) => {
                     </>
                 )}
                 <IconButton>
-                    <VideocamIcon />
-                </IconButton>
-                <IconButton>
                     <CallIcon />
                 </IconButton>
             </Box>
@@ -105,6 +110,7 @@ const ChatWindow: React.FC<ChatWindowInterface> = ({ chatId }) => {
                     py: 1,
                     backgroundColor: "#fafafa",
                 }}
+                ref={messagesContainerRef}
             >
                 <MessagesList
                     messages={userConversation?.messages || []}
@@ -114,7 +120,12 @@ const ChatWindow: React.FC<ChatWindowInterface> = ({ chatId }) => {
             </Box>
 
             {/* Input */}
-            <MessageInput chatId={chatId} farmerId={farmer?.id ?? ""} />
+            <MessageInput
+                productData={ProductChatData?.data}
+                chatId={chatId}
+                farmerId={farmer?.id ?? ""}
+                loadingProduct={!!product_id && dataIsLoading}
+            />
         </Box>
     );
 };

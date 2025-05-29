@@ -9,12 +9,17 @@ import {
     Tooltip,
     Rating,
 } from "@mui/material";
-import { AddShoppingCart, FavoriteBorder } from "@mui/icons-material";
-import { Link } from "@tanstack/react-router";
+import {
+    AddShoppingCart,
+    ChatBubbleOutline,
+    FavoriteBorder,
+} from "@mui/icons-material";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Cart from "../../api/Cart";
 import { Skeleton } from "@mui/material";
+import Message from "../../api/Message";
 
 export interface Product {
     id: number | string;
@@ -25,6 +30,7 @@ export interface Product {
     images?: {
         image_path: string;
     };
+    farmer_id: number;
 }
 
 interface ProductCard2Props {
@@ -33,6 +39,8 @@ interface ProductCard2Props {
 
 const ProductCard2: React.FC<ProductCard2Props> = ({ product }) => {
     const queryClient = useQueryClient();
+
+    const router = useRouter();
 
     const { mutate, isPending: isAddingToCart } = useMutation({
         mutationFn: Cart.addToCart,
@@ -72,6 +80,46 @@ const ProductCard2: React.FC<ProductCard2Props> = ({ product }) => {
             produceId: product.id,
             quantity: 1,
         });
+    };
+
+    const { mutate: getChatWithVendor, isPending: checkingChat } = useMutation({
+        mutationFn: (vendor_id: number) =>
+            Message.getChatWithVendor({ vendor_id }),
+
+        onMutate: () => {
+            toast.loading("Checking for chat...", {
+                toastId: "check-chat",
+                position: "top-right",
+                autoClose: false,
+                closeOnClick: false,
+                draggable: false,
+            });
+        },
+
+        onSuccess: (data) => {
+            toast.dismiss("check-chat");
+
+            const chatId = data.chat_id;
+            // Navigate to chat view or handle in UI
+            router.navigate({
+                to: "/chat/conversation/$id",
+                params: { id: chatId },
+                search: { product_id: product.id },
+            });
+        },
+
+        onError: () => {
+            toast.dismiss("check-chat");
+
+            toast.error("Could not find or start chat with farmer.", {
+                position: "top-right",
+                autoClose: 3000,
+            });
+        },
+    });
+
+    const handleAskFarmer = (vendorId: number) => {
+        getChatWithVendor(vendorId);
     };
 
     return (
@@ -139,7 +187,7 @@ const ProductCard2: React.FC<ProductCard2Props> = ({ product }) => {
                 className="actions"
                 sx={{
                     position: "absolute",
-                    bottom: 40,
+                    bottom: 20,
                     right: 8,
                     flexDirection: "column",
                 }}
@@ -156,6 +204,13 @@ const ProductCard2: React.FC<ProductCard2Props> = ({ product }) => {
                 <Tooltip title="Add to Wishlist">
                     <IconButton color="error">
                         <FavoriteBorder />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Ask about this product">
+                    <IconButton
+                        onClick={() => handleAskFarmer(product.farmer_id)}
+                    >
+                        <ChatBubbleOutline />
                     </IconButton>
                 </Tooltip>
             </CardActions>
