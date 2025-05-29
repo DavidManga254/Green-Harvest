@@ -1,5 +1,6 @@
 import {
     DashboardOutlined,
+    MessageOutlined,
     ProductOutlined,
     ShoppingOutlined,
     UserOutlined,
@@ -13,6 +14,15 @@ const resources: IResourceItem[] = [
         meta: {
             label: "Dashboard",
             icon: <DashboardOutlined />,
+        },
+    },
+    {
+        name: "chat",
+        list: "/chat",
+        show: "/chat/:id",
+        meta: {
+            label: "Chats",
+            icon: <MessageOutlined />, // import from @ant-design/icons
         },
     },
     {

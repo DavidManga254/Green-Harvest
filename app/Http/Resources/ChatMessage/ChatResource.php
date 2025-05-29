@@ -26,6 +26,11 @@ class ChatResource extends JsonResource
             'sent_at' => $this->latestMessage?->created_at,
         ],
         'last_activity_at' => $this->last_activity_at,
+        'customer' => [
+    'id' => $this->customer->id,
+    'name' => $this->customer->name,
+    'avatar' => $this->customer->profile_image,
+],
     ];
     }
 }

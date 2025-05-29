@@ -49,6 +49,12 @@ Route::middleware(['userAuth'])->group(function () {
 
         Route::get('/subscription-plan-templates', 'Farmer\FarmerController@templates');
         Route::post('/subscribe-to-template','Farmer\FarmerController@attachTemplate');
+
+        Route::get('/chats/farmer', 'Chat\MessageController@getFarmerChats');
+        Route::get('/chats/farmer/{chat}/messages', 'Chat\MessageController@getFarmerMessages');
+        Route::post('/messages/farmer/store', 'Chat\MessageController@storeAsFarmer');
+
+
     });
 
     Route::get('/cart', 'Cart\CartController@viewCart');
@@ -88,10 +94,10 @@ Route::middleware(['userAuth'])->group(function () {
 
 
     Route::post('/messages/customer/store', 'Chat\MessageController@storeAsCustomer');
-    Route::post('/messages/farmer/store', 'Chat\MessageController@storeAsFarmer');
     Route::get('/chats/{chat}/messages', 'Chat\MessageController@index');
     Route::post('/chat/token', 'Chat\MessageController@generateChatSessionToken');
     Route::get('/chats','Chat\MessageController@getUserChats');
     Route::post('/chats/check-or-create','Chat\MessageController@CheckChatStatusWithFarmer');
+
 
 });

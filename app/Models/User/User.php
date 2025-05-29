@@ -22,7 +22,7 @@ class User extends authenticatable
     use Notifiable;
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'password', 'phone', 'role', 'address', 'token'];
+    protected $fillable = ['name', 'email', 'password', 'phone', 'role', 'address', 'token','profile_image'];
 
     public function subscriptionPlans()
     {

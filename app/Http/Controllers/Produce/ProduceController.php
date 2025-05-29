@@ -137,25 +137,41 @@ class ProduceController extends Controller
     }
 
     public function update(ProduceUpdate $request, $id)
-    {
-        $farmer = $request->get('farmer');
-        $produce = Produce::where('farmer_id', $farmer->id)->where('id', $id)->first();
+{
+    $farmer = $request->get('farmer');
 
-        if (!$produce) {
-            return response()->json([
-                'message' => 'Product not found or unauthorized',
-            ], 404);
-        }
+    $produce = Produce::where('farmer_id', $farmer->id)->where('id', $id)->first();
 
-        $validated = $request->validated();
-
-        $produce->update($validated);
-
+    if (!$produce) {
         return response()->json([
-            'message' => 'Produce updated successfully!',
-            'data' => new ProduceDetailResource($produce->load(['images', 'tags', 'category']))
-        ]);
+            'message' => 'Product not found or unauthorized',
+        ], 404);
     }
+
+    $validated = $request->validated();
+
+    // Avoid mass-assignment of `images`
+    $fieldsToUpdate = collect($validated)->except(['images'])->toArray();
+    $produce->update($fieldsToUpdate);
+
+    // Sync images manually
+    if (!empty($validated['images'])) {
+        // Clear old images
+        $produce->images()->delete();
+
+        foreach ($validated['images'] as $url) {
+            $produce->images()->create([
+                'image_path' => $url,
+            ]);
+        }
+    }
+
+    return response()->json([
+        'message' => 'Produce updated successfully!',
+        'data' => new ProduceDetailResource($produce->load(['images', 'tags', 'category']))
+    ]);
+}
+
 
     public function search(Request $request)
     {

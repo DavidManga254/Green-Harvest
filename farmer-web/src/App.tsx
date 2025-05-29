@@ -22,6 +22,12 @@ import Layout from "./components/Layout";
 import ProducePage from "./pages/produce/list";
 import ProduceCreatePage from "./pages/produce/create";
 import EditProductPage from "./pages/produce/edit";
+import ChatList from "./pages/chat";
+import ChatListPage from "./pages/chat";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ChatConversationPage from "./pages/chat/$id";
+
+const queryClient = new QueryClient();
 
 function App() {
     return (
@@ -29,65 +35,79 @@ function App() {
             <RefineKbarProvider>
                 <AntdApp>
                     <DevtoolsProvider>
-                        <Refine
-                            dataProvider={dataProvider}
-                            notificationProvider={useNotificationProvider}
-                            routerProvider={routerBindings}
-                            options={{
-                                syncWithLocation: true,
-                                warnWhenUnsavedChanges: true,
-                                useNewQueryKeys: true,
-                                projectId: "ALG8PP-xeXuan-HOz8zj",
-                            }}
-                            authProvider={authProvider}
-                            resources={resources}
-                        >
-                            <Routes>
-                                <Route path="/login" element={<Login />} />
-                                <Route
-                                    path="/forgot-password"
-                                    element={<ForgotPassword />}
-                                />
-                                <Route
-                                    element={
-                                        <Authenticated
-                                            key={"authenticated-layout"}
-                                            fallback={
-                                                <CatchAllNavigate
-                                                    to={"/login"}
-                                                />
-                                            }
-                                        >
-                                            <Layout>
-                                                <Outlet />
-                                            </Layout>
-                                        </Authenticated>
-                                    }
-                                >
+                        <QueryClientProvider client={queryClient}>
+                            <Refine
+                                dataProvider={dataProvider}
+                                notificationProvider={useNotificationProvider}
+                                routerProvider={routerBindings}
+                                options={{
+                                    syncWithLocation: true,
+                                    warnWhenUnsavedChanges: true,
+                                    useNewQueryKeys: true,
+                                    projectId: "ALG8PP-xeXuan-HOz8zj",
+                                }}
+                                authProvider={authProvider}
+                                resources={resources}
+                            >
+                                <Routes>
+                                    <Route path="/login" element={<Login />} />
                                     <Route
-                                        path="/dashboard"
-                                        element={<DashboardPage />}
+                                        path="/forgot-password"
+                                        element={<ForgotPassword />}
                                     />
-                                    <Route path="/produce">
+                                    <Route
+                                        element={
+                                            <Authenticated
+                                                key={"authenticated-layout"}
+                                                fallback={
+                                                    <CatchAllNavigate
+                                                        to={"/login"}
+                                                    />
+                                                }
+                                            >
+                                                <Layout>
+                                                    <Outlet />
+                                                </Layout>
+                                            </Authenticated>
+                                        }
+                                    >
                                         <Route
-                                            index
-                                            element={<ProducePage />}
+                                            path="/dashboard"
+                                            element={<DashboardPage />}
                                         />
-                                        <Route
-                                            path="create"
-                                            element={<ProduceCreatePage />}
-                                        />
-                                        <Route
-                                            path="edit/:id"
-                                            element={<EditProductPage />}
-                                        />
+                                        <Route path="/produce">
+                                            <Route
+                                                index
+                                                element={<ProducePage />}
+                                            />
+                                            <Route
+                                                path="create"
+                                                element={<ProduceCreatePage />}
+                                            />
+                                            <Route
+                                                path="edit/:id"
+                                                element={<EditProductPage />}
+                                            />
+                                        </Route>
+                                        <Route path="/chat">
+                                            <Route
+                                                index
+                                                element={<ChatListPage />}
+                                            />
+                                            <Route
+                                                path="/chat/:id"
+                                                element={
+                                                    <ChatConversationPage />
+                                                }
+                                            />
+                                        </Route>
                                     </Route>
-                                </Route>
-                            </Routes>
-                            <RefineKbar />
-                            <UnsavedChangesNotifier />
-                            <DocumentTitleHandler />
-                        </Refine>
+                                </Routes>
+                                <RefineKbar />
+                                <UnsavedChangesNotifier />
+                                <DocumentTitleHandler />
+                            </Refine>
+                        </QueryClientProvider>
                         <DevtoolsPanel />
                     </DevtoolsProvider>
                 </AntdApp>

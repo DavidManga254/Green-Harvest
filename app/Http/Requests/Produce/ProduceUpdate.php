@@ -34,6 +34,9 @@ class ProduceUpdate extends FormRequest
             'category_id' => 'sometimes|exists:categories,id',
             'tags' => 'sometimes|array|nullable',
             'tags.*' => 'string|max:255',
+            'images' => 'nullable|array',
+'images.*' => 'string|url',
+
         ];
     }
 }
