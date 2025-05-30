@@ -1,4 +1,3 @@
-import MapPin from "../../assets/icons/map-pin";
 import CartHeader from "../Cart/Cart";
 import NavBar from "../NavBar/NavBar";
 import SearchBar from "../SearchBar/SearchBar";
@@ -8,12 +7,7 @@ const Header: React.FC = () => {
     return (
         <div className="main-header">
             <div className="prompt-wrapper">
-                <div className="location-wrap">
-                    <MapPin width={"15"} height="18" />
-                    <span className="location">
-                        Store Location: Lincoln- 344, Illinois, Chicago, USA
-                    </span>
-                </div>
+                <div className="location-wrap"></div>
                 <div className="sign-prompt">
                     <span>Sign In</span> / <span>Sign Up</span>
                 </div>

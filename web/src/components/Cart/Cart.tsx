@@ -17,7 +17,6 @@ const CartHeader: React.FC = () => {
 
     return (
         <div className="cart-header">
-            <Heart width="32" height="32" />
             <div className="vl"></div>
             <div className="shopping-cart">
                 <div className="bag-wrapper">

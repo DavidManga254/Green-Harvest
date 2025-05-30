@@ -2,7 +2,7 @@ import { Authenticated, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
-import { useNotificationProvider } from "@refinedev/antd";
+import { ThemedTitleV2, useNotificationProvider } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 
 import routerBindings, {
@@ -10,7 +10,7 @@ import routerBindings, {
     DocumentTitleHandler,
     UnsavedChangesNotifier,
 } from "@refinedev/react-router";
-import { App as AntdApp } from "antd";
+import { App as AntdApp, Typography } from "antd";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import dataProvider from "./providers/dataProvider";
 import { Login } from "./pages/login";
@@ -31,10 +31,13 @@ import OrderShow from "./pages/order/$id";
 import { SubscriptionList } from "./pages/subscriptions/list";
 import { SubscriptionShow } from "./pages/subscriptions/$id";
 import { SubscriptionCreate } from "./pages/subscriptions/create";
+import { GiFallingLeaf } from "react-icons/gi";
 
 const queryClient = new QueryClient();
 
 function App() {
+    const { Text } = Typography;
+
     return (
         <BrowserRouter>
             <RefineKbarProvider>
@@ -53,6 +56,29 @@ function App() {
                                 }}
                                 authProvider={authProvider}
                                 resources={resources}
+                                Title={() => (
+                                    <ThemedTitleV2
+                                        icon={
+                                            <GiFallingLeaf
+                                                style={{
+                                                    color: "#52c41a",
+                                                    fontSize: "30px",
+                                                }}
+                                            />
+                                        }
+                                        text={
+                                            <Text
+                                                strong
+                                                style={{
+                                                    color: "#52c41a",
+                                                    fontSize: "18px",
+                                                }}
+                                            >
+                                                ShambaBox
+                                            </Text>
+                                        }
+                                    />
+                                )}
                             >
                                 <Routes>
                                     <Route path="/login" element={<Login />} />

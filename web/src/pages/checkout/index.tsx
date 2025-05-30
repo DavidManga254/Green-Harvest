@@ -2,12 +2,13 @@ import "./index.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Cart from "../../api/Cart";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Skeleton } from "@mui/material";
 
 const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { data, isLoadding, error } = useQuery<CartResponse>({
+    const { data, isLoading, error } = useQuery<CartResponse>({
         queryKey: ["cart content"],
         queryFn: Cart.getCartContent,
     });
@@ -90,61 +91,93 @@ const CheckoutPage: React.FC = () => {
                             <span>Subtotal</span>
                             <span></span>
                         </div>
-                        {data?.cart_items.map((item) => {
-                            if (item.quantity <= 0) return null;
+                        {isLoading
+                            ? Array.from({ length: 3 }).map((_, index) => (
+                                  <div className="cart-item" key={index}>
+                                      <Skeleton
+                                          variant="rectangular"
+                                          width={100}
+                                          height={80}
+                                      />
+                                      <div className="cart-item-details">
+                                          <Skeleton width="60%" />
+                                          <Skeleton width="40%" />
+                                      </div>
+                                      <div className="cart-quantity">
+                                          <Skeleton width={60} height={30} />
+                                      </div>
+                                      <div className="cart-subtotal">
+                                          <Skeleton width={50} />
+                                      </div>
+                                      <Skeleton
+                                          variant="circular"
+                                          width={24}
+                                          height={24}
+                                      />
+                                  </div>
+                              ))
+                            : data?.cart_items.map((item) => {
+                                  if (item.quantity <= 0) return null;
 
-                            return (
-                                <div className="cart-item" key={item.id}>
-                                    <img
-                                        src={item.produce.image}
-                                        alt={item.produce.name}
-                                    />
-                                    <div className="cart-item-details">
-                                        <div className="cart-item-title">
-                                            {item.produce.name}
-                                        </div>
-                                        <div className="cart-item-price">
-                                            Ksh
-                                            {parseFloat(item.price).toFixed(2)}
-                                        </div>
-                                    </div>
-                                    <div className="cart-quantity">
-                                        <button
-                                            disabled={
-                                                updateCartMutation.isLoading
-                                            }
-                                            onClick={() =>
-                                                handleDecrease(item.id)
-                                            }
-                                        >
-                                            -
-                                        </button>
-                                        <span>{item.quantity}</span>
-                                        <button
-                                            disabled={
-                                                updateCartMutation.isLoading
-                                            }
-                                            onClick={() =>
-                                                handleIncrease(item.id)
-                                            }
-                                        >
-                                            +
-                                        </button>
-                                    </div>
-                                    <div className="cart-subtotal">
-                                        Ksh
-                                        {parseFloat(item.price) * item.quantity}
-                                    </div>
-                                    <button
-                                        className="cart-remove"
-                                        disabled={deleteItemMutation.isLoading}
-                                        onClick={() => handleRemove(item.id)}
-                                    >
-                                        ×
-                                    </button>
-                                </div>
-                            );
-                        })}
+                                  return (
+                                      <div className="cart-item" key={item.id}>
+                                          <img
+                                              src={item.produce.image}
+                                              alt={item.produce.name}
+                                          />
+                                          <div className="cart-item-details">
+                                              <div className="cart-item-title">
+                                                  {item.produce.name}
+                                              </div>
+                                              <div className="cart-item-price">
+                                                  Ksh
+                                                  {parseFloat(
+                                                      item.price,
+                                                  ).toFixed(2)}
+                                              </div>
+                                          </div>
+                                          <div className="cart-quantity">
+                                              <button
+                                                  disabled={
+                                                      updateCartMutation.isLoading
+                                                  }
+                                                  onClick={() =>
+                                                      handleDecrease(item.id)
+                                                  }
+                                              >
+                                                  -
+                                              </button>
+                                              <span>{item.quantity}</span>
+                                              <button
+                                                  disabled={
+                                                      updateCartMutation.isLoading
+                                                  }
+                                                  onClick={() =>
+                                                      handleIncrease(item.id)
+                                                  }
+                                              >
+                                                  +
+                                              </button>
+                                          </div>
+                                          <div className="cart-subtotal">
+                                              Ksh
+                                              {parseFloat(item.price) *
+                                                  item.quantity}
+                                          </div>
+                                          <button
+                                              className="cart-remove"
+                                              disabled={
+                                                  deleteItemMutation.isLoading
+                                              }
+                                              onClick={() =>
+                                                  handleRemove(item.id)
+                                              }
+                                          >
+                                              ×
+                                          </button>
+                                      </div>
+                                  );
+                              })}
 
                         <div className="extra-buttons">
                             <button onClick={() => handleNavigate("/shop")}>
@@ -172,11 +205,22 @@ const CheckoutPage: React.FC = () => {
                         </div>
                         <div className="checkout-section">
                             <label>Shipping:</label>
-                            <span>Ksh84.00</span>
+                            <span>Ksh0.00</span>
                         </div>
                         <div className="checkout-section">
                             <label>Total:</label>
-                            <span>Ksh84.00</span>
+                            <span>
+                                Ksh
+                                {data?.cart_items
+                                    .reduce(
+                                        (acc, item) =>
+                                            acc +
+                                            item.quantity *
+                                                parseFloat(item.price),
+                                        0,
+                                    )
+                                    .toFixed(2)}
+                            </span>
                         </div>
                         <Link to="/checkout/pay">
                             <button>Proceed to checkout</button>

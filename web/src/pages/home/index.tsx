@@ -8,6 +8,7 @@ import {
     CardMedia,
     IconButton,
     Container,
+    Skeleton,
 } from "@mui/material";
 import { LocalShipping, Lock, Payment, Verified } from "@mui/icons-material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +16,7 @@ import Produce from "../../api/Produce";
 import Cart from "../../api/Cart";
 import displayNotification from "../../lib/displayNotification";
 import ProductCard2 from "../../components/ProductCard2";
+import { Link } from "@tanstack/react-router";
 
 // Sample data
 const categories = [
@@ -35,7 +37,7 @@ export default function GreenHarvestPage() {
     const {
         data: popularProduce,
         // error,
-        // isLoading,
+        isLoading,
     } = useQuery({
         queryKey: [`Produce list popular`],
         queryFn: () => {
@@ -128,7 +130,7 @@ export default function GreenHarvestPage() {
             </Container>
 
             {/* POPULAR CATEGORIES */}
-            <Container sx={{ py: 4 }}>
+            {/* <Container sx={{ py: 4 }}>
                 <Typography variant="h5" gutterBottom>
                     Popular Categories
                 </Typography>
@@ -154,7 +156,7 @@ export default function GreenHarvestPage() {
                         </Grid>
                     ))}
                 </Grid>
-            </Container>
+            </Container> */}
 
             {/* POPULAR PRODUCTS */}
             <Container sx={{ py: 4 }}>
@@ -162,18 +164,33 @@ export default function GreenHarvestPage() {
                     Popular Products
                 </Typography>
                 <Grid container spacing={2}>
-                    {popularProduce?.data.map((product) => (
-                        <Grid
-                            item
-                            xs={12}
-                            sm={6}
-                            md={3}
-                            display="flex"
-                            key={product.id}
-                        >
-                            <ProductCard2 product={product} />
-                        </Grid>
-                    ))}
+                    {isLoading
+                        ? Array.from({ length: 8 }).map((_, index) => (
+                              <Grid item xs={12} sm={6} md={3} key={index}>
+                                  <Card>
+                                      <Skeleton
+                                          variant="rectangular"
+                                          height={140}
+                                      />
+                                      <CardContent>
+                                          <Skeleton height={30} />
+                                          <Skeleton width="60%" />
+                                      </CardContent>
+                                  </Card>
+                              </Grid>
+                          ))
+                        : popularProduce?.data.map((product) => (
+                              <Grid
+                                  item
+                                  xs={12}
+                                  sm={6}
+                                  md={3}
+                                  display="flex"
+                                  key={product.id}
+                              >
+                                  <ProductCard2 product={product} />
+                              </Grid>
+                          ))}
                 </Grid>
             </Container>
 
@@ -182,17 +199,19 @@ export default function GreenHarvestPage() {
                 <Grid container spacing={2}>
                     {imageUrls.map((url, index) => (
                         <Grid item xs={10} sm={4} key={index}>
-                            <Box
-                                component="img"
-                                src={url}
-                                alt={`Promo ${index + 1}`}
-                                sx={{
-                                    width: "100%",
-                                    height: "auto",
-                                    borderRadius: 2,
-                                    display: "block",
-                                }}
-                            />
+                            <Link to="/shop">
+                                <Box
+                                    component="img"
+                                    src={url}
+                                    alt={`Promo ${index + 1}`}
+                                    sx={{
+                                        width: "100%",
+                                        height: "auto",
+                                        borderRadius: 2,
+                                        display: "block",
+                                    }}
+                                />
+                            </Link>
                         </Grid>
                     ))}
                 </Grid>

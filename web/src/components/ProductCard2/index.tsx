@@ -201,11 +201,6 @@ const ProductCard2: React.FC<ProductCard2Props> = ({ product }) => {
                         <AddShoppingCart />
                     </IconButton>
                 </Tooltip>
-                <Tooltip title="Add to Wishlist">
-                    <IconButton color="error">
-                        <FavoriteBorder />
-                    </IconButton>
-                </Tooltip>
                 <Tooltip title="Ask about this product">
                     <IconButton
                         onClick={() => handleAskFarmer(product.farmer_id)}

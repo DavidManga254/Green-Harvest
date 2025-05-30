@@ -65,7 +65,14 @@ const ChatWindow: React.FC<ChatWindowInterface> = ({ chatId, product_id }) => {
     }, [echo, chatId, queryClient]);
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+                backgroundColor: "#ffffff",
+            }}
+        >
             {/* Header */}
             <Box
                 sx={{

@@ -5,6 +5,7 @@ import Heart from "../../assets/icons/Heart";
 import Bag from "../../assets/icons/Bag";
 import Logout from "../../assets/icons/logout";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { MessageOutlined } from "@mui/icons-material";
 
 const SideBar: React.FC = () => {
     const { location } = useRouterState();
@@ -34,13 +35,9 @@ const SideBar: React.FC = () => {
                 <Order width="24" height="24" />
                 <span>Order History</span>
             </Link>
-
-            <Link
-                to="/account/wishlist"
-                className={`side-item ${isActive("/account/wishlist") ? "active-nav" : ""}`}
-            >
-                <Heart width="24" height="24" />
-                <span>Wishlist</span>
+            <Link to="/chat" className={`side-item `}>
+                <MessageOutlined width="24" height="24" />
+                <span>Chat</span>
             </Link>
 
             <Link

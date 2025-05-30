@@ -466,6 +466,8 @@ const ProductMoreDetail: React.FC<ProductMoreDetailProps> = ({
     const reviewList = userReviews?.data || [];
     const reviewCount = userReviews?.total || 0;
 
+    console.log("here is user reviews", userReviews);
+
     // Reviews for modal
     const {
         data: modalReviews,
@@ -537,7 +539,7 @@ const ProductMoreDetail: React.FC<ProductMoreDetailProps> = ({
                         <Typography align="center" color="error">
                             Failed to load reviews.
                         </Typography>
-                    ) : reviewCount === 0 ? (
+                    ) : reviewList.length === 0 ? (
                         <Box
                             display="flex"
                             flexDirection="column"

@@ -1,7 +1,8 @@
-import { CircularProgress, Typography, Box } from "@mui/material";
+import { CircularProgress, Typography, Box, Button } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useQuery } from "@tanstack/react-query";
 import Payment from "../../../../api/Payment";
+import { useNavigate } from "@tanstack/react-router";
 
 interface ConfirmPaymentPageInterface {
     reference: string;
@@ -15,6 +16,7 @@ interface PaymentStatusResponse {
 const ConfirmPaymentPage: React.FC<ConfirmPaymentPageInterface> = ({
     reference,
 }) => {
+    const navigate = useNavigate();
     const { data, error, isLoading, isError } = useQuery<PaymentStatusResponse>(
         {
             queryKey: ["payment verification", reference],
@@ -72,6 +74,12 @@ const ConfirmPaymentPage: React.FC<ConfirmPaymentPageInterface> = ({
                 <Typography variant="h5" color="green" mt={2}>
                     Payment Successful!
                 </Typography>
+                <Button
+                    color="green"
+                    onClick={() => navigate({ to: "/account/order-history" })}
+                >
+                    Go to Order
+                </Button>
             </Box>
         );
     }

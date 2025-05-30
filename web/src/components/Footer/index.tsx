@@ -30,7 +30,6 @@ const Footer: React.FC = () => {
                         <li>My Account</li>
                         <li>Order History</li>
                         <li>Shopping Cart</li>
-                        <li>Wishlist</li>
                     </ul>
                 </div>
 
@@ -49,8 +48,6 @@ const Footer: React.FC = () => {
                     <ul>
                         <li>About</li>
                         <li>Shop</li>
-                        <li>Product</li>
-                        <li>Track Order</li>
                     </ul>
                 </div>
             </div>

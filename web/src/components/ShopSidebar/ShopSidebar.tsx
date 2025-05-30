@@ -20,7 +20,7 @@ const ShopSidebar: React.FC = () => {
         <div className="shop-side-bar">
             <form>
                 {/* Categories */}
-                <FormControl component="fieldset" sx={{ mb: 1 }}>
+                {/* <FormControl component="fieldset" sx={{ mb: 1 }}>
                     <FormLabel component="legend">
                         <Typography variant="h6" fontWeight={600}>
                             All Categories
@@ -58,7 +58,7 @@ const ShopSidebar: React.FC = () => {
                             />
                         ))}
                     </RadioGroup>
-                </FormControl>
+                </FormControl> */}
 
                 {/* Ratings */}
                 <FormControl component="fieldset" sx={{ mb: 1 }}>
