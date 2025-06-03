@@ -17,6 +17,7 @@ import { Route as userLayoutImport } from './routes/(user)/layout'
 import { Route as userChatLayoutImport } from './routes/(user)/chat/layout'
 import { Route as userAccountLayoutImport } from './routes/(user)/account/layout'
 import { Route as farmerFarmerLayoutImport } from './routes/(farmer)/farmer/layout'
+import { Route as userSignUpIndexImport } from './routes/(user)/sign-up/index'
 import { Route as userSignInIndexImport } from './routes/(user)/sign-in/index'
 import { Route as userShopIndexImport } from './routes/(user)/shop/index'
 import { Route as userRegisterIndexImport } from './routes/(user)/register/index'
@@ -76,6 +77,12 @@ const farmerFarmerLayoutRoute = farmerFarmerLayoutImport.update({
   id: '/(farmer)/farmer',
   path: '/farmer',
   getParentRoute: () => rootRoute,
+} as any)
+
+const userSignUpIndexRoute = userSignUpIndexImport.update({
+  id: '/sign-up/',
+  path: '/sign-up/',
+  getParentRoute: () => userLayoutRoute,
 } as any)
 
 const userSignInIndexRoute = userSignInIndexImport.update({
@@ -361,6 +368,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof userSignInIndexImport
       parentRoute: typeof userLayoutImport
     }
+    '/(user)/sign-up/': {
+      id: '/(user)/sign-up/'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof userSignUpIndexImport
+      parentRoute: typeof userLayoutImport
+    }
     '/(user)/account/order-history/$orderId': {
       id: '/(user)/account/order-history/$orderId'
       path: '/order-history/$orderId'
@@ -504,6 +518,7 @@ interface userLayoutRouteChildren {
   userRegisterIndexRoute: typeof userRegisterIndexRoute
   userShopIndexRoute: typeof userShopIndexRoute
   userSignInIndexRoute: typeof userSignInIndexRoute
+  userSignUpIndexRoute: typeof userSignUpIndexRoute
   userVendorSubscriptionsIdRoute: typeof userVendorSubscriptionsIdRoute
   userCheckoutPayIndexRoute: typeof userCheckoutPayIndexRoute
   userProductSearchResultsIndexRoute: typeof userProductSearchResultsIndexRoute
@@ -525,6 +540,7 @@ const userLayoutRouteChildren: userLayoutRouteChildren = {
   userRegisterIndexRoute: userRegisterIndexRoute,
   userShopIndexRoute: userShopIndexRoute,
   userSignInIndexRoute: userSignInIndexRoute,
+  userSignUpIndexRoute: userSignUpIndexRoute,
   userVendorSubscriptionsIdRoute: userVendorSubscriptionsIdRoute,
   userCheckoutPayIndexRoute: userCheckoutPayIndexRoute,
   userProductSearchResultsIndexRoute: userProductSearchResultsIndexRoute,
@@ -577,6 +593,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof userRegisterIndexRoute
   '/shop': typeof userShopIndexRoute
   '/sign-in': typeof userSignInIndexRoute
+  '/sign-up': typeof userSignUpIndexRoute
   '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
   '/chat/conversation/$id': typeof userChatConversationIdRoute
   '/vendor/subscriptions/$id': typeof userVendorSubscriptionsIdRoute
@@ -608,6 +625,7 @@ export interface FileRoutesByTo {
   '/register': typeof userRegisterIndexRoute
   '/shop': typeof userShopIndexRoute
   '/sign-in': typeof userSignInIndexRoute
+  '/sign-up': typeof userSignUpIndexRoute
   '/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
   '/chat/conversation/$id': typeof userChatConversationIdRoute
   '/vendor/subscriptions/$id': typeof userVendorSubscriptionsIdRoute
@@ -642,6 +660,7 @@ export interface FileRoutesById {
   '/(user)/register/': typeof userRegisterIndexRoute
   '/(user)/shop/': typeof userShopIndexRoute
   '/(user)/sign-in/': typeof userSignInIndexRoute
+  '/(user)/sign-up/': typeof userSignUpIndexRoute
   '/(user)/account/order-history/$orderId': typeof userAccountOrderHistoryOrderIdRoute
   '/(user)/chat/conversation/$id': typeof userChatConversationIdRoute
   '/(user)/vendor/subscriptions/$id': typeof userVendorSubscriptionsIdRoute
@@ -676,6 +695,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/shop'
     | '/sign-in'
+    | '/sign-up'
     | '/account/order-history/$orderId'
     | '/chat/conversation/$id'
     | '/vendor/subscriptions/$id'
@@ -706,6 +726,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/shop'
     | '/sign-in'
+    | '/sign-up'
     | '/account/order-history/$orderId'
     | '/chat/conversation/$id'
     | '/vendor/subscriptions/$id'
@@ -738,6 +759,7 @@ export interface FileRouteTypes {
     | '/(user)/register/'
     | '/(user)/shop/'
     | '/(user)/sign-in/'
+    | '/(user)/sign-up/'
     | '/(user)/account/order-history/$orderId'
     | '/(user)/chat/conversation/$id'
     | '/(user)/vendor/subscriptions/$id'
@@ -801,6 +823,7 @@ export const routeTree = rootRoute
         "/(user)/register/",
         "/(user)/shop/",
         "/(user)/sign-in/",
+        "/(user)/sign-up/",
         "/(user)/vendor/subscriptions/$id",
         "/(user)/checkout/pay/",
         "/(user)/product/search-results/",
@@ -880,6 +903,10 @@ export const routeTree = rootRoute
     },
     "/(user)/sign-in/": {
       "filePath": "(user)/sign-in/index.tsx",
+      "parent": "/(user)"
+    },
+    "/(user)/sign-up/": {
+      "filePath": "(user)/sign-up/index.tsx",
       "parent": "/(user)"
     },
     "/(user)/account/order-history/$orderId": {

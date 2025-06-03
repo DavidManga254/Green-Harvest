@@ -11,7 +11,37 @@ class UserApi {
         }
     }
 
-    async register(userRegisterInfo: {
+    // async register(userRegisterInfo: {
+    //     name: string;
+    //     email: string;
+    //     password: string;
+    //     phone?: string;
+    //     role?: string;
+    //     address?: string;
+    // }) {
+    //     try {
+    //         const response = await AxiosApi.post("/register", userRegisterInfo);
+    //         return response.data;
+    //     } catch (e) {
+    //         console.log("error registering user", e);
+    //         throw e;
+    //     }
+    // }
+
+    // async confirmEmail(data: { email: string; token: string }) {
+    //     try {
+    //         const response = await AxiosApi.post(
+    //             "/register/confirmEmail",
+    //             data,
+    //         );
+    //         return response.data;
+    //     } catch (e) {
+    //         console.log("error confirming email", e);
+    //         throw e;
+    //     }
+    // }
+
+    async register(data: {
         name: string;
         email: string;
         password: string;
@@ -19,12 +49,18 @@ class UserApi {
         role?: string;
         address?: string;
     }) {
-        try {
-            const response = await AxiosApi.post("/register", userRegisterInfo);
-            return response.data;
-        } catch (e) {
-            console.log("error registering user", e);
-            throw e;
+        console.log("Mock register called with:", data);
+        await delay(1000); // simulate network delay
+        return { message: "Fake registration successful" };
+    }
+
+    async confirmEmail(data: { email: string; token: string }) {
+        console.log("Mock confirmEmail called with:", data);
+        await delay(1000);
+        if (data.token === "123456") {
+            return { message: "Fake email confirmation success" };
+        } else {
+            throw new Error("Invalid token");
         }
     }
 
@@ -139,3 +175,5 @@ class UserApi {
 }
 
 export default new UserApi();
+
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));

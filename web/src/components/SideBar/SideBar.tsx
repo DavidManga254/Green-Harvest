@@ -5,7 +5,7 @@ import Heart from "../../assets/icons/Heart";
 import Bag from "../../assets/icons/Bag";
 import Logout from "../../assets/icons/logout";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { MessageOutlined } from "@mui/icons-material";
+import { MenuOpenOutlined, MessageOutlined } from "@mui/icons-material";
 
 const SideBar: React.FC = () => {
     const { location } = useRouterState();
@@ -40,6 +40,10 @@ const SideBar: React.FC = () => {
                 <span>Chat</span>
             </Link>
 
+            <Link to="/account/my-subscriptions" className={`side-item `}>
+                <MenuOpenOutlined width="24" height="24" />
+                <span>My Subscriptions</span>
+            </Link>
             <Link
                 to="/checkout"
                 className={`side-item ${isActive("/checkout") ? "active-nav" : ""}`}

@@ -58,6 +58,20 @@ const authProvider: AuthProvider = {
             return { authenticated: false, redirectTo: "/login" };
         }
     },
+    logout: async () => {
+        try {
+            // await AxiosApi.post("/logout"); // optional, if your API supports it
+        } catch (e) {
+            // silently ignore logout API failure
+        }
+
+        localStorage.removeItem(AUTH_CACHE_KEY);
+
+        return {
+            success: true,
+            redirectTo: "/login",
+        };
+    },
 };
 
 export default authProvider;

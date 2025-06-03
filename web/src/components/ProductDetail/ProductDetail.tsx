@@ -176,7 +176,7 @@ const ProductDetailHeader: React.FC<ProductDetailHeaderinterface> = ({
                         {description}
                     </Typography>
 
-                    <Box display="flex" gap={2} alignItems="center" mb={2}>
+                    {/* <Box display="flex" gap={2} alignItems="center" mb={2}>
                         <Typography variant="subtitle2">Share:</Typography>
                         <IconButton size="small">
                             <Twitter height="18" width="18" />
@@ -184,7 +184,7 @@ const ProductDetailHeader: React.FC<ProductDetailHeaderinterface> = ({
                         <IconButton size="small">
                             <Instagram height="18" width="18" />
                         </IconButton>
-                    </Box>
+                    </Box> */}
 
                     <Divider sx={{ my: 3 }} />
 
@@ -215,7 +215,7 @@ const ProductDetailHeader: React.FC<ProductDetailHeaderinterface> = ({
                         </Button>
 
                         <IconButton color="success">
-                            <FavoriteBorderIcon />
+                            {/* <FavoriteBorderIcon /> */}
                         </IconButton>
                     </Box>
 

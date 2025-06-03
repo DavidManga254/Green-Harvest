@@ -72,7 +72,7 @@ export default function GreenHarvestPage() {
                                     Save up to 35% off
                                 </Typography>
                                 <Button variant="contained" sx={{ mt: 2 }}>
-                                    Shop Now
+                                    <Link to="/shop">Shop Now</Link>
                                 </Button>
                             </Box>
                         </Grid>

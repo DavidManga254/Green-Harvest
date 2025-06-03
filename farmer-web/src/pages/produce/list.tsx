@@ -91,7 +91,7 @@ const ProducePage: React.FC<ProducePageInterface> = ({ children }) => {
                                 <CustomAvatar
                                     shape="square"
                                     name={record.name}
-                                    src={record.images[0].image_path}
+                                    src={record.images[0]?.image_path}
                                 />
                                 <Text style={{ whiteSpace: "nowrap" }}>
                                     {record.name}

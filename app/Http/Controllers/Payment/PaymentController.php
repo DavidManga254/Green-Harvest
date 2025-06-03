@@ -100,7 +100,7 @@ class PaymentController extends Controller
 
             // 9. Initiate Paystack payment
             $authorizationUrl = Paystack::getAuthorizationUrl([
-                'amount' => $amountInCents,
+                'amount' => (int) $amountInCents,
                 'email' => $user->email,
                 'currency' => 'KES',
                 'payment_method' => 'mpesa',
@@ -117,7 +117,7 @@ class PaymentController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Order creation/payment initiation failed: ' . $e->getMessage());
-            return response()->json(['message' => 'Something went wrong while processing your order.'], 500);
+            return response()->json(['message' => 'Something went wrong while processing your order.','error'=>$e], 500);
         }
     }
 

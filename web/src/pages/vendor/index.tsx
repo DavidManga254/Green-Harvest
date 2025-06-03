@@ -109,7 +109,7 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
             <Box
                 sx={{
                     backgroundImage:
-                        'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpTy-9x6uHdkksqh0BADiaoOMUgRmMQBzi-A&s")',
+                        'url("https://www.farmfoundation.org/wp-content/uploads/2023/02/Soybean-Field-scaled.jpeg")',
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     height: 200,
@@ -197,7 +197,7 @@ const VendorPage: React.FC<VendorPageInterface> = ({ id }) => {
                             }}
                         >
                             <Typography variant="h6" gutterBottom>
-                                About K-Wiss
+                                About
                             </Typography>
                             <Typography variant="body2">{fullBio}</Typography>
                             <Box

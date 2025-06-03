@@ -95,9 +95,7 @@ const ShopPage: React.FC<ShopPageInterface> = ({ page }) => {
             )}
             <div className="content-section">
                 {!isMobile && (
-                    <div className="Side-bar">
-                        <ShopSidebar />
-                    </div>
+                    <div className="Side-bar">{/* <ShopSidebar /> */}</div>
                 )}
                 <div className="product-wrapper">
                     <Grid container spacing={2}>
@@ -113,7 +111,14 @@ const ShopPage: React.FC<ShopPageInterface> = ({ page }) => {
                                   </Grid>
                               ))
                             : produceData.map((produce, index) => (
-                                  <Grid item xs={12} sm={6} md={4} key={index}>
+                                  <Grid
+                                      item
+                                      xs={12}
+                                      sm={6}
+                                      md={3}
+                                      key={index}
+                                      sx={{ width: "100%" }}
+                                  >
                                       <ProductCard2 product={produce} />
                                   </Grid>
                               ))}

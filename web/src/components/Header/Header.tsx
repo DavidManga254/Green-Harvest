@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import CartHeader from "../Cart/Cart";
 import NavBar from "../NavBar/NavBar";
 import SearchBar from "../SearchBar/SearchBar";
@@ -9,7 +10,13 @@ const Header: React.FC = () => {
             <div className="prompt-wrapper">
                 <div className="location-wrap"></div>
                 <div className="sign-prompt">
-                    <span>Sign In</span> / <span>Sign Up</span>
+                    <Link to="/sign-in">
+                        <span>Sign In</span>
+                    </Link>
+                    /
+                    <Link to="/sign-up">
+                        <span>Sign Up</span>
+                    </Link>
                 </div>
             </div>
             <div className="logo-navigation">

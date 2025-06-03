@@ -106,6 +106,10 @@ function App() {
                                             path="/"
                                             element={<DashboardPage />}
                                         />
+                                        <Route
+                                            path="/dashboard"
+                                            element={<DashboardPage />}
+                                        />
                                         <Route path="/produce">
                                             <Route
                                                 index

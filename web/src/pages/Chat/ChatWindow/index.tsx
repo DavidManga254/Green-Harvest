@@ -51,6 +51,10 @@ const ChatWindow: React.FC<ChatWindowInterface> = ({ chatId, product_id }) => {
                 [`User Conversation ${chatId}`],
                 (old) => {
                     if (!old) return;
+                    const lastMessage = old.messages[old.messages.length - 1];
+                    if (lastMessage?.text === newMessage.text) {
+                        return old; // Skip adding if content matches
+                    }
                     return {
                         ...old,
                         messages: [...old.messages, newMessage],

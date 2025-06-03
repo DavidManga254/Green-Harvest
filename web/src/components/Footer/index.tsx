@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import MasterCard from "../../assets/icons/Mastercard";
 import Plant from "../../assets/icons/Plant";
 import SecurePayment from "../../assets/icons/SecurePayment";
@@ -27,13 +28,19 @@ const Footer: React.FC = () => {
                 <div className="footer-account-section">
                     <h1>My Account</h1>
                     <ul>
-                        <li>My Account</li>
-                        <li>Order History</li>
-                        <li>Shopping Cart</li>
+                        <Link to="/account/dashboard">
+                            <li>My Account</li>
+                        </Link>
+                        <Link to="/account/order-history">
+                            <li>Order History</li>
+                        </Link>
+                        <Link to="/checkout">
+                            <li>Shopping Cart</li>
+                        </Link>
                     </ul>
                 </div>
 
-                <div className="footer-account-section">
+                {/* <div className="footer-account-section">
                     <h1>Help</h1>
                     <ul>
                         <li>Contact</li>
@@ -41,13 +48,17 @@ const Footer: React.FC = () => {
                         <li>Terms & Condition</li>
                         <li>Privacy Policy</li>
                     </ul>
-                </div>
+                </div> */}
 
                 <div className="footer-account-section">
                     <h1>Proxy</h1>
                     <ul>
-                        <li>About</li>
-                        <li>Shop</li>
+                        <Link to="/about">
+                            <li>About</li>
+                        </Link>
+                        <Link to="/shop">
+                            <li>Shop</li>
+                        </Link>
                     </ul>
                 </div>
             </div>
