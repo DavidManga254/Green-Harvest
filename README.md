@@ -1,66 +1,74 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Green Harvest
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A marketplace that connects customers with local farmers. Farmers list their produce, customers browse, order and pay, and the two sides can message each other. Farmers can also sell subscription plans, like a weekly vegetable box.
 
-## About Laravel
+It has three parts: a Laravel API, a customer web app and a farmer dashboard.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## What it does
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**For customers**
+- Sign up with email confirmation, then log in.
+- Browse and search produce and farmers, with categories, tags, images and reviews.
+- Cart, checkout with billing addresses, and payment through Paystack.
+- Order history, and reviews for products and for farmers.
+- Subscribe to a farmer's plan.
+- Chat with a farmer.
+- Maps built with Leaflet: a map of farmers (with clustered markers), a single-farmer map and an order-tracking map.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**For farmers**
+- Manage produce: create, edit, delete, with images.
+- See incoming orders and update their status.
+- Dashboard with orders, earnings and inventory.
+- Build subscription plans from templates.
+- Reply to customer messages.
 
-## Learning Laravel
+## Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Part | Tech |
+|---|---|
+| API | Laravel 11, PHP 8.4, MySQL, run with Laravel Sail (the Sail setup also includes Redis, Meilisearch and Mailpit; search is plain SQL, Meilisearch isn't wired in) |
+| Customer app (`web/`) | React 18, TypeScript, Vite, TanStack Router and Query, MUI, Ant Design, react-hook-form, react-leaflet |
+| Farmer app (`farmer-web/`) | React 18, TypeScript, Vite, React Router 7, TanStack Query, Ant Design, Docker |
+| Payments | Paystack |
+| Realtime | Laravel broadcasting through Pusher for chat (`MessageSent` event) |
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## How it's organised
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Separate middleware protects the two roles (`userAuth` and `farmerAuth`), so farmer routes like `/farmer/produce/*`, `/farmers/earnings` and `/farmer/subscriptions/*` can't be reached with a customer login.
 
-## Laravel Sponsors
+```
+app/Http/Controllers/   Billing, Cart, Chat, Farmer, Order, Payment, Produce, Subscription, User
+app/Models/             one model per table
+database/migrations/    31 migrations, from users to subscription templates
+routes/api.php          the API surface
+web/                    customer React app
+farmer-web/             farmer dashboard
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+The schema was built up in steps from December 2024 to May 2025: users and farmers first, then produce, reviews, carts, orders, payments, and subscriptions last.
 
-### Premium Partners
+## Running it
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+**API**
 
-## Contributing
+```bash
+cp .env.example .env
+composer install
+./vendor/bin/sail up -d
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Set `PAYSTACK_PUBLIC_KEY` and `PAYSTACK_SECRET_KEY` in `.env` to test payments (use Paystack's test keys).
 
-## Code of Conduct
+**Frontends**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cd web && npm install && npm run dev
+cd farmer-web && npm install && npm run dev
+```
 
-## Security Vulnerabilities
+## Notes
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Payments have only been tried with Paystack's test mode.
+- The two frontends use different routers and component libraries because they were started at different times. Moving both to the same setup would be a good cleanup.
